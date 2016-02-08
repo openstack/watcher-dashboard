@@ -1,0 +1,14 @@
+{% extends 'infra_optim/base.html' %}
+{% load i18n %}
+{% load url from future %}
+{% block title %}{% trans 'Audits' %}{% endblock %}
+
+{% block page_header %}
+  {% include 'horizon/common/_page_header.html' with title=_('Audits') items_count=audits_count %}
+{% endblock page_header %}
+
+{% block main %}
+<div id="audits">
+  {{ audits_table.render }}
+</div>
+{% endblock %}

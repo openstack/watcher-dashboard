@@ -1,0 +1,20 @@
+{% load i18n sizeformat %}
+{% load url from future %}
+
+<h3>{% trans "Action Plan Overview" %}</h3>
+
+<div class="info detail">
+    <dl class="dl-horizontal">
+        <dt>{% trans "ID" %}</dt>
+        <dd>{{ action_plan.uuid|default:"&mdash;" }}</dd>
+        {% url 'horizon:admin:audits:detail' action_plan.audit_uuid as audit_url %}
+        <dt>{% trans "Audit ID" %}</dt>
+        <dd><a href="{{ audit_url }}">{{ action_plan.audit_uuid|default:_("&mdash;") }}</a></dd>
+        <dt>{% trans "State" %}</dt>
+        <dd>{{ action_plan.state|default:"&mdash;" }}</dd>
+        <dt>{% trans "Created At" %}</dt>
+        <dd>{{ action_plan.created_at|default:"&mdash;" }}</dd>
+        <dt>{% trans "Update At" %}</dt>
+        <dd>{{ action_plan.updated_at|default:"&mdash;" }}</dd>
+    </dl>
+</div>

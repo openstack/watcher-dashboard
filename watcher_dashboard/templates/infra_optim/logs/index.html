@@ -1,0 +1,17 @@
+{% extends 'infra_optim/base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Logs' %}{% endblock %}
+
+{% block page_header %}
+  {% include 'horizon/common/_items_count_domain_page_header.html' with title=_('Logs') items_count=flavors_count %}
+{% endblock page_header %}
+
+{% block main %}
+<div class="row">
+  <div class="col-sm-12">
+    {{ table.render }}
+  </div>
+</div>
+
+{% endblock %}
+

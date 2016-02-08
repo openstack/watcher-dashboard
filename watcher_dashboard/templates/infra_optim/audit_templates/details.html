@@ -1,0 +1,35 @@
+{% extends 'infra_optim/base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Audit Templates: ' %}{{ audit_template.name }}{% endblock %}
+ 
+{% block page_header %}
+  {% include 'horizon/common/_page_header.html' with title=_('Audit Templates: ')|add:audit_template.name %}
+{% endblock page_header %}
+ 
+{% block main %}
+<div class="row">
+  <div class="detail col-md-6">
+    <h4>{% trans "Audit Template Info" %}</h4>
+    <dl class="dl-horizontal">
+        <dt>{% trans "Name" %}</dt>
+        <dd>{{ audit_template.name|default:"&mdash;" }}</dd>
+        <dt>{% trans "Id" %}</dt>
+        <dd>{{ audit_template.uuid|default:"&mdash;" }}</dd>
+        <dt>{% trans "Goal" %}</dt>
+        <dd>{{ audit_template.goal|default:"&mdash;" }}</dd>
+        <dt>{% trans "Created At" %}</dt>
+        <dd>{{ audit_template.created_at|default:"&mdash;" }}</dd>
+        <dt>{% trans "Update At" %}</dt>
+        <dd>{{ audit_template.updated_at|default:"&mdash;" }}</dd>
+        <dt>{% trans "Deleted At" %}</dt>
+        <dd>{{ audit_template.deleted_at|default:"&mdash;" }}</dd>
+    </dl>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    {{ table.render }}
+  </div>
+</div>
+ 
+{% endblock %}

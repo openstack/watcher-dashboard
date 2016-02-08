@@ -1,0 +1,26 @@
+# The order of packages is significant, because pip processes them in the order
+# of appearance. Changing the order has an impact on the overall integration
+# process, which may cause wedges in the gate later.
+# Hacking already pins down pep8, pyflakes and flake8
+
+-e git://github.com/openstack/horizon.git#egg=horizon
+
+hacking>=0.10.2,<0.11 # Apache-2.0
+coverage>=3.6 # Apache-2.0
+ddt>=1.0.1 # MIT
+django-nose>=1.2 # BSD
+discover # BSD
+mock>=1.2 # BSD
+mox3>=0.7.0 # Apache-2.0
+nose-exclude # LGPL
+python-subunit>=0.0.18 # Apache-2.0/BSD
+selenium!=2.49,!=2.50 # Apache-2.0
+testrepository>=0.0.18 # Apache-2.0/BSD
+testscenarios>=0.4 # Apache-2.0/BSD
+testtools>=1.4.0 # MIT
+# This also needs xvfb library installed on your OS
+xvfbwrapper>=0.1.3,!=0.2.8 #license: MIT
+
+# Doc requirements
+oslosphinx>=2.5.0 # Apache-2.0
+sphinx>=1.1.2,!=1.2.0,!=1.3b1,<1.3
