@@ -207,7 +207,7 @@ class WatcherAPITests(test.APITestCase):
     def test_action_plan_start(self):
         action_plan_id = self.api_action_plans.first()['id']
         patch = []
-        patch.append({'path': '/state', 'value': 'TRIGGERED', 'op': 'replace'})
+        patch.append({'path': '/state', 'value': 'PENDING', 'op': 'replace'})
 
         watcherclient = self.stub_watcherclient()
         watcherclient.action_plan = self.mox.CreateMockAnything()

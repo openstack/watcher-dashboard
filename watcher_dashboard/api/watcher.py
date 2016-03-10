@@ -343,7 +343,7 @@ class ActionPlan(base.APIResourceWrapper):
         :type  action_plan_id: int
         """
         patch = []
-        patch.append({'op': 'replace', 'path': '/state', 'value': 'TRIGGERED'})
+        patch.append({'op': 'replace', 'path': '/state', 'value': 'PENDING'})
         watcherclient(request).action_plan.update(action_plan_id, patch)
 
     @property
@@ -422,7 +422,7 @@ class Action(base.APIResourceWrapper):
         :type  action_id: int
         """
         patch = []
-        patch.append({'op': 'replace', 'path': '/state', 'value': 'TRIGGERED'})
+        patch.append({'op': 'replace', 'path': '/state', 'value': 'PENDING'})
         watcherclient(request).action.update(action_id, patch)
 
     @property
