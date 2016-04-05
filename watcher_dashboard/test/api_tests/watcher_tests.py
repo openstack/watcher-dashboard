@@ -31,7 +31,7 @@ class WatcherAPITests(test.APITestCase):
 
         ret_val = api.watcher.AuditTemplate.list(self.request, filter=None)
         for n in ret_val:
-            self.assertTrue(type(ret_val), 'dict')
+            self.assertTrue(type(n), 'dict')
 
     def test_audit_template_list_with_filters(self):
         search_opts = 'Audit Template 1'
@@ -47,7 +47,7 @@ class WatcherAPITests(test.APITestCase):
         ret_val = api.watcher.AuditTemplate\
             .list(self.request, filter=search_opts)
         for n in ret_val:
-            self.assertTrue(type(ret_val), 'dict')
+            self.assertTrue(type(n), 'dict')
         self.assertEqual(ret_val, audit_templates)
 
     def test_audit_template_get(self):
