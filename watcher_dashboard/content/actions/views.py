@@ -70,13 +70,13 @@ class DetailView(horizon.tabs.TabbedTableView):
 
     @memoized.memoized_method
     def _get_data(self):
-        action_plan_id = None
+        action_plan_uuid = None
         try:
-            action_plan_id = self.kwargs['action_plan_id']
-            action = watcher.Action.get(self.request, action_plan_id)
+            action_plan_uuid = self.kwargs['action_plan_uuid']
+            action = watcher.Action.get(self.request, action_plan_uuid)
         except Exception:
             msg = _('Unable to retrieve details for action "%s".') \
-                % action_plan_id
+                % action_plan_uuid
             horizon.exceptions.handle(
                 self.request, msg,
                 redirect=self.redirect_url)

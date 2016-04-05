@@ -34,20 +34,17 @@ DETAILS_VIEW = 'horizon:admin:audit_templates:detail'
 
 class AuditTemplatesTest(test.BaseAdminViewTests):
 
-    goal_list = [
-        'BASIC_CONSOLIDATION',
-        'MINIMIZE_ENERGY_CONSUMPTION',
-        'BALANCE_LOAD',
-        'MINIMIZE_LICENSING_COST',
-        'PREPARED_PLAN_OPERATION',
-    ]
+    def setUp(self):
+        super(AuditTemplatesTest, self).setUp()
+        self.goal_list = self.goals.list()
+        self.strategy_list = self.strategies.list()
 
     @test.create_stubs({api.watcher.AuditTemplate: ('list',)})
     def test_index(self):
-        search_opts = None
+        search_opts = {}
         api.watcher.AuditTemplate.list(
             IsA(http.HttpRequest),
-            filter=search_opts).MultipleTimes().AndReturn(
+            **search_opts).MultipleTimes().AndReturn(
             self.audit_templates.list())
         self.mox.ReplayAll()
 
@@ -68,34 +65,45 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         resp = self.client.get(INDEX_URL)
         self.assertMessageCount(resp, error=1, warning=0)
 
-    @test.create_stubs({api.watcher.AuditTemplate: ('get_goals',)})
+    @test.create_stubs({api.watcher.Strategy: ('list',)})
+    @test.create_stubs({api.watcher.Goal: ('list',)})
     def test_create_get(self):
-        api.watcher.AuditTemplate.get_goals(
+        api.watcher.Goal.list(
             IsA(http.HttpRequest)).AndReturn(self.goal_list)
+        api.watcher.Strategy.list(
+            IsA(http.HttpRequest)).AndReturn(self.strategy_list)
         self.mox.ReplayAll()
         res = self.client.get(CREATE_URL)
         self.assertTemplateUsed(res, 'infra_optim/audit_templates/create.html')
 
-    @test.create_stubs({api.watcher.AuditTemplate: ('create',
-                                                    'get_goals')})
+    @test.create_stubs({api.watcher.Strategy: ('list',)})
+    @test.create_stubs({api.watcher.Goal: ('list',)})
+    @test.create_stubs({api.watcher.AuditTemplate: ('create',)})
     def test_create_post(self):
         at = self.audit_templates.first()
-        api.watcher.AuditTemplate.get_goals(
+        params = {
+            'name': at.name,
+            'goal_uuid': at.goal_uuid,
+            'strategy_uuid': at.strategy_uuid,
+            'description': at.description,
+            'host_aggregate': at.host_aggregate,
+        }
+        api.watcher.Goal.list(
             IsA(http.HttpRequest)).AndReturn(self.goal_list)
-        params = {'name': at.name,
-                  'goal': at.goal,
-                  'description': at.description,
-                  'host_aggregate': at.host_aggregate,
-                  }
+        api.watcher.Strategy.list(
+            IsA(http.HttpRequest)).AndReturn(self.strategy_list)
+
         api.watcher.AuditTemplate.create(
             IsA(http.HttpRequest), **params).AndReturn(at)
         self.mox.ReplayAll()
 
-        form_data = {'name': at.name,
-                     'goal': at.goal,
-                     'description': at.description,
-                     'host_aggregate': at.host_aggregate,
-                     }
+        form_data = {
+            'name': at.name,
+            'goal_uuid': at.goal_uuid,
+            'strategy_uuid': at.strategy_uuid,
+            'description': at.description,
+            'host_aggregate': at.host_aggregate,
+        }
         res = self.client.post(CREATE_URL, form_data)
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
@@ -130,14 +138,13 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
 
     @test.create_stubs({api.watcher.AuditTemplate: ('delete', 'list')})
     def test_delete(self):
-        search_opts = None
+        search_opts = {}
         at_list = self.audit_templates.list()
         at = self.audit_templates.first()
         at_id = at.uuid
         api.watcher.AuditTemplate.list(
             IsA(http.HttpRequest),
-            filter=search_opts).MultipleTimes().AndReturn(
-                at_list)
+            **search_opts).MultipleTimes().AndReturn(at_list)
         api.watcher.AuditTemplate.delete(IsA(http.HttpRequest), at_id)
         self.mox.ReplayAll()
 

@@ -14,16 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf import urls
+from django.utils.translation import ugettext_lazy as _
+import horizon
 
-from watcher_dashboard.content.action_plans import views
 
-
-urlpatterns = [
-    urls.url(r'^$',
-             views.IndexView.as_view(), name='index'),
-    urls.url(r'^(?P<action_plan_uuid>[^/]+)/detail$',
-             views.DetailView.as_view(), name='detail'),
-    urls.url(r'^archive/$',
-             views.ArchiveView.as_view(), name='archive'),
-]
+class Goals(horizon.Panel):
+    name = _("Goals")
+    slug = "goals"

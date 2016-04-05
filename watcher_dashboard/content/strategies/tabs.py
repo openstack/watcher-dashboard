@@ -14,16 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf import urls
+from django.utils.translation import ugettext_lazy as _
+from horizon import tabs
 
-from watcher_dashboard.content.action_plans import views
+
+class OverviewTab(tabs.Tab):
+    name = _("Overview")
+    slug = "overview"
+    template_name = "infra_optim/strategies/_detail_overview.html"
+
+    def get_context_data(self, request):
+        return {"strategy": self.tab_group.kwargs['strategy']}
 
 
-urlpatterns = [
-    urls.url(r'^$',
-             views.IndexView.as_view(), name='index'),
-    urls.url(r'^(?P<action_plan_uuid>[^/]+)/detail$',
-             views.DetailView.as_view(), name='detail'),
-    urls.url(r'^archive/$',
-             views.ArchiveView.as_view(), name='archive'),
-]
+class StrategyDetailTabs(tabs.TabGroup):
+    slug = "strategy_details"
+    tabs = (OverviewTab,)
+    sticky = True

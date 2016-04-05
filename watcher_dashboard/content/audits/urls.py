@@ -19,12 +19,11 @@ from django.conf import urls
 from watcher_dashboard.content.audits import views
 
 
-urlpatterns = urls.patterns(
-    'watcher_dashboard.audits.views',
+urlpatterns = [
     urls.url(r'^$',
              views.IndexView.as_view(), name='index'),
     urls.url(r'^create/$',
              views.CreateView.as_view(), name='create'),
-    urls.url(r'^(?P<audit_id>[^/]+)/detail$',
+    urls.url(r'^(?P<audit_uuid>[^/]+)/detail$',
              views.DetailView.as_view(), name='detail'),
-)
+]

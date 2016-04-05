@@ -1,0 +1,14 @@
+{% extends 'infra_optim/base.html' %}
+{% load i18n %}
+{% load url from future %}
+{% block title %}{% trans 'Strategies' %}{% endblock %}
+
+{% block page_header %}
+  {% include 'horizon/common/_page_header.html' with title=_('Strategies') items_count=strategy_count %}
+{% endblock page_header %}
+
+{% block main %}
+<div id="goals">
+  {{ strategies_table.render }}
+</div>
+{% endblock %}

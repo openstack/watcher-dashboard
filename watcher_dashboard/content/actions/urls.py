@@ -19,10 +19,9 @@ from django.conf import urls
 from watcher_dashboard.content.actions import views
 
 
-urlpatterns = urls.patterns(
-    'watcher_dashboard.content.actions.views',
+urlpatterns = [
     urls.url(r'^$',
              views.IndexView.as_view(), name='index'),
-    urls.url(r'^(?P<action_id>[^/]+)/$',
+    urls.url(r'^(?P<action_uuid>[^/]+)/$',
              views.DetailView.as_view(), name='details'),
-)
+]

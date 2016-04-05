@@ -223,7 +223,7 @@ class TestCase(horizon_helpers.TestCase):
         Asserts that the given response issued a 302 redirect without
         processing the view which is redirected to.
         """
-        assert (response.status_code / 100 == 3), \
+        assert (300 <= response.status_code < 400), \
             "The response did not return a redirect."
         self.assertEqual(response._headers.get('location', None),
                          ('Location', settings.TESTSERVER + expected_url))

@@ -1,17 +1,17 @@
 {% extends 'infra_optim/base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Audits: ' %}{{ audit.uuid }}{% endblock %}
- 
+
 {% block page_header %}
   {% include 'horizon/common/_page_header.html' with title=_('Audits: ')|add:audit.uuid %}
 {% endblock page_header %}
- 
+
 {% block main %}
 <div class="row">
   <div class="detail col-md-6">
     <h4>{% trans "Audit Info" %}</h4>
     <dl class="dl-horizontal">
-        <dt>{% trans "ID" %}</dt>
+        <dt>{% trans "UUID" %}</dt>
         <dd>{{ audit.uuid|default:"&mdash;" }}</dd>
         <dt>{% trans "Type" %}</dt>
         <dd>{{ audit.type|default:"&mdash;" }}</dd>
@@ -34,5 +34,5 @@
     {{ table.render }}
   </div>
 </div>
- 
+
 {% endblock %}

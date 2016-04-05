@@ -14,16 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf import urls
+from django.template.defaultfilters import title  # noqa
+from django.utils.translation import ugettext_lazy as _
+import horizon.exceptions
+import horizon.messages
+import horizon.tables
 
-from watcher_dashboard.content.action_plans import views
 
+class GoalsTable(horizon.tables.DataTable):
+    uuid = horizon.tables.Column(
+        'uuid',
+        verbose_name=_("UUID"),
+        link="horizon:admin:goals:detail")
+    display_name = horizon.tables.Column(
+        'display_name',
+        verbose_name=_('Name'))
 
-urlpatterns = [
-    urls.url(r'^$',
-             views.IndexView.as_view(), name='index'),
-    urls.url(r'^(?P<action_plan_uuid>[^/]+)/detail$',
-             views.DetailView.as_view(), name='detail'),
-    urls.url(r'^archive/$',
-             views.ArchiveView.as_view(), name='archive'),
-]
+    def get_object_id(self, datum):
+        return datum.uuid
+
+    class Meta(object):
+        name = "goals"
+        verbose_name = _("Goals")

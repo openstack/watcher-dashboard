@@ -21,7 +21,8 @@ class AuditTemplatesTable(tables.TableRegion):
 
     name = 'audit_templates'
 
-    CREATE_AUDIT_TEMPLATE_FORM_FIELDS = ("name", "description", "goal")
+    CREATE_AUDIT_TEMPLATE_FORM_FIELDS = ("name", "description",
+                                         "goal_id", "strategy_id")
 
     @tables.bind_table_action('create')
     def create_audit_template(self, create_button):
@@ -35,7 +36,7 @@ class AuditTemplatesTable(tables.TableRegion):
         delete_button.click()
         return forms.BaseFormRegion(self.driver, self.conf, None)
 
-    @tables.bind_row_action('launch_audit', primary=True)
+    @tables.bind_row_action('launch_audit')
     def launch_audit(self, launch_button, row):
         launch_button.click()
         return forms.BaseFormRegion(self.driver, self.conf)
@@ -44,7 +45,7 @@ class AuditTemplatesTable(tables.TableRegion):
 class AudittemplatesPage(basepage.BaseNavigationPage):
 
     DEFAULT_DESCRIPTION = "Fake description from integration tests"
-    DEFAULT_GOAL = "BASIC_CONSOLIDATION"
+    DEFAULT_GOAL = "SERVER_CONSOLIDATION"
 
     AUDITS_PAGE_TITLE = "Audits - OpenStack Dashboard"
 
@@ -86,11 +87,11 @@ class AudittemplatesPage(basepage.BaseNavigationPage):
     def create_audit_template(self,
                               name,
                               description=DEFAULT_DESCRIPTION,
-                              goal=DEFAULT_GOAL):
+                              goal_id=DEFAULT_GOAL):
         self.audittemplates_table.create_audit_template()
         self.audit_templates__action_create_form.name.text = name
         self.audit_templates__action_create_form.description.text = description
-        self.audit_templates__action_create_form.goal.value = goal
+        self.audit_templates__action_create_form.goal_id.value = goal_id
         self.audit_templates__action_create_form.submit()
 
     def is_audit_template_present(self, name):

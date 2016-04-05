@@ -34,23 +34,29 @@ class CreateForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255, label=_("Name"))
     description = forms.CharField(max_length=255, label=_("Description"),
                                   required=False)
-    goal = forms.ChoiceField(label=_('Goal'),
-                             required=True,
-                             )
+    goal_uuid = forms.ChoiceField(label=_('Goal'), required=True)
+    strategy_uuid = forms.ChoiceField(label=_('Strategy'), required=False)
 
     failure_url = 'horizon:admin:audit_templates:index'
 
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
         goals = self._get_goal_list(request)
+        strategies = self._get_strategy_list(request, goals)
+
         if goals:
-            self.fields['goal'].choices = goals
+            self.fields['goal_uuid'].choices = goals
         else:
-            del self.fields['goal']
+            del self.fields['goal_uuid']
+
+        if strategies:
+            self.fields['strategy_uuid'].choices = strategies
+        else:
+            del self.fields['strategy_uuid']
 
     def _get_goal_list(self, request):
         try:
-            goals = watcher.AuditTemplate.get_goals(self.request)
+            goals = watcher.Goal.list(self.request)
         except Exception as exc:
             msg = _('Failed to get goals list.')
             LOG.info(msg)
@@ -59,7 +65,7 @@ class CreateForm(forms.SelfHandlingForm):
             goals = []
 
         choices = [
-            (goal, goal)
+            (goal.uuid, goal.display_name)
             for goal in goals
         ]
 
@@ -67,16 +73,41 @@ class CreateForm(forms.SelfHandlingForm):
             choices.insert(0, ("", _("Select Goal")))
         return choices
 
+    def _get_strategy_list(self, request, goals):
+        try:
+            strategies = watcher.Strategy.list(self.request)
+        except Exception as exc:
+            msg = _('Failed to get the list of available strategies.')
+            LOG.info(msg)
+            messages.warning(request, msg)
+            messages.warning(request, exc)
+            strategies = []
+
+        _goals = {}
+        for goal in goals:
+            _goals[goal[0]] = goal[1]
+
+        choices = [
+            (strategy.uuid, strategy.display_name +
+                ' (GOAL: ' + _goals[strategy.goal_uuid] + ')')
+            for strategy in strategies
+        ]
+
+        if choices:
+            choices.insert(0, ("", _("Select Strategy")))
+        return choices
+
     def handle(self, request, data):
         try:
             params = {'name': data['name']}
-            params['goal'] = data['goal']
             params['description'] = data['description']
+            params['goal_uuid'] = data['goal_uuid']
+            params['strategy_uuid'] = data['strategy_uuid'] or None
             params['host_aggregate'] = None
-            audit_temp = watcher.AuditTemplate.create(request, **params)
+            audit_tpl = watcher.AuditTemplate.create(request, **params)
             message = _('Audit Template was successfully created.')
             messages.success(request, message)
-            return audit_temp
+            return audit_tpl
         except Exception as exc:
             msg = _('Failed to create audit template"%s".') % data['name']
             LOG.info(exc)

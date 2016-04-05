@@ -32,7 +32,7 @@ LOG = logging.getLogger(__name__)
 ACTION_PLAN_STATE_DISPLAY_CHOICES = (
     ("NO STATE", pgettext_lazy("State of an action plan", u"No State")),
     ("ONGOING", pgettext_lazy("State of an action plan", u"On Going")),
-    ("SUCCESS", pgettext_lazy("State of an action plan", u"Sucess")),
+    ("SUCCEEDED", pgettext_lazy("State of an action plan", u"Succeeded")),
     ("SUBMITTED", pgettext_lazy("State of an action plan", u"Submitted")),
     ("FAILED", pgettext_lazy("State of an action plan", u"Failed")),
     ("DELETED", pgettext_lazy("State of an action plan", u"Deleted")),
@@ -124,31 +124,10 @@ class UpdateRow(horizon.tables.Row):
         return action_plan
 
 
-# class CancelActionPlan(horizon.tables.DeleteAction):
-#     verbose_name = _(u"Cancel ActionPlans")
-#     icon = "trash"
-
-#     @staticmethod
-#     def action_present(count):
-#         return ungettext_lazy(
-#             u"Cancel ActionPlan",
-#             u"Cancel ActionPlans",
-#             count
-#         )
-
-#     @staticmethod
-#     def action_past(count):
-#         return ungettext_lazy(
-#             u"Canceled ActionPlan",
-#             u"canceled ActionPlans",
-#             count
-#         )
-
-
 class ActionPlansTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
-        'id',
-        verbose_name=_("ID"),
+        'uuid',
+        verbose_name=_("UUID"),
         link="horizon:admin:action_plans:detail")
     audit = horizon.tables.Column(
         'audit_uuid',
@@ -164,6 +143,9 @@ class ActionPlansTable(horizon.tables.DataTable):
         verbose_name=_('State'),
         status=True,
         status_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES)
+
+    def get_object_id(self, datum):
+        return datum.uuid
 
     class Meta(object):
         name = "action_plans"

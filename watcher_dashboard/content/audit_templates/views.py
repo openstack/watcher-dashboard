@@ -44,8 +44,8 @@ class IndexView(horizon.tables.DataTableView):
         audit_templates = []
         search_opts = self.get_filters()
         try:
-            audit_templates = watcher.AuditTemplate.list(self.request,
-                                                         filter=search_opts)
+            audit_templates = watcher.AuditTemplate.list(
+                self.request, **search_opts)
         except Exception:
             horizon.exceptions.handle(
                 self.request,
@@ -56,15 +56,15 @@ class IndexView(horizon.tables.DataTableView):
         return len(self.get_data())
 
     def get_filters(self):
-        filter = None
+        filters = {}
         filter_action = self.table._meta._filter_action
         if filter_action:
             filter_field = self.table.get_filter_field()
             if filter_action.is_api_filter(filter_field):
                 filter_string = self.table.get_filter_string()
                 if filter_field and filter_string:
-                    filter = filter_string
-        return filter
+                    filters[filter_field] = filter_string
+        return filters
 
 
 class CreateView(forms.ModalFormView):
@@ -85,15 +85,15 @@ class DetailView(horizon.tabs.TabbedTableView):
     page_title = _("Audit Template Details: {{ audit_template.name }}")
 
     def _get_data(self):
-        audit_template_id = None
+        audit_template_uuid = None
         try:
             LOG.info(self.kwargs)
-            audit_template_id = self.kwargs['audit_template_id']
-            audit_template = watcher.AuditTemplate.get(self.request,
-                                                       audit_template_id)
+            audit_template_uuid = self.kwargs['audit_template_uuid']
+            audit_template = watcher.AuditTemplate.get(
+                self.request, audit_template_uuid)
         except Exception:
             msg = _('Unable to retrieve details for audit template "%s".') \
-                % audit_template_id
+                % audit_template_uuid
             horizon.exceptions.handle(
                 self.request, msg,
                 redirect=self.redirect_url)

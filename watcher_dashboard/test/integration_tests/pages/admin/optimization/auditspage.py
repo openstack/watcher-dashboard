@@ -29,7 +29,7 @@ class AuditsTable(tables.TableRegion):
         launch_button.click()
         return forms.BaseFormRegion(self.driver, self.conf)
 
-    @tables.bind_row_action('go_to_action_plan', primary=True)
+    @tables.bind_row_action('go_to_action_plan')
     def go_to_action_plan(self, goto_button):
         goto_button.click()
         return forms.BaseFormRegion(self.driver, self.conf)

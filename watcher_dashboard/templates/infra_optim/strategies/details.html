@@ -1,0 +1,34 @@
+{% extends 'infra_optim/base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Strategies: ' %}{{ strategy.display_name }}{% endblock %}
+
+{% block page_header %}
+  {% include 'horizon/common/_page_header.html' with title=_('Strategies: ')|add:strategy.display_name %}
+{% endblock page_header %}
+
+{% block main %}
+<div class="row">
+  <div class="detail col-md-6">
+    <h4>{% trans "Strategy Info" %}</h4>
+    <dl class="dl-horizontal">
+        <dt>{% trans "UUID" %}</dt>
+        <dd>{{ strategy.uuid|default:"&mdash;" }}</dd>
+        <dt>{% trans "Name" %}</dt>
+        <dd>{{ strategy.display_name|default:"&mdash;" }}</dd>
+        <dt>{% trans "Goal UUID" %}</dt>
+        {% url 'horizon:admin:goals:detail' strategy.goal_uuid as goal_url %}
+        <dd><a href="{{ goal_url }}">{{ strategy.goal_uuid|default:"&mdash;" }}</a></dd>
+        <dt>{% trans "Created At" %}</dt>
+        <dd>{{ strategy.created_at|default:"&mdash;" }}</dd>
+        <dt>{% trans "Update At" %}</dt>
+        <dd>{{ strategy.updated_at|default:"&mdash;" }}</dd>
+    </dl>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    {{ table.render }}
+  </div>
+</div>
+
+{% endblock %}

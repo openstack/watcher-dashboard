@@ -32,7 +32,7 @@ LOG = logging.getLogger(__name__)
 ACTION_STATE_DISPLAY_CHOICES = (
     ("NO STATE", pgettext_lazy("Power state of an Instance", u"No State")),
     ("ONGOING", pgettext_lazy("Power state of an Instance", u"On Going")),
-    ("SUCCESS", pgettext_lazy("Power state of an Instance", u"Success")),
+    ("SUCCEEDED", pgettext_lazy("Power state of an Instance", u"Succeeded")),
     ("CANCELLED", pgettext_lazy("Power state of an Instance", u"Cancelled")),
     ("FAILED", pgettext_lazy("Power state of an Instance", u"Failed")),
     ("DELETED", pgettext_lazy("Power state of an Instance", u"Deleted")),
@@ -62,8 +62,8 @@ class ActionsFilterAction(horizon.tables.FilterAction):
 
 class ActionsTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
-        'id',
-        verbose_name=_("ID"))
+        'uuid',
+        verbose_name=_("UUID"))
     action_type = horizon.tables.Column(
         'action_type',
         verbose_name=_('Type'),
@@ -80,6 +80,9 @@ class ActionsTable(horizon.tables.DataTable):
         'next_uuid',
         verbose_name=_('Next Action'))
     ajax = True
+
+    def get_object_id(self, datum):
+        return datum.uuid
 
     class Meta(object):
         name = "wactions"

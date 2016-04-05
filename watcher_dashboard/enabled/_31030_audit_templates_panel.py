@@ -16,8 +16,6 @@ PANEL = 'audit_templates'
 PANEL_DASHBOARD = 'admin'
 # The slug of the panel group the PANEL is associated with.
 PANEL_GROUP = 'watcher'
-# If set, it will update the default panel of the PANEL_DASHBOARD.
-DEFAULT_PANEL = 'audit_templates'
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = 'watcher_dashboard.content.audit_templates.panel.AuditTemplates'

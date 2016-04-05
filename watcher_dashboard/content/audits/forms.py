@@ -45,7 +45,7 @@ class CreateForm(forms.SelfHandlingForm):
 
     def _get_audit_template_list(self, request):
         try:
-            audit_templates = watcher.AuditTemplate.list(self.request, None)
+            audit_templates = watcher.AuditTemplate.list(self.request)
         except Exception:
             msg = _('Failed to get audit template list.')
             LOG.info(msg)

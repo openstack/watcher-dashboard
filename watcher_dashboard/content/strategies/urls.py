@@ -16,14 +16,12 @@
 
 from django.conf import urls
 
-from watcher_dashboard.content.action_plans import views
+from watcher_dashboard.content.strategies import views
 
 
 urlpatterns = [
     urls.url(r'^$',
              views.IndexView.as_view(), name='index'),
-    urls.url(r'^(?P<action_plan_uuid>[^/]+)/detail$',
+    urls.url(r'^(?P<strategy_uuid>[^/]+)/detail$',
              views.DetailView.as_view(), name='detail'),
-    urls.url(r'^archive/$',
-             views.ArchiveView.as_view(), name='archive'),
 ]

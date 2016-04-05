@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 from django.core import urlresolvers
 from django import shortcuts
 from django.template.defaultfilters import title  # noqa
@@ -23,15 +25,15 @@ import horizon.exceptions
 import horizon.messages
 import horizon.tables
 from horizon.utils import filters
+
 from watcher_dashboard.api import watcher
 
-import logging
 LOG = logging.getLogger(__name__)
 
 AUDIT_STATE_DISPLAY_CHOICES = (
     ("NO STATE", pgettext_lazy("State of an audit", u"No State")),
     ("ONGOING", pgettext_lazy("State of an audit", u"On Going")),
-    ("SUCCESS", pgettext_lazy("State of an audit", u"Sucess")),
+    ("SUCCEEDED", pgettext_lazy("State of an audit", u"Succeeeded")),
     ("SUBMITTED", pgettext_lazy("State of an audit", u"Submitted")),
     ("FAILED", pgettext_lazy("State of an audit", u"Failed")),
     ("DELETED", pgettext_lazy("State of an audit", u"Deleted")),
@@ -55,19 +57,10 @@ class CreateAudit(horizon.tables.LinkAction):
     # policy_rules = (("compute", "compute:create"),)
 
 
-# class ArchiveAudits(horizon.tables.LinkAction):
-#     name = "archive_audits"
-#     verbose_name = _("Archive Audits")
-#     url = "horizon:project:instances:launch"
-#     classes = ("ajax-modal", "btn-launch")
-#     icon = "folder-open"
-
 class GoToActionPlan(horizon.tables.Action):
     name = "go_to_action_plan"
     verbose_name = _("Go to Action Plan")
     url = "horizon:admin:action_plans:detail"
-    # classes = ("ajax-modal", "btn-launch")
-    # icon = "send"
 
     def allowed(self, request, audit):
         return ((audit is None) or
@@ -117,8 +110,8 @@ class GoToAuditTemplate(horizon.tables.Action):
 
 class AuditsTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
-        'id',
-        verbose_name=_("ID"),
+        'uuid',
+        verbose_name=_("UUID"),
         link="horizon:admin:audits:detail")
     audit_template = horizon.tables.Column(
         'audit_template_name',
@@ -129,6 +122,9 @@ class AuditsTable(horizon.tables.DataTable):
         verbose_name=_('State'),
         status=True,
         status_choices=AUDIT_STATE_DISPLAY_CHOICES)
+
+    def get_object_id(self, datum):
+        return datum.uuid
 
     class Meta(object):
         name = "audits"

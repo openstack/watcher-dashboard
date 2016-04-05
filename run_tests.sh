@@ -343,7 +343,7 @@ function run_tests {
   fi
 
   if [ $with_selenium -eq 0 -a $integration -eq 0 ]; then
-      testopts="$testopts --exclude=watcher_dashboard/test/integration_tests/"
+      testopts="$testopts --exclude=watcher_dashboard/test/integration_tests/ "
   fi
 
   if [ $selenium_headless -eq 1 ]; then

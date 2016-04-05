@@ -10,7 +10,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import unittest
 import uuid
 
 from openstack_dashboard.test.integration_tests import helpers
@@ -66,7 +65,6 @@ class AuditTemplatePanelTests(helpers.AdminTestCase):
             audit_template_page.show_audit_template_info(
                 self.audit_template_name))
 
-    @unittest.skip(reason="https://bugs.launchpad.net/horizon/+bug/1537526")
     def test_launch_audit(self):
         """Test the audit template panel "Launch Audit" row button
 

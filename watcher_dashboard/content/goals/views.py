@@ -14,104 +14,82 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
-from horizon import forms
 import horizon.tables
 import horizon.tabs
 from horizon.utils import memoized
 import horizon.workflows
+
 from watcher_dashboard.api import watcher
-from watcher_dashboard.content.audits import forms as wforms
-from watcher_dashboard.content.audits import tables
-from watcher_dashboard.content.audits import tabs as wtabs
+from watcher_dashboard.content.goals import tables
+from watcher_dashboard.content.goals import tabs as wtabs
 
 
 class IndexView(horizon.tables.DataTableView):
-    table_class = tables.AuditsTable
-    template_name = 'infra_optim/audits/index.html'
+    table_class = tables.GoalsTable
+    template_name = 'infra_optim/goals/index.html'
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-        create_action = {
-            'name': _("New Audit"),
-            'url': reverse('horizon:admin:audits:create'),
-            'icon': 'fa-plus',
-            'ajax_modal': True,
-        }
-        context['header_actions'] = [create_action]
-        context['audits_count'] = self.get_audits_count()
+        context['goals_count'] = self.get_goals_count()
         return context
 
     def get_data(self):
-        audits = []
+        goals = []
         search_opts = self.get_filters()
         try:
-            audits = watcher.Audit.list(self.request,
-                                        audit_template_filter=search_opts)
+            goals = watcher.Goal.list(self.request, **search_opts)
         except Exception:
             horizon.exceptions.handle(
                 self.request,
-                _("Unable to retrieve audit information."))
-        return audits
+                _("Unable to retrieve goal information."))
+        return goals
 
-    def get_audits_count(self):
+    def get_goals_count(self):
         return len(self.get_data())
 
     def get_filters(self):
-        filter = None
+        filters = {}
         filter_action = self.table._meta._filter_action
         if filter_action:
             filter_field = self.table.get_filter_field()
             if filter_action.is_api_filter(filter_field):
                 filter_string = self.table.get_filter_string()
                 if filter_field and filter_string:
-                    filter = filter_string
-        return filter
-
-
-class CreateView(forms.ModalFormView):
-    form_class = wforms.CreateForm
-    form_id = "create_audit_form"
-    modal_header = _("Create Audit")
-    template_name = 'infra_optim/audits/create.html'
-    success_url = reverse_lazy("horizon:admin:audits:index")
-    page_title = _("Create Audit")
-    submit_label = _("Create Audit")
-    submit_url = reverse_lazy("horizon:admin:audits:create")
+                    filters[filter_field] = filter_string
+        return filters
 
 
 class DetailView(horizon.tabs.TabbedTableView):
-    tab_group_class = wtabs.AuditDetailTabs
-    template_name = 'infra_optim/audits/details.html'
-    redirect_url = 'horizon:admin:audits:index'
-    page_title = _("Audit Details: {{ audit.uuid }}")
+    tab_group_class = wtabs.GoalDetailTabs
+    template_name = 'infra_optim/goals/details.html'
+    redirect_url = 'horizon:admin:goals:index'
+    page_title = _("Goal Details: {{ goal.name }}")
 
     @memoized.memoized_method
     def _get_data(self):
-        audit_uuid = None
+        goal_uuid = None
         try:
-            audit_uuid = self.kwargs['audit_uuid']
-            audit = watcher.Audit.get(self.request, audit_uuid)
+            goal_uuid = self.kwargs['goal_uuid']
+            goal = watcher.Goal.get(self.request, goal_uuid)
         except Exception:
-            msg = _('Unable to retrieve details for audit "%s".') \
-                % audit_uuid
+            msg = _('Unable to retrieve details for goal "%s".') \
+                % goal_uuid
             horizon.exceptions.handle(
                 self.request, msg,
                 redirect=self.redirect_url)
-        return audit
+        return goal
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        audit = self._get_data()
-        context["audit"] = audit
+        goal = self._get_data()
+        context["goal"] = goal
         return context
 
     def get_tabs(self, request, *args, **kwargs):
-        audit = self._get_data()
+        goal = self._get_data()
         # ports = self._get_ports()
-        return self.tab_group_class(request, audit=audit,
+        return self.tab_group_class(request, goal=goal,
                                     # ports=ports,
                                     **kwargs)

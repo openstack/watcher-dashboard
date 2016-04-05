@@ -21,37 +21,95 @@ from watcher_dashboard.test import helpers as test
 
 class WatcherAPITests(test.APITestCase):
 
+    def test_goal_list(self):
+        goals = {'goals': self.api_goals.list()}
+        watcherclient = self.stub_watcherclient()
+
+        watcherclient.goal = self.mox.CreateMockAnything()
+        watcherclient.goal.list(detail=True).AndReturn(goals)
+        self.mox.ReplayAll()
+
+        ret_val = api.watcher.Goal.list(self.request)
+        self.assertIsInstance(ret_val, dict)
+        self.assertIn('goals', ret_val)
+        for n in ret_val['goals']:
+            self.assertIsInstance(n, dict)
+
+    def test_goal_get(self):
+        goal = self.api_goals.first()
+        goal_id = self.api_goals.first()['uuid']
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.goal = self.mox.CreateMockAnything()
+        watcherclient.goal.get(goal_id).AndReturn(goal)
+        self.mox.ReplayAll()
+
+        ret_val = api.watcher.Goal.get(self.request, goal_id)
+        self.assertIsInstance(ret_val, dict)
+
+    def test_strategy_list(self):
+        strategies = {'strategies': self.api_strategies.list()}
+        watcherclient = self.stub_watcherclient()
+
+        watcherclient.strategy = self.mox.CreateMockAnything()
+        watcherclient.strategy.list(
+            goal_uuid=None, detail=True).AndReturn(strategies)
+        self.mox.ReplayAll()
+
+        ret_val = api.watcher.Strategy.list(self.request)
+        self.assertIn('strategies', ret_val)
+        for n in ret_val['strategies']:
+            self.assertIsInstance(n, dict)
+
+    def test_strategy_get(self):
+        strategy = self.api_strategies.first()
+        strategy_id = self.api_strategies.first()['uuid']
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.strategy = self.mox.CreateMockAnything()
+        watcherclient.strategy.get(strategy_id).AndReturn(strategy)
+        self.mox.ReplayAll()
+
+        ret_val = api.watcher.Strategy.get(self.request, strategy_id)
+        self.assertIsInstance(ret_val, dict)
+
     def test_audit_template_list(self):
         audit_templates = {'audit_templates': self.api_audit_templates.list()}
         watcherclient = self.stub_watcherclient()
 
         watcherclient.audit_template = self.mox.CreateMockAnything()
-        watcherclient.audit_template.list(name=None).AndReturn(audit_templates)
+        watcherclient.audit_template.list().AndReturn(audit_templates)
         self.mox.ReplayAll()
 
-        ret_val = api.watcher.AuditTemplate.list(self.request, filter=None)
-        for n in ret_val:
-            self.assertTrue(type(n), 'dict')
+        ret_val = api.watcher.AuditTemplate.list(self.request)
+
+        self.assertIn('audit_templates', ret_val)
+        for n in ret_val['audit_templates']:
+            self.assertIsInstance(n, dict)
 
     def test_audit_template_list_with_filters(self):
-        search_opts = 'Audit Template 1'
-        audit_templates = self.api_audit_templates.filter(name=search_opts)
+        search_opts = {'name': 'Audit Template 1'}
+        audit_templates = {
+            'audit_templates': self.api_audit_templates.filter(**search_opts)}
         watcherclient = self.stub_watcherclient()
 
         watcherclient.audit_template = self.mox.CreateMockAnything()
 
-        watcherclient.audit_template.list(name=search_opts)\
-            .AndReturn(audit_templates)
+        watcherclient.audit_template.list(
+            **search_opts).AndReturn(audit_templates)
         self.mox.ReplayAll()
 
-        ret_val = api.watcher.AuditTemplate\
-            .list(self.request, filter=search_opts)
-        for n in ret_val:
-            self.assertTrue(type(n), 'dict')
+        ret_val = api.watcher.AuditTemplate.list(
+            self.request, **search_opts)
+
+        self.assertIn('audit_templates', ret_val)
+        for n in ret_val['audit_templates']:
+            self.assertIsInstance(n, dict)
+
         self.assertEqual(ret_val, audit_templates)
 
     def test_audit_template_get(self):
-        audit_template = {'audit_template': self.api_audit_templates.first()}
+        audit_template = self.api_audit_templates.first()
         audit_template_id = self.api_audit_templates.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
@@ -62,30 +120,33 @@ class WatcherAPITests(test.APITestCase):
 
         ret_val = api.watcher.AuditTemplate.get(self.request,
                                                 audit_template_id)
-        self.assertTrue(type(ret_val), 'dict')
+        self.assertIsInstance(ret_val, dict)
 
     def test_audit_template_create(self):
-        audit_template = {'audit_template': self.api_audit_templates.first()}
-        name = self.api_audit_templates.first()['name']
-        goal = self.api_audit_templates.first()['goal']
-        description = self.api_audit_templates.first()['description']
-        host_aggregate = self.api_audit_templates.first()['host_aggregate']
+        audit_template = self.api_audit_templates.first()
+        name = audit_template['name']
+        goal_uuid = audit_template['goal_uuid']
+        strategy_uuid = audit_template['strategy_uuid']
+        description = audit_template['description']
+        host_aggregate = audit_template['host_aggregate']
 
         watcherclient = self.stub_watcherclient()
         watcherclient.audit_template = self.mox.CreateMockAnything()
         watcherclient.audit_template.create(
             name=name,
-            goal=goal,
+            goal_uuid=goal_uuid,
+            strategy_uuid=strategy_uuid,
             description=description,
             host_aggregate=host_aggregate).AndReturn(audit_template)
         self.mox.ReplayAll()
 
         ret_val = api.watcher.AuditTemplate.create(
-            self.request, name, goal, description, host_aggregate)
-        self.assertTrue(type(ret_val), 'dict')
+            self.request, name, goal_uuid, strategy_uuid,
+            description, host_aggregate)
+        self.assertIsInstance(ret_val, dict)
 
     def test_audit_template_patch(self):
-        audit_template = {'audit_template': self.api_audit_templates.first()}
+        audit_template = self.api_audit_templates.first()
         audit_template_id = self.api_audit_templates.first()['uuid']
         form_data = {'name': 'new Audit Template 1'}
 
@@ -100,7 +161,7 @@ class WatcherAPITests(test.APITestCase):
         ret_val = api.watcher.AuditTemplate.patch(
             self.request, audit_template_id,
             form_data)
-        self.assertTrue(type(ret_val), 'dict')
+        self.assertIsInstance(ret_val, dict)
 
     def test_audit_template_delete(self):
         audit_template_list = self.api_audit_templates.list()
@@ -127,26 +188,26 @@ class WatcherAPITests(test.APITestCase):
         self.mox.ReplayAll()
 
         ret_val = api.watcher.Audit.list(
-            self.request,
-            audit_template_filter=None)
-        for n in ret_val:
-            self.assertIsInstance(n, api.watcher.Audit)
+            self.request, audit_template_filter=None)
+
+        self.assertIn('audits', ret_val)
+        for n in ret_val['audits']:
+            self.assertIsInstance(n, dict)
 
     def test_audit_get(self):
-        audit = {'audit': self.api_audits.first()}
-        audit_id = self.api_audits.first()['id']
+        audit = self.api_audits.first()
+        audit_id = self.api_audits.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
         watcherclient.audit = self.mox.CreateMockAnything()
-        watcherclient.audit.get(
-            audit_id=audit_id).AndReturn(audit)
+        watcherclient.audit.get(audit_id=audit_id).AndReturn(audit)
         self.mox.ReplayAll()
 
         ret_val = api.watcher.Audit.get(self.request, audit_id)
-        self.assertIsInstance(ret_val, api.watcher.Audit)
+        self.assertIsInstance(ret_val, dict)
 
     def test_audit_create(self):
-        audit = {'audit': self.api_audits.first()}
+        audit = self.api_audits.first()
         audit_template_id = self.api_audit_templates.first()['uuid']
 
         deadline = self.api_audits.first()['deadline']
@@ -163,10 +224,10 @@ class WatcherAPITests(test.APITestCase):
 
         ret_val = api.watcher.Audit.create(
             self.request, audit_template_uuid, _type, deadline)
-        self.assertIsInstance(ret_val, api.watcher.Audit)
+        self.assertIsInstance(ret_val, dict)
 
     def test_audit_delete(self):
-        audit_id = self.api_audits.first()['id']
+        audit_id = self.api_audits.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
         watcherclient.audit = self.mox.CreateMockAnything()
@@ -185,15 +246,15 @@ class WatcherAPITests(test.APITestCase):
         watcherclient.action_plan.list(audit=None).AndReturn(action_plans)
         self.mox.ReplayAll()
 
-        ret_val = api.watcher.ActionPlan.list(
-            self.request,
-            audit_filter=None)
-        for n in ret_val:
-            self.assertIsInstance(n, api.watcher.ActionPlan)
+        ret_val = api.watcher.ActionPlan.list(self.request, audit_filter=None)
+
+        self.assertIn('action_plans', ret_val)
+        for n in ret_val['action_plans']:
+            self.assertIsInstance(n, dict)
 
     def test_action_plan_get(self):
-        action_plan = {'action_plan': self.api_action_plans.first()}
-        action_plan_id = self.api_action_plans.first()['id']
+        action_plan = self.api_action_plans.first()
+        action_plan_id = self.api_action_plans.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
         watcherclient.action_plan = self.mox.CreateMockAnything()
@@ -202,10 +263,10 @@ class WatcherAPITests(test.APITestCase):
         self.mox.ReplayAll()
 
         ret_val = api.watcher.ActionPlan.get(self.request, action_plan_id)
-        self.assertIsInstance(ret_val, api.watcher.ActionPlan)
+        self.assertIsInstance(ret_val, dict)
 
     def test_action_plan_start(self):
-        action_plan_id = self.api_action_plans.first()['id']
+        action_plan_id = self.api_action_plans.first()['uuid']
         patch = []
         patch.append({'path': '/state', 'value': 'PENDING', 'op': 'replace'})
 
@@ -217,7 +278,7 @@ class WatcherAPITests(test.APITestCase):
         api.watcher.ActionPlan.start(self.request, action_plan_id)
 
     def test_action_plan_delete(self):
-        action_plan_id = self.api_action_plans.first()['id']
+        action_plan_id = self.api_action_plans.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
         watcherclient.action_plan = self.mox.CreateMockAnything()
@@ -237,7 +298,8 @@ class WatcherAPITests(test.APITestCase):
         self.mox.ReplayAll()
 
         ret_val = api.watcher.Action.list(
-            self.request,
-            action_plan_filter=None)
-        for n in ret_val:
-            self.assertIsInstance(n, api.watcher.Action)
+            self.request, action_plan_filter=None)
+
+        self.assertIn('actions', ret_val)
+        for n in ret_val['actions']:
+            self.assertIsInstance(n, dict)
