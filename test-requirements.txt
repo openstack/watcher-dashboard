@@ -3,7 +3,8 @@
 # process, which may cause wedges in the gate later.
 # Hacking already pins down pep8, pyflakes and flake8
 
--e git://github.com/openstack/horizon.git#egg=horizon
+# Testing Requirements
+http://tarballs.openstack.org/horizon/horizon-master.tar.gz#egg=horizon
 
 hacking>=0.10.2,<0.11 # Apache-2.0
 coverage>=3.6 # Apache-2.0
