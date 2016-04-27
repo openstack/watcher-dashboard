@@ -64,7 +64,7 @@ class CreateForm(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             params = {'audit_template_uuid': data['audit_template']}
-            params['type'] = 'ONE_SHOT'
+            params['type'] = 'ONESHOT'
             params['deadline'] = None
             audit = watcher.Audit.create(request, **params)
             message = _('Audit was successfully created.')
