@@ -353,7 +353,7 @@ class ActionPlan(base.APIResourceWrapper):
 
 class Action(base.APIResourceWrapper):
     _attrs = ('uuid', 'created_at', 'updated_at', 'deleted_at', 'next_uuid',
-              'description', 'alarm', 'state', 'action_plan_uuid',
+              'description', 'state', 'action_plan_uuid',
               'action_type', 'applies_to', 'src', 'dst', 'parameter')
 
     def __init__(self, apiresource, request=None):
