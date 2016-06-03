@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
@@ -21,7 +23,7 @@ from horizon import forms
 import horizon.tables
 import horizon.tabs
 import horizon.workflows
-import logging
+
 from watcher_dashboard.api import watcher
 from watcher_dashboard.content.audit_templates import forms as wforms
 from watcher_dashboard.content.audit_templates import tables
@@ -46,7 +48,8 @@ class IndexView(horizon.tables.DataTableView):
         try:
             audit_templates = watcher.AuditTemplate.list(
                 self.request, **search_opts)
-        except Exception:
+        except Exception as exc:
+            LOG.exception(exc)
             horizon.exceptions.handle(
                 self.request,
                 _("Unable to retrieve audit template information."))
@@ -91,13 +94,26 @@ class DetailView(horizon.tabs.TabbedTableView):
             audit_template_uuid = self.kwargs['audit_template_uuid']
             audit_template = watcher.AuditTemplate.get(
                 self.request, audit_template_uuid)
-        except Exception:
+        except Exception as exc:
+            LOG.exception(exc)
             msg = _('Unable to retrieve details for audit template "%s".') \
                 % audit_template_uuid
             horizon.exceptions.handle(
                 self.request, msg,
                 redirect=self.redirect_url)
         return audit_template
+
+    def get_related_audits_data(self):
+        try:
+            audit_template = self._get_data()
+            audits = watcher.Audit.list(
+                self.request, audit_template=audit_template.uuid)
+        except Exception as exc:
+            LOG.exception(exc)
+            audits = []
+            msg = _('Audits list cannot be retrieved.')
+            horizon.exceptions.handle(self.request, msg)
+        return audits
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -108,6 +124,5 @@ class DetailView(horizon.tabs.TabbedTableView):
     def get_tabs(self, request, *args, **kwargs):
         audit_template = self._get_data()
         # ports = self._get_ports()
-        return self.tab_group_class(request, audit_template=audit_template,
-                                    # ports=ports,
-                                    **kwargs)
+        return self.tab_group_class(
+            request, audit_template=audit_template, **kwargs)

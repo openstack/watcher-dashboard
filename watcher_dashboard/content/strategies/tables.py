@@ -14,26 +14,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.template.defaultfilters import title  # noqa
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
 import horizon.messages
 import horizon.tables
-from horizon.utils import filters
+
+
+class StrategiesFilterAction(horizon.tables.FilterAction):
+    # server = choices query = text
+    filter_type = "server"
+    filter_choices = (
+        ('goal', _("Goal ="), True),
+    )
 
 
 class StrategiesTable(horizon.tables.DataTable):
+
     uuid = horizon.tables.Column(
         'uuid',
         verbose_name=_("UUID"),
         link="horizon:admin:strategies:detail")
+
+    name = horizon.tables.Column(
+        'name',
+        verbose_name=_('Name'))
+
     display_name = horizon.tables.Column(
         'display_name',
-        verbose_name=_('Name'),
-        filters=(title, filters.replace_underscores))
-    goal_uuid = horizon.tables.Column(
+        verbose_name=_('Verbose Name'))
+
+    goal = horizon.tables.Column(
         'goal_uuid',
-        verbose_name=_("Goal UUID"),
+        verbose_name=_("Goal"),
     )
 
     def get_object_id(self, datum):
@@ -42,3 +54,35 @@ class StrategiesTable(horizon.tables.DataTable):
     class Meta(object):
         name = "strategies"
         verbose_name = _("Strategies")
+        table_actions = (
+            StrategiesFilterAction,
+        )
+
+
+class RelatedStrategiesTable(horizon.tables.DataTable):
+
+    uuid = horizon.tables.Column(
+        'uuid',
+        verbose_name=_("UUID"),
+        link="horizon:admin:strategies:detail")
+
+    name = horizon.tables.Column(
+        'name',
+        verbose_name=_('Name'))
+
+    display_name = horizon.tables.Column(
+        'display_name',
+        verbose_name=_('Verbose Name'))
+
+    goal = horizon.tables.Column(
+        'goal_uuid',
+        verbose_name=_("Goal"),
+    )
+
+    def get_object_id(self, datum):
+        return datum.uuid
+
+    class Meta(object):
+        name = "related_strategies"
+        verbose_name = _("Related strategies")
+        hidden_title = False

@@ -79,20 +79,19 @@ class Audit(base.APIDictWrapper):
             deadline=deadline)
 
     @classmethod
-    def list(cls, request, audit_template_filter):
+    def list(cls, request, **filters):
         """Return a list of audits in Watcher
 
         :param request: request object
         :type  request: django.http.HttpRequest
 
-        :param audit_template_filter: audit_template filter, name or uuid
-        :type  audit_template_filter: string
+        :param filters: key/value kwargs used as filters
+        :type  filters: dict
 
         :return: list of audits, or an empty list if there are none
         :rtype:  list of :py:class:`~.Audit`
         """
-        return watcherclient(request).audit.list(
-            audit_template=audit_template_filter)
+        return watcherclient(request).audit.list(detail=True, **filters)
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve audit"))
@@ -129,16 +128,16 @@ class Audit(base.APIDictWrapper):
 
 
 class AuditTemplate(base.APIDictWrapper):
-    _attrs = ('uuid', 'created_at', 'updated_at', 'deleted_at',
-              'description', 'host_aggregate', 'name',
-              'extra', 'goal_uuid' 'strategy_uuid')
+    _attrs = ('uuid', 'description', 'host_aggregate', 'name', 'extra',
+              'goal_uuid', 'goal_name', 'strategy_uuid', 'strategy_name',
+              'created_at', 'updated_at', 'deleted_at')
 
     def __init__(self, apiresource, request=None):
         super(AuditTemplate, self).__init__(apiresource)
         self._request = request
 
     @classmethod
-    def create(cls, request, name, goal_uuid, strategy_uuid,
+    def create(cls, request, name, goal, strategy,
                description, host_aggregate):
         """Create an audit template in Watcher
 
@@ -148,11 +147,12 @@ class AuditTemplate(base.APIDictWrapper):
         :param name: Name for this audit template
         :type  name: string
 
-        :param goal_uuid: Goal UUID associated to this audit template
-        :type  goal_uuid: string
+        :param goal: Goal UUID or name associated to this audit template
+        :type  goal: string
 
-        :param strategy_uuid: Strategy UUID associated to this audit template
-        :type  strategy_uuid: string
+        :param strategy: Strategy UUID or name associated to this audit
+                         template
+        :type  strategy: string
 
         :param description: Descrition of the audit template
         :type  description: string
@@ -169,8 +169,8 @@ class AuditTemplate(base.APIDictWrapper):
         """
         audit_template = watcherclient(request).audit_template.create(
             name=name,
-            goal_uuid=goal_uuid,
-            strategy_uuid=strategy_uuid,
+            goal=goal,
+            strategy=strategy,
             description=description,
             host_aggregate=host_aggregate
             )
@@ -209,11 +209,13 @@ class AuditTemplate(base.APIDictWrapper):
         :type  request: django.http.HttpRequest
 
         :param filters: key/value kwargs used as filters
+        :type  filters: dict
 
         :return: list of audit templates, or an empty list if there are none
         :rtype:  list of :py:class:`~.AuditTemplate`
         """
-        return watcherclient(request).audit_template.list(**filters)
+        return watcherclient(request).audit_template.list(
+            detail=True, **filters)
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve audit template"))
@@ -260,20 +262,19 @@ class ActionPlan(base.APIDictWrapper):
         self._request = request
 
     @classmethod
-    def list(cls, request, audit_filter):
+    def list(cls, request, **filters):
         """Return a list of action plans in Watcher
 
         :param request: request object
         :type  request: django.http.HttpRequest
 
-        :param audit_filter: audit id filter
-        :type  audit_filter: string
+        :param filters: key/value kwargs used as filters
+        :type  filters: dict
 
         :return: list of action plans, or an empty list if there are none
         :rtype:  list of :py:class:`~.ActionPlan`
         """
-        return watcherclient(request).action_plan.list(
-            audit=audit_filter)
+        return watcherclient(request).action_plan.list(detail=True, **filters)
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve action plan"))
@@ -316,9 +317,7 @@ class ActionPlan(base.APIDictWrapper):
         :param action_plan_id: audit id
         :type  action_plan_id: int
         """
-        patch = []
-        patch.append({'op': 'replace', 'path': '/state', 'value': 'PENDING'})
-        watcherclient(request).action_plan.update(action_plan_id, patch)
+        watcherclient(request).action_plan.start(action_plan_id)
 
     @property
     def id(self):
@@ -335,21 +334,19 @@ class Action(base.APIDictWrapper):
         self._request = request
 
     @classmethod
-    def list(cls, request, action_plan_filter):
+    def list(cls, request, **filters):
         """Return a list of actions in Watcher
 
         :param request: request object
         :type  request: django.http.HttpRequest
 
-        :param action_plan_filter: action_plan id filter
-        :type  action_plan_filter: string
+        :param filters: key/value kwargs used as filters
+        :type  filters: dict
 
         :return: list of actions, or an empty list if there are none
         :rtype:  list of :py:class:`~.Action`
         """
-
-        return watcherclient(request).action.list(
-            action_plan=action_plan_filter, detail=True)
+        return watcherclient(request).action.list(detail=True, **filters)
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve action"))
@@ -417,6 +414,9 @@ class Goal(base.APIDictWrapper):
         :param request: request object
         :type  request: django.http.HttpRequest
 
+        :param filters: key/value kwargs used as filters
+        :type  filters: dict
+
         :return: list of goals, or an empty list if there are none
         :rtype:  list of :py:class:`~.Goal` instance
         """
@@ -424,19 +424,19 @@ class Goal(base.APIDictWrapper):
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve goal"))
-    def get(cls, request, goal_uuid):
+    def get(cls, request, goal):
         """Return the goal that matches the ID
 
         :param request: request object
         :type  request: django.http.HttpRequest
 
-        :param goal_uuid: uuid of goal to be retrieved
-        :type  goal_uuid: int
+        :param goal: uuid of goal to be retrieved
+        :type  goal: int
 
         :return: matching goal, or None if no goal matches the UUID
         :rtype:  :py:class:`~.Goal` instance
         """
-        return watcherclient(request).goal.get(goal_uuid)
+        return watcherclient(request).goal.get(goal)
 
     @property
     def id(self):
@@ -446,8 +446,8 @@ class Goal(base.APIDictWrapper):
 class Strategy(base.APIDictWrapper):
     """Strategy resource."""
 
-    _attrs = ('uuid', 'name', 'display_name', 'goal_uuid', 'created_at',
-              'updated_at', 'deleted_at')
+    _attrs = ('uuid', 'name', 'display_name', 'goal_uuid', 'goal_name',
+              'created_at', 'updated_at', 'deleted_at')
 
     def __init__(self, apiresource, request=None):
         super(Strategy, self).__init__(apiresource)
@@ -460,32 +460,40 @@ class Strategy(base.APIDictWrapper):
         :param request: request object
         :type  request: django.http.HttpRequest
 
-        :param goal_uuid: goal uuid filter
-        :type  goal_uuid: string
+        :param filters: key/value kwargs used as filters
+        :type  filters: dict
 
         :return: list of strategies, or an empty list if there are none
         :rtype:  list of :py:class:`~.Strategy` instances
         """
-        goal_uuid = filters.get('goal_uuid', None)
-        return watcherclient(request).strategy.list(
-            goal_uuid=goal_uuid, detail=True)
+        return watcherclient(request).strategy.list(detail=True, **filters)
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve strategy"))
-    def get(cls, request, strategy_uuid):
+    def get(cls, request, strategy):
         """Return the strategy that matches the UUID
 
         :param request: request object
         :type  request: django.http.HttpRequest
 
-        :param strategy_uuid: uuid of strategy to be retrieved
-        :type  strategy_uuid: str
+        :param strategy: uuid of strategy to be retrieved
+        :type  strategy: str
 
         :return: matching strategy, or None if no strategy matches the UUID
         :rtype:  :py:class:`~.Strategy` instance
         """
-        return watcherclient(request).strategy.get(strategy_uuid)
+        return watcherclient(request).strategy.get(strategy)
 
     @property
     def id(self):
         return self.uuid
+
+
+class EfficacyIndicatorSpec(base.APIDictWrapper):
+
+    attrs = ('name', 'description', 'unit', 'schema')
+
+
+class EfficacyIndicator(base.APIDictWrapper):
+
+    attrs = ('name', 'description', 'unit', 'value')

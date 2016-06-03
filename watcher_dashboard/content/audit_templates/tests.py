@@ -81,10 +81,10 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
     @test.create_stubs({api.watcher.AuditTemplate: ('create',)})
     def test_create_post(self):
         at = self.audit_templates.first()
-        params = {
+        form_data = {
             'name': at.name,
-            'goal_uuid': at.goal_uuid,
-            'strategy_uuid': at.strategy_uuid,
+            'goal': at.goal_uuid,
+            'strategy': at.strategy_uuid,
             'description': at.description,
             'host_aggregate': at.host_aggregate,
         }
@@ -94,16 +94,9 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
             IsA(http.HttpRequest)).AndReturn(self.strategy_list)
 
         api.watcher.AuditTemplate.create(
-            IsA(http.HttpRequest), **params).AndReturn(at)
+            IsA(http.HttpRequest), **form_data).AndReturn(at)
         self.mox.ReplayAll()
 
-        form_data = {
-            'name': at.name,
-            'goal_uuid': at.goal_uuid,
-            'strategy_uuid': at.strategy_uuid,
-            'description': at.description,
-            'host_aggregate': at.host_aggregate,
-        }
         res = self.client.post(CREATE_URL, form_data)
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)

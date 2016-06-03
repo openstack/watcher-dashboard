@@ -46,9 +46,9 @@ class IndexView(horizon.tables.DataTableView):
         search_opts = self.get_filters()
         try:
             action_plans = watcher.ActionPlan.list(
-                self.request,
-                audit_filter=search_opts)
-        except Exception:
+                self.request, **search_opts)
+        except Exception as exc:
+            LOG.exception(exc)
             horizon.exceptions.handle(
                 self.request,
                 _("Unable to retrieve action_plan information."))
@@ -58,15 +58,15 @@ class IndexView(horizon.tables.DataTableView):
         return len(self.get_data())
 
     def get_filters(self):
-        filter = None
+        filters = {}
         filter_action = self.table._meta._filter_action
         if filter_action:
             filter_field = self.table.get_filter_field()
             if filter_action.is_api_filter(filter_field):
                 filter_string = self.table.get_filter_string()
                 if filter_field and filter_string:
-                    filter = filter_string
-        return filter
+                    filters[filter_field] = filter_string
+        return filters
 
 
 class ArchiveView(forms.ModalFormView):
@@ -79,7 +79,9 @@ class ArchiveView(forms.ModalFormView):
 
 
 class DetailView(horizon.tables.MultiTableView):
-    table_classes = (action_tables.ActionsTable,)
+    table_classes = (
+        action_tables.RelatedActionsTable,
+        tables.RelatedEfficacyIndicatorsTable)
     template_name = 'infra_optim/action_plans/details.html'
     page_title = _("Action Plan Details: {{ action_plan.uuid }}")
 
@@ -90,7 +92,8 @@ class DetailView(horizon.tables.MultiTableView):
             action_plan_uuid = self.kwargs['action_plan_uuid']
             action_plan = watcher.ActionPlan.get(
                 self.request, action_plan_uuid)
-        except Exception:
+        except Exception as exc:
+            LOG.exception(exc)
             msg = _('Unable to retrieve details for action_plan "%s".') \
                 % action_plan_uuid
             horizon.exceptions.handle(
@@ -98,12 +101,38 @@ class DetailView(horizon.tables.MultiTableView):
                 redirect=self.redirect_url)
         return action_plan
 
-    def get_wactions_data(self):
+    def get_related_wactions_data(self):
         try:
             action_plan = self._get_data()
             actions = watcher.Action.list(self.request,
-                                          action_plan_filter=action_plan.id)
-        except Exception:
+                                          action_plan=action_plan.uuid)
+        except Exception as exc:
+            LOG.exception(exc)
+            actions = []
+            msg = _('Action list can not be retrieved.')
+            horizon.exceptions.handle(self.request, msg)
+        return actions
+
+    def get_related_efficacy_indicators_data(self):
+        try:
+            action_plan = self._get_data()
+            efficacy_indicators = [
+                watcher.EfficacyIndicator(indicator)
+                for indicator in action_plan.efficacy_indicators]
+        except Exception as exc:
+            LOG.exception(exc)
+            msg = _('Failed to get the efficacy indicators.')
+            LOG.info(msg)
+            horizon.messages.warning(self.request, msg)
+
+        return efficacy_indicators
+
+        try:
+            action_plan = self._get_data()
+            actions = watcher.Action.list(self.request,
+                                          action_plan=action_plan.uuid)
+        except Exception as exc:
+            LOG.exception(exc)
             actions = []
             msg = _('Action list can not be retrieved.')
             horizon.exceptions.handle(self.request, msg)
@@ -114,22 +143,11 @@ class DetailView(horizon.tables.MultiTableView):
         action_plan = self._get_data()
         context["action_plan"] = action_plan
         LOG.info('*********************************')
-        LOG.info('*********************************')
-        LOG.info('*********************************')
-        LOG.info('*********************************')
-        LOG.info('*********************************')
-        LOG.info('*********************************')
-        LOG.info('*********************************')
         LOG.info(action_plan)
-        LOG.info('*********************************')
-        LOG.info('*********************************')
-        LOG.info('*********************************')
         LOG.info('*********************************')
         return context
 
     def get_tabs(self, request, *args, **kwargs):
         action_plan = self._get_data()
-        # ports = self._get_ports()
-        return self.tab_group_class(request, action_plan=action_plan,
-                                    # ports=ports,
-                                    **kwargs)
+        return self.tab_group_class(
+            request, action_plan=action_plan, **kwargs)

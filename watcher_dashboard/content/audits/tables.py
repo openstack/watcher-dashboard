@@ -45,7 +45,7 @@ class AuditsFilterAction(horizon.tables.FilterAction):
     # server = choices query = text
     filter_type = "server"
     filter_choices = (
-        ('audit_template_filter', _("Audit Template ="), True),
+        ('audit_template', _("Audit Template ="), True),
     )
 
 
@@ -63,8 +63,7 @@ class GoToActionPlan(horizon.tables.Action):
     url = "horizon:admin:action_plans:detail"
 
     def allowed(self, request, audit):
-        return ((audit is None) or
-                (audit.state in ("SUCCESS")))
+        return audit or audit.state in ("SUCCEEEDED", )
 
     def single(self, table, request, audit_id):
         try:
@@ -90,8 +89,7 @@ class GoToAuditTemplate(horizon.tables.Action):
     # icon = "send"
 
     def allowed(self, request, audit):
-        return ((audit is None) or
-                (audit.state in ("SUCCESS")))
+        return audit or audit.state in ("SUCCEEEDED", )
 
     def single(self, table, request, audit_id):
         try:
@@ -115,8 +113,7 @@ class AuditsTable(horizon.tables.DataTable):
         link="horizon:admin:audits:detail")
     audit_template = horizon.tables.Column(
         'audit_template_name',
-        verbose_name=_('Audit Template'),
-        filters=(title, filters.replace_underscores))
+        verbose_name=_('Audit Template'))
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
@@ -143,3 +140,27 @@ class AuditsTable(horizon.tables.DataTable):
             # CreateAudits,
             # DeleteAudits,
         )
+
+
+class RelatedAuditsTable(horizon.tables.DataTable):
+    name = horizon.tables.Column(
+        'uuid',
+        verbose_name=_("UUID"),
+        link="horizon:admin:audits:detail")
+    audit_template = horizon.tables.Column(
+        'audit_template_name',
+        verbose_name=_('Audit Template'),
+        filters=(title, filters.replace_underscores))
+    status = horizon.tables.Column(
+        'state',
+        verbose_name=_('State'),
+        status=True,
+        status_choices=AUDIT_STATE_DISPLAY_CHOICES)
+
+    def get_object_id(self, datum):
+        return datum.uuid
+
+    class Meta(object):
+        name = "audits"
+        verbose_name = _("Related audits")
+        hidden_title = False

@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
 import horizon.tables
@@ -24,6 +26,8 @@ import horizon.workflows
 from watcher_dashboard.api import watcher
 from watcher_dashboard.content.strategies import tables
 from watcher_dashboard.content.strategies import tabs as wtabs
+
+LOG = logging.getLogger(__name__)
 
 
 class IndexView(horizon.tables.DataTableView):
@@ -40,7 +44,8 @@ class IndexView(horizon.tables.DataTableView):
         search_opts = self.get_filters()
         try:
             strategies = watcher.Strategy.list(self.request, **search_opts)
-        except Exception:
+        except Exception as exc:
+            LOG.exception(exc)
             horizon.exceptions.handle(
                 self.request,
                 _("Unable to retrieve strategy information."))
@@ -73,7 +78,8 @@ class DetailView(horizon.tabs.TabbedTableView):
         try:
             strategy_uuid = self.kwargs['strategy_uuid']
             strategy = watcher.Strategy.get(self.request, strategy_uuid)
-        except Exception:
+        except Exception as exc:
+            LOG.exception(exc)
             msg = _('Unable to retrieve details for strategy "%s".') \
                 % strategy_uuid
             horizon.exceptions.handle(
@@ -89,7 +95,4 @@ class DetailView(horizon.tabs.TabbedTableView):
 
     def get_tabs(self, request, *args, **kwargs):
         strategy = self._get_data()
-        # ports = self._get_ports()
-        return self.tab_group_class(request, strategy=strategy,
-                                    # ports=ports,
-                                    **kwargs)
+        return self.tab_group_class(request, strategy=strategy, **kwargs)

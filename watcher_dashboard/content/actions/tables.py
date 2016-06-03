@@ -79,7 +79,6 @@ class ActionsTable(horizon.tables.DataTable):
     next_action = horizon.tables.Column(
         'next_uuid',
         verbose_name=_('Next Action'))
-    ajax = True
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -88,5 +87,34 @@ class ActionsTable(horizon.tables.DataTable):
         name = "wactions"
         verbose_name = _("Actions")
         table_actions = (ActionsFilterAction, )
-        hidden_title = False
         row_class = UpdateRow
+
+
+class RelatedActionsTable(horizon.tables.DataTable):
+    """Identical to the index table but with different Meta"""
+    name = horizon.tables.Column(
+        'uuid',
+        verbose_name=_("UUID"))
+    action_type = horizon.tables.Column(
+        'action_type',
+        verbose_name=_('Type'),
+        filters=(title, filters.replace_underscores))
+    description = horizon.tables.Column(
+        'description',
+        verbose_name=_('Description'))
+    state = horizon.tables.Column(
+        'state',
+        verbose_name=_('State'),
+        status_choices=ACTION_STATE_DISPLAY_CHOICES)
+
+    next_action = horizon.tables.Column(
+        'next_uuid',
+        verbose_name=_('Next Action'))
+
+    def get_object_id(self, datum):
+        return datum.uuid
+
+    class Meta(object):
+        name = "related_wactions"
+        verbose_name = _("Related Actions")
+        hidden_title = False

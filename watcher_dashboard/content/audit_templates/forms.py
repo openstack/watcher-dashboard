@@ -34,8 +34,8 @@ class CreateForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255, label=_("Name"))
     description = forms.CharField(max_length=255, label=_("Description"),
                                   required=False)
-    goal_uuid = forms.ChoiceField(label=_('Goal'), required=True)
-    strategy_uuid = forms.ChoiceField(label=_('Strategy'), required=False)
+    goal = forms.ChoiceField(label=_('Goal'), required=True)
+    strategy = forms.ChoiceField(label=_('Strategy'), required=False)
 
     failure_url = 'horizon:admin:audit_templates:index'
 
@@ -45,14 +45,14 @@ class CreateForm(forms.SelfHandlingForm):
         strategies = self._get_strategy_list(request, goals)
 
         if goals:
-            self.fields['goal_uuid'].choices = goals
+            self.fields['goal'].choices = goals
         else:
-            del self.fields['goal_uuid']
+            del self.fields['goal']
 
         if strategies:
-            self.fields['strategy_uuid'].choices = strategies
+            self.fields['strategy'].choices = strategies
         else:
-            del self.fields['strategy_uuid']
+            del self.fields['strategy']
 
     def _get_goal_list(self, request):
         try:
@@ -89,7 +89,7 @@ class CreateForm(forms.SelfHandlingForm):
 
         choices = [
             (strategy.uuid, strategy.display_name +
-                ' (GOAL: ' + _goals[strategy.goal_uuid] + ')')
+             ' (GOAL: ' + _goals[strategy.goal_uuid] + ')')
             for strategy in strategies
         ]
 
@@ -101,8 +101,8 @@ class CreateForm(forms.SelfHandlingForm):
         try:
             params = {'name': data['name']}
             params['description'] = data['description']
-            params['goal_uuid'] = data['goal_uuid']
-            params['strategy_uuid'] = data['strategy_uuid'] or None
+            params['goal'] = data['goal']
+            params['strategy'] = data['strategy'] or None
             params['host_aggregate'] = None
             audit_tpl = watcher.AuditTemplate.create(request, **params)
             message = _('Audit Template was successfully created.')

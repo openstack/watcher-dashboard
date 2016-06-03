@@ -26,9 +26,14 @@ class GoalsTable(horizon.tables.DataTable):
         'uuid',
         verbose_name=_("UUID"),
         link="horizon:admin:goals:detail")
+
+    name = horizon.tables.Column(
+        'name',
+        verbose_name=_('Name'))
+
     display_name = horizon.tables.Column(
         'display_name',
-        verbose_name=_('Name'))
+        verbose_name=_('Verbose Name'))
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -36,3 +41,30 @@ class GoalsTable(horizon.tables.DataTable):
     class Meta(object):
         name = "goals"
         verbose_name = _("Goals")
+
+
+class EfficacySpecificationTable(horizon.tables.DataTable):
+
+    name = horizon.tables.Column(
+        'name',
+        verbose_name=_("Name"))
+
+    description = horizon.tables.Column(
+        'description',
+        verbose_name=_("Description"))
+
+    unit = horizon.tables.Column(
+        'unit',
+        verbose_name=_("Unit"))
+
+    schema = horizon.tables.Column(
+        'schema',
+        verbose_name=_("Schema"))
+
+    def get_object_id(self, datum):
+        return datum.name
+
+    class Meta(object):
+        name = "efficacy_specification"
+        verbose_name = _("Efficacy specification")
+        hidden_title = False

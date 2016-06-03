@@ -35,9 +35,8 @@ class CreateAuditTemplates(horizon.tables.LinkAction):
 class AuditTemplatesFilterAction(horizon.tables.FilterAction):
     filter_type = "server"
     filter_choices = (
-        ('name', _("Name ="), True),
-        ('goal_uuid', _("Goal ="), True),
-        ('strategy_uuid', _("Strategy ="), True),
+        ('goal', _("Goal ="), True),
+        ('strategy', _("Strategy ="), True),
     )
 
 
@@ -100,12 +99,12 @@ class AuditTemplatesTable(horizon.tables.DataTable):
         verbose_name=_("Name"),
         link="horizon:admin:audit_templates:detail")
     goal = horizon.tables.Column(
-        'goal_uuid',
+        'goal_name',
         verbose_name=_('Goal'),
         status=True,
     )
     strategy = horizon.tables.Column(
-        'strategy_uuid',
+        'strategy_name',
         verbose_name=_('Strategy'),
         status=True,
     )

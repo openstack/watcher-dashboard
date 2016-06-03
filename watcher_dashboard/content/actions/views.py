@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
 import horizon.tables
@@ -24,6 +26,8 @@ import horizon.workflows
 from watcher_dashboard.api import watcher
 from watcher_dashboard.content.actions import tables
 from watcher_dashboard.content.actions import tabs as wtabs
+
+LOG = logging.getLogger(__name__)
 
 
 class IndexView(horizon.tables.DataTableView):
@@ -39,8 +43,7 @@ class IndexView(horizon.tables.DataTableView):
         actions = []
         search_opts = self.get_filters()
         try:
-            actions = watcher.Action.list(self.request,
-                                          action_plan_filter=search_opts)
+            actions = watcher.Action.list(self.request, **search_opts)
         except Exception:
             horizon.exceptions.handle(
                 self.request,
@@ -51,18 +54,18 @@ class IndexView(horizon.tables.DataTableView):
         return len(self.get_data())
 
     def get_filters(self):
-        filter = None
+        filters = {}
         filter_action = self.table._meta._filter_action
         if filter_action:
             filter_field = self.table.get_filter_field()
             if filter_action.is_api_filter(filter_field):
                 filter_string = self.table.get_filter_string()
                 if filter_field and filter_string:
-                    filter = filter_string
-        return filter
+                    filters[filter_field] = filter_string
+        return filters
 
 
-class DetailView(horizon.tabs.TabbedTableView):
+class DetailView(horizon.tables.MultiTableView):
     tab_group_class = wtabs.ActionDetailTabs
     template_name = 'infra_optim/actions/details.html'
     redirect_url = 'horizon:admin:actions:index'

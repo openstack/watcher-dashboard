@@ -7,9 +7,12 @@
   <div class="col-sm-12">
     {% include "infra_optim/action_plans/_details_overview.html" %}
     <hr>
+    <div id="efficacy_indicators">
+      {{ related_efficacy_indicators_table.render }}
+    </div>
     <div id="wactions">
-      {{ wactions_table.render }}
+      {{ related_wactions_table.render }}
     </div>
   </div>
 </div>
-{% endblock %} 
+{% endblock %}

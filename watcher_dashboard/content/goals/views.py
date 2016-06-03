@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
 import horizon.tables
@@ -24,6 +26,9 @@ import horizon.workflows
 from watcher_dashboard.api import watcher
 from watcher_dashboard.content.goals import tables
 from watcher_dashboard.content.goals import tabs as wtabs
+from watcher_dashboard.content.strategies import tables as strategies_tables
+
+LOG = logging.getLogger(__name__)
 
 
 class IndexView(horizon.tables.DataTableView):
@@ -61,7 +66,10 @@ class IndexView(horizon.tables.DataTableView):
         return filters
 
 
-class DetailView(horizon.tabs.TabbedTableView):
+class DetailView(horizon.tables.MultiTableView):
+    table_classes = (tables.EfficacySpecificationTable,
+                     strategies_tables.RelatedStrategiesTable)
+
     tab_group_class = wtabs.GoalDetailTabs
     template_name = 'infra_optim/goals/details.html'
     redirect_url = 'horizon:admin:goals:index'
@@ -73,13 +81,39 @@ class DetailView(horizon.tabs.TabbedTableView):
         try:
             goal_uuid = self.kwargs['goal_uuid']
             goal = watcher.Goal.get(self.request, goal_uuid)
-        except Exception:
+        except Exception as exc:
+            LOG.exception(exc)
             msg = _('Unable to retrieve details for goal "%s".') \
                 % goal_uuid
             horizon.exceptions.handle(
                 self.request, msg,
                 redirect=self.redirect_url)
         return goal
+
+    def get_related_strategies_data(self):
+        try:
+            goal = self._get_data()
+            strategies = watcher.Strategy.list(self.request, goal=goal.uuid)
+        except Exception as exc:
+            LOG.exception(exc)
+            strategies = []
+            msg = _('Strategy list cannot be retrieved.')
+            horizon.exceptions.handle(self.request, msg)
+
+        return strategies
+
+    def get_efficacy_specification_data(self):
+        try:
+            goal = self._get_data()
+            indicators_spec = [watcher.EfficacyIndicatorSpec(spec)
+                               for spec in goal.efficacy_specification]
+        except Exception as exc:
+            LOG.exception(exc)
+            indicators_spec = []
+            msg = _('Efficacy specification cannot be retrieved.')
+            horizon.exceptions.handle(self.request, msg)
+
+        return indicators_spec
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
