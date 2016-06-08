@@ -33,11 +33,31 @@ LOG = logging.getLogger(__name__)
 class CreateForm(forms.SelfHandlingForm):
     audit_template = forms.ChoiceField(label=_("Audit Template"),
                                        required=True)
+    audit_type = forms.ChoiceField(label=_("Audit Type"),
+                                   choices=[(None, _("Select Audit Type")),
+                                            ('oneshot', _('ONESHOT')),
+                                            ('continuous', _('CONTINUOUS'))],
+                                   widget=forms.Select(attrs={
+                                       'class': 'switchable',
+                                       'data-slug': 'audit_type'
+                                   }),
+                                   required=True)
+    interval = forms.DurationField(initial="01:00:00",
+                                   label=_("Interval (format hh:mm:ss)"),
+                                   help_text=_("Interval in format hh:mm:ss "
+                                               "for CONTINUOUS audit"),
+                                   widget=forms.TextInput(attrs={
+                                       'class': 'switched',
+                                       'data-switch-on': 'audit_type',
+                                       'data-audit_type-continuous':
+                                       _("Interval (format hh:mm:ss)")}),
+                                   required=True)
     failure_url = 'horizon:admin:audits:index'
 
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
         audit_templates = self._get_audit_template_list(request)
+
         if audit_templates:
             self.fields['audit_template'].choices = audit_templates
         else:
@@ -64,7 +84,11 @@ class CreateForm(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             params = {'audit_template_uuid': data['audit_template']}
-            params['audit_type'] = 'ONESHOT'
+            params['audit_type'] = data['audit_type'].upper()
+            if data['audit_type'] == 'continuous':
+                params['interval'] = int(data['interval'].total_seconds())
+            else:
+                params['interval'] = None
             params['deadline'] = None
             audit = watcher.Audit.create(request, **params)
             message = _('Audit was successfully created.')

@@ -120,7 +120,8 @@ def data(TEST):
         'uuid': '22222222-2222-2222-2222-222222222222',
         'deadline': None,
         'audit_type': 'ONESHOT',
-        'audit_template_uuid': '11111111-1111-1111-1111-111111111111'
+        'audit_template_uuid': '11111111-1111-1111-1111-111111111111',
+        'interval': None,
     }
     TEST.api_audits.add(audit_dict)
     _audit_dict = copy.deepcopy(audit_dict)

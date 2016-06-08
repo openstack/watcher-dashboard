@@ -21,6 +21,7 @@ from django import shortcuts
 from django.template.defaultfilters import title  # noqa
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 import horizon.exceptions
 import horizon.messages
 import horizon.tables
@@ -106,6 +107,29 @@ class GoToAuditTemplate(horizon.tables.Action):
             args=[audit.audit_template_uuid]))
 
 
+class DeleteAudits(horizon.tables.DeleteAction):
+    verbose_name = _("Delete Audits")
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            "Delete Audit",
+            "Delete Audits",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            "Deleted Audit",
+            "Deleted Audits",
+            count
+        )
+
+    def delete(self, request, obj_id):
+        watcher.Audit.delete(request, obj_id)
+
+
 class AuditsTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
         'uuid',
@@ -114,6 +138,9 @@ class AuditsTable(horizon.tables.DataTable):
     audit_template = horizon.tables.Column(
         'audit_template_name',
         verbose_name=_('Audit Template'))
+    audit_type = horizon.tables.Column(
+        'audit_type',
+        verbose_name=_('Audit Type'))
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
@@ -138,7 +165,7 @@ class AuditsTable(horizon.tables.DataTable):
             # CreateAudits,
             # ArchiveAudits,
             # CreateAudits,
-            # DeleteAudits,
+            DeleteAudits,
         )
 
 
