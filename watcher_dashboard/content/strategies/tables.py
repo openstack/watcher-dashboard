@@ -44,7 +44,7 @@ class StrategiesTable(horizon.tables.DataTable):
         verbose_name=_('Verbose Name'))
 
     goal = horizon.tables.Column(
-        'goal_uuid',
+        'goal_name',
         verbose_name=_("Goal"),
     )
 
@@ -75,7 +75,7 @@ class RelatedStrategiesTable(horizon.tables.DataTable):
         verbose_name=_('Verbose Name'))
 
     goal = horizon.tables.Column(
-        'goal_uuid',
+        'goal_name',
         verbose_name=_("Goal"),
     )
 
