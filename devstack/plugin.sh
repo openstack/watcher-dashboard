@@ -8,6 +8,7 @@ function install_watcher_dashboard {
 
 function configure_watcher_dashboard {
     cp -a ${WATCHER_DASHBOARD_DIR}/watcher_dashboard/enabled/* ${DEST}/horizon/openstack_dashboard/local/enabled/
+    cp -a ${WATCHER_DASHBOARD_DIR}/watcher_dashboard/conf/* ${DEST}/horizon/openstack_dashboard/conf/
 }
 
 function init_watcher_dashboard {
@@ -42,6 +43,7 @@ if is_service_enabled watcher-dashboard; then
 
     if [[ "$1" == "unstack"  ]]; then
         rm -f ${DEST}/horizon/openstack_dashboard/local/enabled/_310*
+        rm -f ${DEST}/horizon/openstack_dashboard/conf/watcher*
 
     fi
 

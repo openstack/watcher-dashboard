@@ -29,6 +29,8 @@ def watcherclient(request, password=None):
     api_version = "1"
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     ca_file = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
+    insert_watcher_policy_file()
+
     endpoint = base.url_for(request, WATCHER_SERVICE)
 
     LOG.debug('watcherclient connection created using token "%s" and url "%s"'
@@ -44,6 +46,12 @@ def watcherclient(request, password=None):
         os_auth_token=request.user.token.id
     )
     return client
+
+
+def insert_watcher_policy_file():
+    policy_files = getattr(settings, 'POLICY_FILES', {})
+    policy_files['infra-optim'] = 'watcher_policy.json'
+    setattr(settings, 'POLICY_FILES', policy_files)
 
 
 class Audit(base.APIDictWrapper):

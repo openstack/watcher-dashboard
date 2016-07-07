@@ -14,3 +14,9 @@ for filepath in $src_path/watcher_dashboard/enabled/*.py; do
         ln -s $src_filepath $dest_filepath
     fi
 done
+
+policy_file_name='watcher_policy.json'
+src_policy_filepath=$src_path'/watcher_dashboard/conf/'$policy_file_name
+dest_policy_file=$dest_path'/openstack_dashboard/conf/'$policy_file_name
+echo "$src_policy_filepath --> $dest_policy_file"
+ln -s $src_policy_filepath $dest_policy_file

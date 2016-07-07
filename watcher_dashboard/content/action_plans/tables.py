@@ -46,11 +46,12 @@ class ActionPlansFilterAction(horizon.tables.FilterAction):
     filter_choices = (
         ('audit', _("Audit ="), True),
     )
+    policy_rules = (("infra-optim", "action_plan:detail"),)
 
 
 class ArchiveActionPlan(horizon.tables.BatchAction):
     name = "archive_action_plans"
-    # policy_rules = (("compute", "compute:delete"),)
+    policy_rules = (("infra-optim", "action_plan:delete"),)
     help_text = _("Archive an action plan.")
 
     @staticmethod
@@ -76,7 +77,7 @@ class ArchiveActionPlan(horizon.tables.BatchAction):
 class StartActionPlan(horizon.tables.BatchAction):
     name = "start_action_plan"
     classes = ('btn-confirm',)
-    # policy_rules = (("compute", "compute:delete"),)
+    policy_rules = (("infra-optim", "action_plan:update"),)
     help_text = _("Execute an action plan.")
 
     @staticmethod
