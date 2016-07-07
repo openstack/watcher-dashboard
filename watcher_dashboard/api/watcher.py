@@ -48,7 +48,7 @@ def watcherclient(request, password=None):
 
 class Audit(base.APIDictWrapper):
     _attrs = ('uuid', 'created_at', 'modified_at', 'deleted_at',
-              'deadline', 'state', 'type', 'audit_template_uuid',
+              'deadline', 'state', 'audit_type', 'audit_template_uuid',
               'audit_template_name')
 
     def __init__(self, apiresource, request=None):
@@ -56,7 +56,7 @@ class Audit(base.APIDictWrapper):
         self._request = request
 
     @classmethod
-    def create(cls, request, audit_template_uuid, type, deadline):
+    def create(cls, request, audit_template_uuid, audit_type, deadline):
         """Create an audit in Watcher
 
         :param request: request object
@@ -75,7 +75,7 @@ class Audit(base.APIDictWrapper):
         :rtype:  :py:class:`~.Audit`
         """
         return watcherclient(request).audit.create(
-            audit_template_uuid=audit_template_uuid, type=type,
+            audit_template_uuid=audit_template_uuid, audit_type=audit_type,
             deadline=deadline)
 
     @classmethod

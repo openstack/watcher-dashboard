@@ -119,7 +119,7 @@ def data(TEST):
     audit_dict = {
         'uuid': '22222222-2222-2222-2222-222222222222',
         'deadline': None,
-        'type': 'ONESHOT',
+        'audit_type': 'ONESHOT',
         'audit_template_uuid': '11111111-1111-1111-1111-111111111111'
     }
     TEST.api_audits.add(audit_dict)
