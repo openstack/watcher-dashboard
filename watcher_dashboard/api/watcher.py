@@ -498,7 +498,7 @@ class EfficacyIndicator(base.APIDictWrapper):
 
     def __init__(self, indicator):
         super(EfficacyIndicator, self).__init__(indicator)
-        self.value = None
-        self.name = None
-        self.description = None
-        self.unit = None
+        self.value = indicator.get('value', None)
+        self.name = indicator.get('name', None)
+        self.description = indicator.get('description', None)
+        self.unit = indicator.get('unit', None)
