@@ -99,7 +99,7 @@ class GoToAuditTemplate(horizon.tables.Action):
         except Exception:
             horizon.exceptions.handle(
                 request,
-                _("Unable to retrieve action_plan information."))
+                _("Unable to retrieve audit information."))
             return "javascript:void(0);"
 
         return shortcuts.redirect(urlresolvers.reverse(
