@@ -79,9 +79,15 @@ class Audit(base.APIDictWrapper):
         :return: the created Audit object
         :rtype:  :py:class:`~.Audit`
         """
-        return watcherclient(request).audit.create(
-            audit_template_uuid=audit_template_uuid, audit_type=audit_type,
-            deadline=deadline, interval=interval)
+
+        if interval:
+            return watcherclient(request).audit.create(
+                audit_template_uuid=audit_template_uuid, audit_type=audit_type,
+                deadline=deadline, interval=interval)
+        else:
+            return watcherclient(request).audit.create(
+                audit_template_uuid=audit_template_uuid, audit_type=audit_type,
+                deadline=deadline)
 
     @classmethod
     def list(cls, request, **filters):

@@ -123,7 +123,15 @@ def data(TEST):
         'audit_template_uuid': '11111111-1111-1111-1111-111111111111',
         'interval': None,
     }
+    audit_dict2 = {
+        'uuid': '33333333-3333-3333-3333-333333333333',
+        'deadline': None,
+        'audit_type': 'CONTINUOUS',
+        'audit_template_uuid': '11111111-1111-1111-1111-111111111111',
+        'interval': 60,
+    }
     TEST.api_audits.add(audit_dict)
+    TEST.api_audits.add(audit_dict2)
     _audit_dict = copy.deepcopy(audit_dict)
 
     TEST.action_plans = utils.TestDataContainer()
@@ -132,7 +140,7 @@ def data(TEST):
         'uuid': '33333333-3333-3333-3333-333333333333',
         'state': 'RECOMMENDED',
         'first_action_uuid': '44444444-4444-4444-4444-111111111111',
-        'audit_uuid': '22222222-2222-2222-2222-222222222222'
+        'audit_uuid': '33333333-3333-3333-3333-333333333333'
     }
     TEST.api_action_plans.add(action_plan_dict)
     _action_plan_dict = copy.deepcopy(action_plan_dict)
