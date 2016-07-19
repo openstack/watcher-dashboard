@@ -15,10 +15,13 @@ import importlib
 import os
 import six
 
+from django.utils.translation import pgettext_lazy
 from horizon.test.settings import *  # noqa
 from horizon.utils import secret_key
 from openstack_dashboard import exceptions
-
+from openstack_dashboard.static_settings import find_static_files  # noqa
+from openstack_dashboard.static_settings import get_staticfiles_dirs  # noqa
+from openstack_dashboard import theme_settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -74,6 +77,49 @@ HORIZON_CONFIG = {
     'angular_modules': [],
     'js_files': [],
 }
+
+# ### THEMING ### #
+
+# Deprecated Theme Settings
+CUSTOM_THEME_PATH = None
+DEFAULT_THEME_PATH = None
+# The default theme if no cookie is present
+DEFAULT_THEME = 'default'
+# Theme Static Directory
+THEME_COLLECTION_DIR = 'themes'
+
+AVAILABLE_THEMES = [
+    (
+        'default',
+        pgettext_lazy('Default style theme', 'Default'),
+        'themes/default'
+    ), (
+        'material',
+        pgettext_lazy("Google's Material Design style theme", "Material"),
+        'themes/material'
+    ),
+]
+
+AVAILABLE_THEMES, DEFAULT_THEME = theme_settings.get_available_themes(
+    AVAILABLE_THEMES,
+    CUSTOM_THEME_PATH,
+    DEFAULT_THEME_PATH,
+    DEFAULT_THEME
+)
+
+STATICFILES_DIRS = get_staticfiles_dirs(STATIC_URL) + \
+    theme_settings.get_theme_static_dirs(
+        AVAILABLE_THEMES,
+        THEME_COLLECTION_DIR,
+        ROOT_PATH)
+
+# populate HORIZON_CONFIG with auto-discovered JavaScript sources, mock files,
+# specs files and external templates.
+find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
+                  THEME_COLLECTION_DIR, ROOT_PATH)
+
+# ############## #
+
 
 # Load the pluggable dashboard settings
 from openstack_dashboard.utils import settings

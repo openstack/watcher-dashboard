@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import collections
 import copy
 from functools import wraps
+import importlib
 import json
 import os
 import unittest
@@ -31,7 +32,6 @@ from django.core.handlers import wsgi
 from django.core import urlresolvers
 from django.test.client import RequestFactory  # noqa
 from django.test import utils as django_test_utils
-from django.utils.importlib import import_module  # noqa
 from horizon import base
 from horizon import conf
 from horizon.test import helpers as horizon_helpers
@@ -304,7 +304,7 @@ class BaseAdminViewTests(TestCase):
 
     def set_session_values(self, **kwargs):
         settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-        engine = import_module(settings.SESSION_ENGINE)
+        engine = importlib.import_module(settings.SESSION_ENGINE)
         store = engine.SessionStore()
         for key in kwargs:
             store[key] = kwargs[key]
@@ -464,7 +464,7 @@ class PluginTestCase(TestCase):
         del base.Horizon
         base.Horizon = base.HorizonSite()
         # Reload the convenience references to Horizon stored in __init__
-        reload(import_module("horizon"))
+        reload(importlib.import_module("horizon"))
         # Re-register our original dashboards and panels.
         # This is necessary because autodiscovery only works on the first
         # import, and calling reload introduces innumerable additional
@@ -484,7 +484,7 @@ class PluginTestCase(TestCase):
         only for testing and should never be used on a live site.
         """
         urlresolvers.clear_url_caches()
-        reload(import_module(settings.ROOT_URLCONF))
+        reload(importlib.import_module(settings.ROOT_URLCONF))
         base.Horizon._urls()
 
 
