@@ -30,6 +30,7 @@ class CreateAuditTemplates(horizon.tables.LinkAction):
     verbose_name = _("Create Template")
     url = "horizon:admin:audit_templates:create"
     classes = ("ajax-modal", "btn-launch")
+    policy_rules = (("infra-optim", "audit_templates:create"),)
 
 
 class AuditTemplatesFilterAction(horizon.tables.FilterAction):
@@ -38,6 +39,7 @@ class AuditTemplatesFilterAction(horizon.tables.FilterAction):
         ('goal', _("Goal ="), True),
         ('strategy', _("Strategy ="), True),
     )
+    policy_rules = (("infra-optim", "audit_templates:detail"),)
 
 
 class LaunchAudit(horizon.tables.BatchAction):
@@ -46,6 +48,7 @@ class LaunchAudit(horizon.tables.BatchAction):
     data_type_singular = _("Launch Audit")
     data_type_plural = _("Launch Audits")
     success_url = "horizon:admin:audits:index"
+    policy_rules = (("infra-optim", "audit:create"),)
 
     @staticmethod
     def action_present(count):
@@ -72,6 +75,7 @@ class LaunchAudit(horizon.tables.BatchAction):
 
 class DeleteAuditTemplates(horizon.tables.DeleteAction):
     verbose_name = _("Delete Templates")
+    policy_rules = (("infra-optim", "audit_template:delete"),)
 
     @staticmethod
     def action_present(count):

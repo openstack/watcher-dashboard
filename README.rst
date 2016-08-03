@@ -109,6 +109,22 @@ Please note that these commands are also available via ``tox``.
     As of the Mitaka release, the dashboard for watcher is now maintained
     outside of the Horizon codebase, in this repository.
 
+
+Policies
+--------
+You can enable policies on Watcher ``Optimization`` panel, by updating in the
+``<HORIZON_DIR>/openstack_dashboard/settings.py`` configuration file the
+following parameters
+
+    POLICY_FILES = {
+    ...
+    'infra-optim': 'watcher_policy.json',
+}
+
+You can also update the file ``<HORIZON_DIR>/openstack_dashboard/conf/watcher_policy.conf``
+to customize your policies.
+
+
 Links
 -----
 

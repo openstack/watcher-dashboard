@@ -26,6 +26,7 @@ class StrategiesFilterAction(horizon.tables.FilterAction):
     filter_choices = (
         ('goal', _("Goal ="), True),
     )
+    policy_rules = (("infra-optim", "strategy:detail"),)
 
 
 class StrategiesTable(horizon.tables.DataTable):

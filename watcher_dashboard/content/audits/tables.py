@@ -48,6 +48,7 @@ class AuditsFilterAction(horizon.tables.FilterAction):
     filter_choices = (
         ('audit_template', _("Audit Template ="), True),
     )
+    policy_rules = (("infra-optim", "audit:detail"),)
 
 
 class CreateAudit(horizon.tables.LinkAction):
@@ -55,13 +56,14 @@ class CreateAudit(horizon.tables.LinkAction):
     verbose_name = _("Launch Audit")
     url = "horizon:admin:audits:create"
     classes = ("ajax-modal", "btn-launch")
-    # policy_rules = (("compute", "compute:create"),)
+    policy_rules = (("infra-optim", "audit:create"),)
 
 
 class GoToActionPlan(horizon.tables.Action):
     name = "go_to_action_plan"
     verbose_name = _("Go to Action Plan")
     url = "horizon:admin:action_plans:detail"
+    policy_rules = (("infra-optim", "action_plan:detail"),)
 
     def allowed(self, request, audit):
         return audit or audit.state in ("SUCCEEEDED", )
@@ -86,6 +88,7 @@ class GoToAuditTemplate(horizon.tables.Action):
     name = "go_to_audit_template"
     verbose_name = _("Go to Audit Template")
     url = "horizon:admin:audit_templates:detail"
+    policy_rules = (("infra-optim", "audit:get_one"),)
     # classes = ("ajax-modal", "btn-launch")
     # icon = "send"
 

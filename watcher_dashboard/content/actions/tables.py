@@ -58,6 +58,7 @@ class UpdateRow(horizon.tables.Row):
 class ActionsFilterAction(horizon.tables.FilterAction):
     filter_type = "server"
     filter_choices = (('action_plan', _("Action Plan ID ="), True),)
+    policy_rules = (("infra-optim", "action:detail"),)
 
 
 class ActionsTable(horizon.tables.DataTable):
