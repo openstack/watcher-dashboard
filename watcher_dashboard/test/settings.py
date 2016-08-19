@@ -19,9 +19,8 @@ from django.utils.translation import pgettext_lazy
 from horizon.test.settings import *  # noqa
 from horizon.utils import secret_key
 from openstack_dashboard import exceptions
-from openstack_dashboard.static_settings import find_static_files  # noqa
-from openstack_dashboard.static_settings import get_staticfiles_dirs  # noqa
 from openstack_dashboard import theme_settings
+from openstack_dashboard.utils import settings as settings_utils
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -40,6 +39,14 @@ ROOT_URLCONF = 'watcher_dashboard.test.urls'
 TEMPLATE_DIRS = (
     os.path.join(TEST_DIR, 'templates'),
 )
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'horizon.contrib.staticfiles.finders.HorizonStaticFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_ENABLED = False
 
 TEMPLATE_CONTEXT_PROCESSORS += (
     'openstack_dashboard.context_processors.openstack',
@@ -107,22 +114,31 @@ AVAILABLE_THEMES, DEFAULT_THEME = theme_settings.get_available_themes(
     DEFAULT_THEME
 )
 
-STATICFILES_DIRS = get_staticfiles_dirs(STATIC_URL) + \
-    theme_settings.get_theme_static_dirs(
-        AVAILABLE_THEMES,
-        THEME_COLLECTION_DIR,
-        ROOT_PATH)
+# Dictionary of currently available angular features
+ANGULAR_FEATURES = {
+    'images_panel': False,
+}
+
+# Notice all customizable configurations should be above this line
+XSTATIC_MODULES = settings_utils.BASE_XSTATIC_MODULES
+
+# Discover all the directories that contain static files; at the same time
+# discover all the xstatic module entry points to embed in our HTML
+STATICFILES_DIRS = settings_utils.get_xstatic_dirs(
+    XSTATIC_MODULES, HORIZON_CONFIG)
+STATICFILES_DIRS += theme_settings.get_theme_static_dirs(
+    AVAILABLE_THEMES, THEME_COLLECTION_DIR, ROOT_PATH)
+
 
 # populate HORIZON_CONFIG with auto-discovered JavaScript sources, mock files,
 # specs files and external templates.
-find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
-                  THEME_COLLECTION_DIR, ROOT_PATH)
+settings_utils.find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
+                                 THEME_COLLECTION_DIR, ROOT_PATH)
 
 # ############## #
 
 
 # Load the pluggable dashboard settings
-from openstack_dashboard.utils import settings
 dashboard_module_names = [
     'openstack_dashboard.enabled',
     'openstack_dashboard.local.enabled',
@@ -134,11 +150,15 @@ dashboard_modules = []
 for module_name in dashboard_module_names:
     module = importlib.import_module(module_name)
     dashboard_modules.append(module)
-    for submodule in six.itervalues(settings.import_submodules(module)):
+    for submodule in six.itervalues(settings_utils.import_submodules(module)):
         if getattr(submodule, 'DISABLED', None):
             delattr(submodule, 'DISABLED')
+
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
-settings.update_dashboards(dashboard_modules, HORIZON_CONFIG, INSTALLED_APPS)
+settings_utils.update_dashboards(
+    dashboard_modules,
+    HORIZON_CONFIG, INSTALLED_APPS
+)
 
 # Set to True to allow users to upload images to glance via Horizon server.
 # When enabled, a file form field will appear on the create image form.
