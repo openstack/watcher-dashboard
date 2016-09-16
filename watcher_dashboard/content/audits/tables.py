@@ -112,9 +112,12 @@ class AuditsTable(horizon.tables.DataTable):
         'uuid',
         verbose_name=_("UUID"),
         link="horizon:admin:audits:detail")
-    audit_template = horizon.tables.Column(
-        'audit_template_name',
-        verbose_name=_('Audit Template'))
+    goal = horizon.tables.Column(
+        'goal_name',
+        verbose_name=_('Goal'))
+    strategy = horizon.tables.Column(
+        'strategy_name',
+        verbose_name=_('Strategy'))
     audit_type = horizon.tables.Column(
         'audit_type',
         verbose_name=_('Audit Type'))

@@ -13,11 +13,13 @@
     <dl class="dl-horizontal">
         <dt>{% trans "UUID" %}</dt>
         <dd>{{ audit.uuid|default:"&mdash;" }}</dd>
+        <dt>{% trans "Goal" %}</dt>
+        <dd>{{ audit.goal_name|default:"&mdash;" }}</dd>
+        <dt>{% trans "Strategy" %}</dt>
+        <dd>{{ audit.strategy_name|default:"&mdash;" }}</dd>
         <dt>{% trans "Type" %}</dt>
         <dd>{{ audit.audit_type|default:"&mdash;" }}</dd>
         {% url 'horizon:admin:audit_templates:detail' audit.audit_template_uuid as audit_template_url %}
-        <dt>{% trans "Audit Template" %}</dt>
-        <dd><a href="{{ audit_template_url }}">{{ audit.audit_template_uuid|default:_("&mdash;") }}</a></dd>
         <dt>{% trans "State" %}</dt>
         <dd>{{ audit.state|default:"&mdash;" }}</dd>
         <dt>{% trans "Deadline" %}</dt>
