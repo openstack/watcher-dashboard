@@ -66,13 +66,13 @@ class GoToActionPlan(horizon.tables.Action):
     policy_rules = (("infra-optim", "action_plan:detail"),)
 
     def allowed(self, request, audit):
-        return audit or audit.state in ("SUCCEEEDED", )
+        return audit or audit.state in ("SUCCEEDED", )
 
     def single(self, table, request, audit_id):
         try:
             action_plans = watcher.ActionPlan.list(
                 request,
-                audit_filter=audit_id)
+                audit=audit_id)
         except Exception:
             horizon.exceptions.handle(
                 request,
