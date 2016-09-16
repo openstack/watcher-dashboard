@@ -84,32 +84,6 @@ class GoToActionPlan(horizon.tables.Action):
             args=[action_plans[0].uuid]))
 
 
-class GoToAuditTemplate(horizon.tables.Action):
-    name = "go_to_audit_template"
-    verbose_name = _("Go to Audit Template")
-    url = "horizon:admin:audit_templates:detail"
-    policy_rules = (("infra-optim", "audit:get_one"),)
-    # classes = ("ajax-modal", "btn-launch")
-    # icon = "send"
-
-    def allowed(self, request, audit):
-        return audit or audit.state in ("SUCCEEEDED", )
-
-    def single(self, table, request, audit_id):
-        try:
-            audit = watcher.Audit.get(
-                request, audit_id=audit_id)
-        except Exception:
-            horizon.exceptions.handle(
-                request,
-                _("Unable to retrieve audit information."))
-            return "javascript:void(0);"
-
-        return shortcuts.redirect(urlresolvers.reverse(
-            self.url,
-            args=[audit.audit_template_uuid]))
-
-
 class DeleteAudits(horizon.tables.DeleteAction):
     verbose_name = _("Delete Audits")
 
@@ -164,7 +138,6 @@ class AuditsTable(horizon.tables.DataTable):
         )
         row_actions = (
             GoToActionPlan,
-            GoToAuditTemplate,
             # CreateAudits,
             # ArchiveAudits,
             # CreateAudits,
