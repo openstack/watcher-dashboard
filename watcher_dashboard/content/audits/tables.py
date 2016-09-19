@@ -52,8 +52,8 @@ class AuditsFilterAction(horizon.tables.FilterAction):
 
 
 class CreateAudit(horizon.tables.LinkAction):
-    name = "launch_audit"
-    verbose_name = _("Launch Audit")
+    name = "create_audit"
+    verbose_name = _("Create Audit")
     url = "horizon:admin:audits:create"
     classes = ("ajax-modal", "btn-launch")
     policy_rules = (("infra-optim", "audit:create"),)
@@ -84,22 +84,23 @@ class GoToActionPlan(horizon.tables.Action):
             args=[action_plans[0].uuid]))
 
 
-class DeleteAudits(horizon.tables.DeleteAction):
-    verbose_name = _("Delete Audits")
+class ArchiveAudits(horizon.tables.DeleteAction):
+    verbose_name = _("Archive Audits")
+    policy_rules = (("infra-optim", "audit:delete"),)
 
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            "Delete Audit",
-            "Delete Audits",
+            "Archive Audit",
+            "Archive Audits",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            "Deleted Audit",
-            "Deleted Audits",
+            "Archived Audit",
+            "Archived Audits",
             count
         )
 
@@ -132,16 +133,12 @@ class AuditsTable(horizon.tables.DataTable):
         verbose_name = _("Audits")
         launch_actions = (CreateAudit,)
         table_actions = launch_actions + (
-            # CancelAudit,
             AuditsFilterAction,
-            # ArchiveAudits,
+            ArchiveAudits,
         )
         row_actions = (
             GoToActionPlan,
-            # CreateAudits,
-            # ArchiveAudits,
-            # CreateAudits,
-            DeleteAudits,
+            ArchiveAudits,
         )
 
 

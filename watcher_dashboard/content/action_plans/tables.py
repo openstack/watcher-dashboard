@@ -49,10 +49,9 @@ class ActionPlansFilterAction(horizon.tables.FilterAction):
     policy_rules = (("infra-optim", "action_plan:detail"),)
 
 
-class ArchiveActionPlan(horizon.tables.BatchAction):
-    name = "archive_action_plans"
+class ArchiveActionPlan(horizon.tables.DeleteAction):
+    verbose_name = _("Archive Action Plans")
     policy_rules = (("infra-optim", "action_plan:delete"),)
-    help_text = _("Archive an action plan.")
 
     @staticmethod
     def action_present(count):
@@ -170,6 +169,8 @@ class ActionPlansTable(horizon.tables.DataTable):
         table_actions = (
             # CancelActionPlan,
             ActionPlansFilterAction,
+            StartActionPlan,
+            ArchiveActionPlan,
         )
         row_actions = (
             StartActionPlan,

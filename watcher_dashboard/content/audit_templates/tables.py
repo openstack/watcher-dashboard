@@ -30,7 +30,7 @@ class CreateAuditTemplates(horizon.tables.LinkAction):
     verbose_name = _("Create Template")
     url = "horizon:admin:audit_templates:create"
     classes = ("ajax-modal", "btn-launch")
-    policy_rules = (("infra-optim", "audit_templates:create"),)
+    policy_rules = (("infra-optim", "audit_template:create"),)
 
 
 class AuditTemplatesFilterAction(horizon.tables.FilterAction):
@@ -39,7 +39,7 @@ class AuditTemplatesFilterAction(horizon.tables.FilterAction):
         ('goal', _("Goal ="), True),
         ('strategy', _("Strategy ="), True),
     )
-    policy_rules = (("infra-optim", "audit_templates:detail"),)
+    policy_rules = (("infra-optim", "audit_template:detail"),)
 
 
 class LaunchAudit(horizon.tables.BatchAction):
@@ -73,23 +73,23 @@ class LaunchAudit(horizon.tables.BatchAction):
         watcher.Audit.create(request, **params)
 
 
-class DeleteAuditTemplates(horizon.tables.DeleteAction):
-    verbose_name = _("Delete Templates")
+class ArchiveAuditTemplates(horizon.tables.DeleteAction):
+    verbose_name = _("Archive Templates")
     policy_rules = (("infra-optim", "audit_template:delete"),)
 
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            "Delete Template",
-            "Delete Templates",
+            "Archive Template",
+            "Archive Templates",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            "Deleted Template",
-            "Deleted Templates",
+            "Archived Template",
+            "Archived Templates",
             count
         )
 
@@ -118,12 +118,14 @@ class AuditTemplatesTable(horizon.tables.DataTable):
 
     class Meta(object):
         name = "audit_templates"
-        verbose_name = _("Available")
+        verbose_name = _("Audit Templates")
         table_actions = (
             CreateAuditTemplates,
-            DeleteAuditTemplates,
             AuditTemplatesFilterAction,
+            LaunchAudit,
+            ArchiveAuditTemplates,
         )
         row_actions = (
             LaunchAudit,
+            ArchiveAuditTemplates,
         )
