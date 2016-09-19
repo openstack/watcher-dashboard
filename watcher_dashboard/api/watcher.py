@@ -65,7 +65,7 @@ class Audit(base.APIDictWrapper):
 
     @classmethod
     def create(cls, request, audit_template_uuid,
-               audit_type, deadline, interval):
+               audit_type, deadline, interval=None):
 
         """Create an audit in Watcher
 
@@ -81,7 +81,7 @@ class Audit(base.APIDictWrapper):
         :param deadline: audit deadline:
         :type  deadline: string
 
-        :param interval: Audit interval
+        :param interval: Audit interval (default: None)
         :type  interval: int
 
         :return: the created Audit object

@@ -212,7 +212,6 @@ class WatcherAPITests(test.APITestCase):
 
         deadline = self.api_audits.first()['deadline']
         audit_type = self.api_audits.first()['audit_type']
-        interval = audit['interval']
         audit_template_uuid = audit_template_id
 
         watcherclient = self.stub_watcherclient()
@@ -224,7 +223,7 @@ class WatcherAPITests(test.APITestCase):
         self.mox.ReplayAll()
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, deadline, interval)
+            self.request, audit_template_uuid, audit_type, deadline)
         self.assertIsInstance(ret_val, dict)
 
     def test_audit_create_with_interval(self):
