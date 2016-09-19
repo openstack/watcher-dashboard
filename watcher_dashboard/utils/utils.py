@@ -45,14 +45,14 @@ def length(iterator):
     return sum(1 for _item in iterator)
 
 
-def check_image_type(image, type):
-    """Check if image 'type' property matches passed-in type.
+def check_image_type(image, image_type):
+    """Check if image 'type' property matches passed-in image_type.
 
     If image has no 'type' property' return True, as we cannot
     be sure what type of image it is.
     """
 
-    return (image.properties.get('type', type) == type)
+    return (image.properties.get('type', image_type) == image_type)
 
 
 def filter_items(items, **kwargs):
