@@ -15,9 +15,9 @@
         <dd>{{ strategy.uuid|default:"&mdash;" }}</dd>
         <dt>{% trans "Name" %}</dt>
         <dd>{{ strategy.display_name|default:"&mdash;" }}</dd>
-        <dt>{% trans "Goal UUID" %}</dt>
-        {% url 'horizon:admin:goals:detail' strategy.goal_uuid as goal_url %}
-        <dd><a href="{{ goal_url }}">{{ strategy.goal_uuid|default:"&mdash;" }}</a></dd>
+        <dt>{% trans "Goal" %}</dt>
+        {% url 'horizon:admin:goals:detail' strategy.goal_name as goal_url %}
+        <dd><a href="{{ goal_url }}">{{ strategy.goal_name|default:"&mdash;" }}</a></dd>
         <dt>{% trans "Created At" %}</dt>
         <dd>{{ strategy.created_at|default:"&mdash;" }}</dd>
         <dt>{% trans "Update At" %}</dt>

@@ -15,10 +15,10 @@
         <dd>{{ audit_template.name|default:"&mdash;" }}</dd>
         <dt>{% trans "UUID" %}</dt>
         <dd>{{ audit_template.uuid|default:"&mdash;" }}</dd>
-        <dt>{% trans "Goal UUID" %}</dt>
-        <dd>{{ audit_template.goal_uuid|default:"&mdash;" }}</dd>
-        <dt>{% trans "Strategy UUID" %}</dt>
-        <dd>{{ audit_template.strategy_uuid|default:"&mdash;" }}</dd>
+        <dt>{% trans "Goal" %}</dt>
+        <dd>{{ audit_template.goal_name|default:"&mdash;" }}</dd>
+        <dt>{% trans "Strategy" %}</dt>
+        <dd>{{ audit_template.strategy_name|default:"&mdash;" }}</dd>
         <dt>{% trans "Created At" %}</dt>
         <dd>{{ audit_template.created_at|default:"&mdash;" }}</dd>
         <dt>{% trans "Update At" %}</dt>
