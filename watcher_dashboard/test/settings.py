@@ -48,7 +48,7 @@ STATICFILES_FINDERS = (
 
 COMPRESS_ENABLED = False
 
-TEMPLATE_CONTEXT_PROCESSORS += (
+TEMPLATE_CONTEXT_PROCESSORS = (
     'openstack_dashboard.context_processors.openstack',
 )
 
