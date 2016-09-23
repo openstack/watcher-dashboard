@@ -75,8 +75,8 @@ class Audit(base.APIDictWrapper):
         :param audit_template_uuid: related audit template UUID
         :type  audit_template_uuid: string
 
-        :param type: audit type
-        :type  type: string
+        :param audit_type: audit type
+        :type  audit_type: string
 
         :param deadline: audit deadline:
         :type  deadline: string
