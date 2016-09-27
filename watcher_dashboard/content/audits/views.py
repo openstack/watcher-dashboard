@@ -130,6 +130,4 @@ class DetailView(horizon.tables.MultiTableView):
     def get_tabs(self, request, *args, **kwargs):
         audit = self._get_data()
         # ports = self._get_ports()
-        return self.tab_group_class(request, audit=audit,
-                                    # ports=ports,
-                                    **kwargs)
+        return self.tab_group_class(request, audit=audit, **kwargs)

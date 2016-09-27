@@ -16,6 +16,7 @@
 
 import logging
 
+from django.core import urlresolvers
 from django.template.defaultfilters import title  # noqa
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -137,6 +138,15 @@ def format_global_efficacy(action_plan):
     return formatted_global_efficacy
 
 
+def get_audit_link(datum):
+    try:
+        return urlresolvers.reverse(
+            "horizon:admin:audits:detail",
+            kwargs={"audit_uuid": getattr(datum, "audit_uuid", None)})
+    except urlresolvers.NoReverseMatch:
+        return None
+
+
 class ActionPlansTable(horizon.tables.DataTable):
 
     name = horizon.tables.Column(
@@ -145,7 +155,8 @@ class ActionPlansTable(horizon.tables.DataTable):
         link="horizon:admin:action_plans:detail")
     audit = horizon.tables.Column(
         'audit_uuid',
-        verbose_name=_('Audit'))
+        verbose_name=_('Audit'),
+        link=get_audit_link)
     updated_at = horizon.tables.Column(
         'updated_at',
         filters=(filters.parse_isotime,
@@ -190,7 +201,8 @@ class RelatedActionPlansTable(horizon.tables.DataTable):
         link="horizon:admin:action_plans:detail")
     audit = horizon.tables.Column(
         'audit_uuid',
-        verbose_name=_('Audit'))
+        verbose_name=_('Audit'),
+        link=get_audit_link)
     updated_at = horizon.tables.Column(
         'updated_at',
         filters=(filters.parse_isotime,
@@ -212,6 +224,11 @@ class RelatedActionPlansTable(horizon.tables.DataTable):
         name = "related_action_plans"
         verbose_name = _("Related Action Plans")
         hidden_title = False
+        row_actions = (
+            StartActionPlan,
+            ArchiveActionPlan,
+        )
+        row_class = UpdateRow
 
 
 class RelatedEfficacyIndicatorsTable(horizon.tables.DataTable):
