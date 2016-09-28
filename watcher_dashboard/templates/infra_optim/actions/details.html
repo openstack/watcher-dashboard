@@ -9,15 +9,20 @@
 {% block main %}
 <div class="row">
   <div class="detail col-md-6">
-    <h4>{% trans "Audit Info" %}</h4>
+    <h4>{% trans "Action Info" %}</h4>
     <dl class="dl-horizontal">
         <dt>{% trans "UUID" %}</dt>
         <dd>{{ action.uuid|default:"&mdash;" }}</dd>
         <dt>{% trans "Type" %}</dt>
-        <dd>{{ action.type|default:"&mdash;" }}</dd>
-        {% url 'horizon:admin:action_templates:detail' action.action_template_uuid as action_template_url %}
-        <dt>{% trans "Audit Template" %}</dt>
-        <dd><a href="{{ action_template_url }}">{{ action.action_template_uuid|default:_("&mdash;") }}</a></dd>
+        <dd>{{ action.action_type|default:"&mdash;" }}</dd>
+        {% url 'horizon:admin:action_plans:detail' action.action_plan_uuid as action_plan_url %}
+        <dt>{% trans "Action Plan" %}</dt>
+        <dd><a href="{{ action_plan_url }}">
+          {{ action.action_plan_uuid|default:_("&mdash;") }}
+        </a></dd>
+        {% url 'horizon:admin:actions:detail' action.next_uuid as next_action_url %}
+        <dt>{% trans "Next Action" %}</dt>
+        <dd><a href="{{ next_action_url }}">{{ action.next_uuid|default:_("&mdash;") }}</a></dd>
         <dt>{% trans "State" %}</dt>
         <dd>{{ action.state|default:"&mdash;" }}</dd>
         <dt>{% trans "Deadline" %}</dt>
@@ -31,7 +36,7 @@
 </div>
 <div class="row">
   <div class="col-xs-12">
-    {{ table.render }}
+    {{ parameters_table.render }}
   </div>
 </div>
 

@@ -22,6 +22,6 @@ from watcher_dashboard.content.actions import views
 urlpatterns = [
     urls.url(r'^$',
              views.IndexView.as_view(), name='index'),
-    urls.url(r'^(?P<action_uuid>[^/]+)/$',
-             views.DetailView.as_view(), name='details'),
+    urls.url(r'^(?P<action_uuid>[^/]+)/detail$',
+             views.DetailView.as_view(), name='detail'),
 ]

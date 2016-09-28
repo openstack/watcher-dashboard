@@ -16,6 +16,7 @@
 
 import logging
 
+from django.core import urlresolvers
 from django.template.defaultfilters import title  # noqa
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -61,25 +62,46 @@ class ActionsFilterAction(horizon.tables.FilterAction):
     policy_rules = (("infra-optim", "action:detail"),)
 
 
+def get_next_action_uuid_link(datum):
+    try:
+        return urlresolvers.reverse(
+            "horizon:admin:actions:detail",
+            kwargs={"action_uuid": getattr(datum, "next_uuid", None)})
+    except urlresolvers.NoReverseMatch:
+        return None
+
+
+def get_action_plan_link(datum):
+    try:
+        return urlresolvers.reverse(
+            "horizon:admin:action_plans:detail",
+            kwargs={"action_plan_uuid": getattr(
+                datum, "action_plan_uuid", None)})
+    except urlresolvers.NoReverseMatch:
+        return None
+
+
 class ActionsTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
         'uuid',
-        verbose_name=_("UUID"))
+        verbose_name=_("UUID"),
+        link="horizon:admin:actions:detail")
     action_type = horizon.tables.Column(
         'action_type',
         verbose_name=_('Type'),
         filters=(title, filters.replace_underscores))
-    description = horizon.tables.Column(
-        'description',
-        verbose_name=_('Description'))
     state = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
         status_choices=ACTION_STATE_DISPLAY_CHOICES)
-
+    action_plan = horizon.tables.Column(
+        'action_plan_uuid',
+        verbose_name=_('Action Plan'),
+        link=get_action_plan_link)
     next_action = horizon.tables.Column(
         'next_uuid',
-        verbose_name=_('Next Action'))
+        verbose_name=_('Next Action'),
+        link=get_next_action_uuid_link)
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -95,22 +117,24 @@ class RelatedActionsTable(horizon.tables.DataTable):
     """Identical to the index table but with different Meta"""
     name = horizon.tables.Column(
         'uuid',
-        verbose_name=_("UUID"))
+        verbose_name=_("UUID"),
+        link="horizon:admin:actions:detail")
     action_type = horizon.tables.Column(
         'action_type',
         verbose_name=_('Type'),
         filters=(title, filters.replace_underscores))
-    description = horizon.tables.Column(
-        'description',
-        verbose_name=_('Description'))
     state = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
         status_choices=ACTION_STATE_DISPLAY_CHOICES)
-
+    action_plan = horizon.tables.Column(
+        'action_plan_uuid',
+        verbose_name=_('Action Plan'),
+        link=get_action_plan_link)
     next_action = horizon.tables.Column(
         'next_uuid',
-        verbose_name=_('Next Action'))
+        verbose_name=_('Next Action'),
+        link=get_next_action_uuid_link)
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -118,4 +142,21 @@ class RelatedActionsTable(horizon.tables.DataTable):
     class Meta(object):
         name = "related_wactions"
         verbose_name = _("Related Actions")
+        hidden_title = False
+
+
+class ActionParametersTable(horizon.tables.DataTable):
+    name = horizon.tables.Column(
+        'name',
+        verbose_name=_("Parameter name"))
+    value = horizon.tables.Column(
+        'value',
+        verbose_name=_('Parameter value'))
+
+    def get_object_id(self, datum):
+        return datum.name
+
+    class Meta(object):
+        name = "parameters"
+        verbose_name = _("Related parameters")
         hidden_title = False

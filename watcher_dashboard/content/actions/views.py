@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import collections
 import logging
 
 from django.utils.translation import ugettext_lazy as _
@@ -66,6 +67,7 @@ class IndexView(horizon.tables.DataTableView):
 
 
 class DetailView(horizon.tables.MultiTableView):
+    table_classes = [tables.ActionParametersTable]
     tab_group_class = wtabs.ActionDetailTabs
     template_name = 'infra_optim/actions/details.html'
     redirect_url = 'horizon:admin:actions:index'
@@ -73,17 +75,25 @@ class DetailView(horizon.tables.MultiTableView):
 
     @memoized.memoized_method
     def _get_data(self):
-        action_plan_uuid = None
+        action_uuid = None
         try:
-            action_plan_uuid = self.kwargs['action_plan_uuid']
-            action = watcher.Action.get(self.request, action_plan_uuid)
+            action_uuid = self.kwargs['action_uuid']
+            action = watcher.Action.get(self.request, action_uuid)
         except Exception:
             msg = _('Unable to retrieve details for action "%s".') \
-                % action_plan_uuid
+                % action_uuid
             horizon.exceptions.handle(
                 self.request, msg,
                 redirect=self.redirect_url)
         return action
+
+    def get_parameters_data(self):
+        action = self._get_data()
+        parameter_cls = collections.namedtuple(
+            'Parameter', field_names=['name', 'value'])
+
+        return [parameter_cls(name=name, value=value)
+                for name, value in action.input_parameters.items()]
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
