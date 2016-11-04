@@ -89,7 +89,6 @@ class CreateForm(forms.SelfHandlingForm):
                 params['interval'] = int(data['interval'].total_seconds())
             else:
                 params['interval'] = None
-            params['deadline'] = None
             audit = watcher.Audit.create(request, **params)
             message = _('Audit was successfully created.')
             messages.success(request, message)

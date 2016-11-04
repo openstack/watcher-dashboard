@@ -18,16 +18,32 @@ Forms for starting Watcher Audit Templates.
 """
 import logging
 
+from django.core import exceptions as core_exc
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
+import yaml
 
 from watcher_dashboard.api import watcher
 
 LOG = logging.getLogger(__name__)
+
+
+class YamlValidator(object):
+    message = _('Enter a valid YAML or JSON value.')
+    code = 'invalid'
+
+    def __init__(self, message=None):
+        if message:
+            self.message = message
+
+    def __call__(self, value):
+        try:
+            yaml.load(value)
+        except Exception:
+            raise core_exc.ValidationError(self.message, code=self.code)
 
 
 class CreateForm(forms.SelfHandlingForm):
@@ -35,7 +51,12 @@ class CreateForm(forms.SelfHandlingForm):
     description = forms.CharField(max_length=255, label=_("Description"),
                                   required=False)
     goal = forms.ChoiceField(label=_('Goal'), required=True)
-    strategy = forms.ChoiceField(label=_('Strategy'), required=False)
+    strategy = forms.DynamicChoiceField(label=_('Strategy'), required=False)
+
+    scope = forms.CharField(
+        label=_('Scope'), required=False,
+        widget=forms.widgets.Textarea,
+        validators=[YamlValidator()])
 
     failure_url = 'horizon:admin:audit_templates:index'
 
@@ -103,7 +124,8 @@ class CreateForm(forms.SelfHandlingForm):
             params['description'] = data['description']
             params['goal'] = data['goal']
             params['strategy'] = data['strategy'] or None
-            params['host_aggregate'] = None
+            params['scope'] = [] if not data['scope'] else yaml.load(
+                data['scope'])
             audit_tpl = watcher.AuditTemplate.create(request, **params)
             message = _('Audit Template was successfully created.')
             messages.success(request, message)

@@ -86,7 +86,7 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
             'goal': at.goal_uuid,
             'strategy': at.strategy_uuid,
             'description': at.description,
-            'host_aggregate': at.host_aggregate,
+            'scope': at.scope,
         }
         api.watcher.Goal.list(
             IsA(http.HttpRequest)).AndReturn(self.goal_list)

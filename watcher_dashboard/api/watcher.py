@@ -56,7 +56,7 @@ def insert_watcher_policy_file():
 
 class Audit(base.APIDictWrapper):
     _attrs = ('uuid', 'created_at', 'modified_at', 'deleted_at',
-              'deadline', 'state', 'audit_type', 'audit_template_uuid',
+              'state', 'audit_type', 'audit_template_uuid',
               'audit_template_name', 'interval')
 
     def __init__(self, apiresource, request=None):
@@ -65,7 +65,7 @@ class Audit(base.APIDictWrapper):
 
     @classmethod
     def create(cls, request, audit_template_uuid,
-               audit_type, deadline, interval=None):
+               audit_type, interval=None):
 
         """Create an audit in Watcher
 
@@ -78,9 +78,6 @@ class Audit(base.APIDictWrapper):
         :param audit_type: audit type
         :type  audit_type: string
 
-        :param deadline: audit deadline:
-        :type  deadline: string
-
         :param interval: Audit interval (default: None)
         :type  interval: int
 
@@ -91,11 +88,10 @@ class Audit(base.APIDictWrapper):
         if interval:
             return watcherclient(request).audit.create(
                 audit_template_uuid=audit_template_uuid, audit_type=audit_type,
-                deadline=deadline, interval=interval)
+                interval=interval)
         else:
             return watcherclient(request).audit.create(
-                audit_template_uuid=audit_template_uuid, audit_type=audit_type,
-                deadline=deadline)
+                audit_template_uuid=audit_template_uuid, audit_type=audit_type)
 
     @classmethod
     def list(cls, request, **filters):
@@ -147,9 +143,9 @@ class Audit(base.APIDictWrapper):
 
 
 class AuditTemplate(base.APIDictWrapper):
-    _attrs = ('uuid', 'description', 'host_aggregate', 'name', 'extra',
-              'goal_uuid', 'goal_name', 'strategy_uuid', 'strategy_name',
-              'created_at', 'updated_at', 'deleted_at')
+    _attrs = ('uuid', 'description', 'scope', 'name', 'goal_uuid', 'goal_name',
+              'strategy_uuid', 'strategy_name', 'created_at', 'updated_at',
+              'deleted_at')
 
     def __init__(self, apiresource, request=None):
         super(AuditTemplate, self).__init__(apiresource)
@@ -157,7 +153,7 @@ class AuditTemplate(base.APIDictWrapper):
 
     @classmethod
     def create(cls, request, name, goal, strategy,
-               description, host_aggregate):
+               description, scope):
         """Create an audit template in Watcher
 
         :param request: request object
@@ -176,9 +172,8 @@ class AuditTemplate(base.APIDictWrapper):
         :param description: Descrition of the audit template
         :type  description: string
 
-        :param host_aggregate: Name or UUID of the host aggregate targeted
-                               by this audit template
-        :type  host_aggregate: string
+        :param scope: Audit scope
+        :type  scope: list of list of dict
 
         :param audit_template: audit template
         :type  audit_template: string
@@ -191,7 +186,7 @@ class AuditTemplate(base.APIDictWrapper):
             goal=goal,
             strategy=strategy,
             description=description,
-            host_aggregate=host_aggregate
+            scope=scope,
         )
 
         return audit_template

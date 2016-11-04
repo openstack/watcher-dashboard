@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 
 from django.core.urlresolvers import reverse_lazy
@@ -94,6 +95,9 @@ class DetailView(horizon.tabs.TabbedTableView):
             audit_template_uuid = self.kwargs['audit_template_uuid']
             audit_template = watcher.AuditTemplate.get(
                 self.request, audit_template_uuid)
+            if audit_template.scope:
+                audit_template.scope = json.dumps(audit_template.scope)
+
         except Exception as exc:
             LOG.exception(exc)
             msg = _('Unable to retrieve details for audit template "%s".') \

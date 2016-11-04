@@ -84,8 +84,7 @@ def data(TEST):
         'uuid': '11111111-1111-1111-1111-111111111111',
         'name': 'Audit Template 1',
         'description': 'Audit Template 1 description',
-        'host_aggregate': None,
-        'extra': {'automatic': False},
+        'scope': None,
         'goal_uuid': 'gggggggg-1111-1111-1111-gggggggggggg',
         'strategy_uuid': 'ssssssss-1111-1111-1111-ssssssssssss',
     }
@@ -93,8 +92,7 @@ def data(TEST):
         'uuid': '11111111-2222-2222-2222-111111111111',
         'name': 'Audit Template 2',
         'description': 'Audit Template 2 description',
-        'host_aggregate': None,
-        'extra': {'automatic': False},
+        'scope': None,
         'goal_uuid': 'gggggggg-1111-1111-1111-gggggggggggg',
         'strategy_uuid': 'ssssssss-2222-2222-2222-ssssssssssss',
     }
@@ -102,8 +100,7 @@ def data(TEST):
         'uuid': '11111111-3333-3333-3333-111111111111',
         'name': 'Audit Template 1',
         'description': 'Audit Template 3 description',
-        'host_aggregate': None,
-        'extra': {'automatic': False},
+        'scope': None,
         'goal_uuid': 'gggggggg-2222-2222-2222-gggggggggggg',
         'strategy_uuid': None,
     }
@@ -118,14 +115,12 @@ def data(TEST):
     TEST.api_audits = utils.TestDataContainer()
     audit_dict = {
         'uuid': '22222222-2222-2222-2222-222222222222',
-        'deadline': None,
         'audit_type': 'ONESHOT',
         'audit_template_uuid': '11111111-1111-1111-1111-111111111111',
         'interval': None,
     }
     audit_dict2 = {
         'uuid': '33333333-3333-3333-3333-333333333333',
-        'deadline': None,
         'audit_type': 'CONTINUOUS',
         'audit_template_uuid': '11111111-1111-1111-1111-111111111111',
         'interval': 60,

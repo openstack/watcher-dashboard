@@ -117,6 +117,7 @@ AVAILABLE_THEMES, DEFAULT_THEME = theme_settings.get_available_themes(
 # Dictionary of currently available angular features
 ANGULAR_FEATURES = {
     'images_panel': False,
+    'flavors_panel': False,
 }
 
 # Notice all customizable configurations should be above this line

@@ -19,6 +19,8 @@
         <dd>{{ audit_template.goal_name|default:"&mdash;" }}</dd>
         <dt>{% trans "Strategy" %}</dt>
         <dd>{{ audit_template.strategy_name|default:"&mdash;" }}</dd>
+        <dt>{% trans "Audit Scope" %}</dt>
+        <dd><code>{{ audit_template.scope|linebreaks }}</code></dd>
         <dt>{% trans "Created At" %}</dt>
         <dd>{{ audit_template.created_at|default:"&mdash;" }}</dd>
         <dt>{% trans "Update At" %}</dt>

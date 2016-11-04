@@ -69,7 +69,6 @@ class LaunchAudit(horizon.tables.BatchAction):
     def action(self, request, obj_id):
         params = {'audit_template_uuid': obj_id}
         params['audit_type'] = 'ONESHOT'
-        params['deadline'] = None
         watcher.Audit.create(request, **params)
 
 

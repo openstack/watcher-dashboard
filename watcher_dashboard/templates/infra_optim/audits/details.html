@@ -22,8 +22,6 @@
         {% url 'horizon:admin:audit_templates:detail' audit.audit_template_uuid as audit_template_url %}
         <dt>{% trans "State" %}</dt>
         <dd>{{ audit.state|default:"&mdash;" }}</dd>
-        <dt>{% trans "Deadline" %}</dt>
-        <dd>{{ audit.deadline|default:"&mdash;" }}</dd>
         <dt>{% trans "Created At" %}</dt>
         <dd>{{ audit.created_at|default:"&mdash;" }}</dd>
         <dt>{% trans "Update At" %}</dt>
