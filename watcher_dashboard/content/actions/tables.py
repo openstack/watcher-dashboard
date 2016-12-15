@@ -61,15 +61,6 @@ class ActionsFilterAction(horizon.tables.FilterAction):
     policy_rules = (("infra-optim", "action:detail"),)
 
 
-def get_next_action_uuid_link(datum):
-    try:
-        return urlresolvers.reverse(
-            "horizon:admin:actions:detail",
-            kwargs={"action_uuid": getattr(datum, "next_uuid", None)})
-    except urlresolvers.NoReverseMatch:
-        return None
-
-
 def get_action_plan_link(datum):
     try:
         return urlresolvers.reverse(
@@ -97,10 +88,6 @@ class ActionsTable(horizon.tables.DataTable):
         'action_plan_uuid',
         verbose_name=_('Action Plan'),
         link=get_action_plan_link)
-    next_action = horizon.tables.Column(
-        'next_uuid',
-        verbose_name=_('Next Action'),
-        link=get_next_action_uuid_link)
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -130,10 +117,6 @@ class RelatedActionsTable(horizon.tables.DataTable):
         'action_plan_uuid',
         verbose_name=_('Action Plan'),
         link=get_action_plan_link)
-    next_action = horizon.tables.Column(
-        'next_uuid',
-        verbose_name=_('Next Action'),
-        link=get_next_action_uuid_link)
 
     def get_object_id(self, datum):
         return datum.uuid

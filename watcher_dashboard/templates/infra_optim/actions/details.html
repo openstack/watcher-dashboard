@@ -20,9 +20,6 @@
         <dd><a href="{{ action_plan_url }}">
           {{ action.action_plan_uuid|default:_("&mdash;") }}
         </a></dd>
-        {% url 'horizon:admin:actions:detail' action.next_uuid as next_action_url %}
-        <dt>{% trans "Next Action" %}</dt>
-        <dd><a href="{{ next_action_url }}">{{ action.next_uuid|default:_("&mdash;") }}</a></dd>
         <dt>{% trans "State" %}</dt>
         <dd>{{ action.state|default:"&mdash;" }}</dd>
         <dt>{% trans "Created At" %}</dt>
