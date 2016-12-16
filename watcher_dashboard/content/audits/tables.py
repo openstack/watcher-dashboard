@@ -122,6 +122,9 @@ class AuditsTable(horizon.tables.DataTable):
     audit_type = horizon.tables.Column(
         'audit_type',
         verbose_name=_('Audit Type'))
+    auto_trigger = horizon.tables.Column(
+        'auto_trigger',
+        verbose_name=_('Auto Trigger'))
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
