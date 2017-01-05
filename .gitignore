@@ -57,3 +57,6 @@ ChangeLog
 # Horizon related
 *.lock
 watcher_dashboard/test/.secret_key_store
+
+# Files created by releasenotes build
+releasenotes/build
