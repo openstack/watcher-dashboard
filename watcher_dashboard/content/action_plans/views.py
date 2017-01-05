@@ -35,6 +35,7 @@ LOG = logging.getLogger(__name__)
 class IndexView(horizon.tables.DataTableView):
     table_class = tables.ActionPlansTable
     template_name = 'infra_optim/action_plans/index.html'
+    page_title = _("Action Plans")
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
