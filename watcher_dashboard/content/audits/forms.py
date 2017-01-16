@@ -97,10 +97,10 @@ class CreateForm(forms.SelfHandlingForm):
             messages.success(request, message)
             return audit
         except Exception as exc:
-            if exc.status_code == 409:
+            if exc.http_status == 409:
                 msg = _('Quota exceeded for resource audit.')
             else:
-                msg = _('Failed to create audit "%s".') % data['name']
+                msg = _('Failed to create audit.')
             LOG.info(exc)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)
