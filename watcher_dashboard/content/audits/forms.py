@@ -53,6 +53,8 @@ class CreateForm(forms.SelfHandlingForm):
                                        _("Interval (format hh:mm:ss)")}),
                                    required=True)
     failure_url = 'horizon:admin:audits:index'
+    auto_trigger = forms.BooleanField(label=_("Auto Trigger"),
+                                      required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
@@ -85,6 +87,7 @@ class CreateForm(forms.SelfHandlingForm):
         try:
             params = {'audit_template_uuid': data['audit_template']}
             params['audit_type'] = data['audit_type'].upper()
+            params['auto_trigger'] = data['auto_trigger']
             if data['audit_type'] == 'continuous':
                 params['interval'] = int(data['interval'].total_seconds())
             else:

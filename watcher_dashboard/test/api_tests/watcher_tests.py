@@ -217,7 +217,7 @@ class WatcherAPITests(test.APITestCase):
         watcherclient.audit = self.mox.CreateMockAnything()
         watcherclient.audit.create(
             audit_template_uuid=audit_template_uuid,
-            audit_type=audit_type).AndReturn(audit)
+            audit_type=audit_type, auto_trigger=False).AndReturn(audit)
         self.mox.ReplayAll()
 
         ret_val = api.watcher.Audit.create(
@@ -237,11 +237,31 @@ class WatcherAPITests(test.APITestCase):
         watcherclient.audit.create(
             audit_template_uuid=audit_template_uuid,
             audit_type=audit_type,
+            auto_trigger=False,
             interval=interval).AndReturn(audit)
         self.mox.ReplayAll()
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, interval)
+            self.request, audit_template_uuid, audit_type, False, interval)
+        self.assertIsInstance(ret_val, dict)
+
+    def test_audit_create_with_auto_trigger(self):
+        audit = self.api_audits.list()[1]
+        audit_template_id = self.api_audit_templates.first()['uuid']
+
+        audit_type = self.api_audits.first()['audit_type']
+        audit_template_uuid = audit_template_id
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.audit = self.mox.CreateMockAnything()
+        watcherclient.audit.create(
+            audit_template_uuid=audit_template_uuid,
+            audit_type=audit_type,
+            auto_trigger=True).AndReturn(audit)
+        self.mox.ReplayAll()
+
+        ret_val = api.watcher.Audit.create(
+            self.request, audit_template_uuid, audit_type, True)
         self.assertIsInstance(ret_val, dict)
 
     def test_audit_delete(self):
