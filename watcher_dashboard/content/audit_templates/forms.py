@@ -41,7 +41,7 @@ class YamlValidator(object):
 
     def __call__(self, value):
         try:
-            yaml.load(value)
+            yaml.safe_load(value)
         except Exception:
             raise core_exc.ValidationError(self.message, code=self.code)
 
@@ -124,7 +124,7 @@ class CreateForm(forms.SelfHandlingForm):
             params['description'] = data['description']
             params['goal'] = data['goal']
             params['strategy'] = data['strategy'] or None
-            params['scope'] = [] if not data['scope'] else yaml.load(
+            params['scope'] = [] if not data['scope'] else yaml.safe_load(
                 data['scope'])
             audit_tpl = watcher.AuditTemplate.create(request, **params)
             message = _('Audit Template was successfully created.')
