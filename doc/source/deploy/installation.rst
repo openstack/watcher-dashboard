@@ -136,4 +136,4 @@ Join us on IRC (Internet Relay Chat)::
     Network: Freenode (irc.freenode.net/watcher)
     Channel: #openstack-watcher
 
-Or send an email to openstack-dev@lists.openstack.org.
+Or send an email to openstack-dev@lists.openstack.org using [watcher] in object
