@@ -7,7 +7,7 @@ function install_watcher_dashboard {
 }
 
 function configure_watcher_dashboard {
-    cp -a ${WATCHER_DASHBOARD_DIR}/watcher_dashboard/enabled/* ${DEST}/horizon/openstack_dashboard/local/enabled/
+    cp -a ${WATCHER_DASHBOARD_DIR}/watcher_dashboard/local/enabled/* ${DEST}/horizon/openstack_dashboard/local/enabled/
     cp -a ${WATCHER_DASHBOARD_DIR}/watcher_dashboard/conf/* ${DEST}/horizon/openstack_dashboard/conf/
 }
 
