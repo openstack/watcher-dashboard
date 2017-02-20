@@ -13,16 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
-
 from django.core import urlresolvers
 from django import http
 from mox3.mox import IsA  # noqa
 
 from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
-
-LOG = logging.getLogger(__name__)
 
 INDEX_URL = urlresolvers.reverse(
     'horizon:admin:strategies:index')

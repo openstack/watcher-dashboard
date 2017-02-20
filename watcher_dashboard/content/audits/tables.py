@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
-
 from django.core import urlresolvers
 from django import shortcuts
 from django.template.defaultfilters import title  # noqa
@@ -27,8 +25,6 @@ import horizon.tables
 from horizon.utils import filters
 
 from watcher_dashboard.api import watcher
-
-LOG = logging.getLogger(__name__)
 
 AUDIT_STATE_DISPLAY_CHOICES = (
     ("NO STATE", pgettext_lazy("State of an audit", u"No State")),

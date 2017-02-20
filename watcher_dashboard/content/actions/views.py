@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import collections
-import logging
 
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
@@ -26,8 +25,6 @@ import horizon.workflows
 from watcher_dashboard.api import watcher
 from watcher_dashboard.content.actions import tables
 from watcher_dashboard.content.actions import tabs as wtabs
-
-LOG = logging.getLogger(__name__)
 
 
 class IndexView(horizon.tables.DataTableView):
