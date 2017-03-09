@@ -143,7 +143,7 @@ settings_utils.find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
 dashboard_module_names = [
     'openstack_dashboard.enabled',
     'openstack_dashboard.local.enabled',
-    'watcher_dashboard.enabled',
+    'watcher_dashboard.local.enabled',
 ]
 dashboard_modules = []
 # All dashboards must be enabled for the namespace to get registered, which is
