@@ -4,7 +4,7 @@ src_path=`cd "$1"; pwd`
 dest_path=`cd "$2"; pwd`
 # echo "$src_path --> $dest_path"
 
-for filepath in $src_path/watcher_dashboard/enabled/*.py; do
+for filepath in $src_path/watcher_dashboard/local/enabled/*.py; do
     filename=$(basename $filepath)
     if [ $filename != "__init__.py" ]; then
         echo $filepath
