@@ -31,8 +31,7 @@ LOG = logging.getLogger(__name__)
 
 
 class CreateForm(forms.SelfHandlingForm):
-    audit_template = forms.ChoiceField(label=_("Audit Template"),
-                                       required=True)
+    audit_template = forms.ChoiceField(label=_("Audit Template"))
     audit_type = forms.ChoiceField(label=_("Audit Type"),
                                    choices=[(None, _("Select Audit Type")),
                                             ('oneshot', _('ONESHOT')),
@@ -40,8 +39,7 @@ class CreateForm(forms.SelfHandlingForm):
                                    widget=forms.Select(attrs={
                                        'class': 'switchable',
                                        'data-slug': 'audit_type'
-                                   }),
-                                   required=True)
+                                   }))
     interval = forms.DurationField(initial="01:00:00",
                                    label=_("Interval (format hh:mm:ss)"),
                                    help_text=_("Interval in format hh:mm:ss "
@@ -50,8 +48,7 @@ class CreateForm(forms.SelfHandlingForm):
                                        'class': 'switched',
                                        'data-switch-on': 'audit_type',
                                        'data-audit_type-continuous':
-                                       _("Interval (format hh:mm:ss)")}),
-                                   required=True)
+                                       _("Interval (format hh:mm:ss)")}))
     failure_url = 'horizon:admin:audits:index'
     auto_trigger = forms.BooleanField(label=_("Auto Trigger"),
                                       required=False)

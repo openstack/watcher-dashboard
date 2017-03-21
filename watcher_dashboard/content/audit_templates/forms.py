@@ -50,7 +50,7 @@ class CreateForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255, label=_("Name"))
     description = forms.CharField(max_length=255, label=_("Description"),
                                   required=False)
-    goal = forms.ChoiceField(label=_('Goal'), required=True)
+    goal = forms.ChoiceField(label=_('Goal'))
     strategy = forms.DynamicChoiceField(label=_('Strategy'), required=False)
 
     scope = forms.CharField(
