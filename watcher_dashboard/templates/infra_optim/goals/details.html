@@ -12,13 +12,13 @@
     <h4>{% trans "Goal Info" %}</h4>
     <dl class="dl-horizontal">
         <dt>{% trans "UUID" %}</dt>
-        <dd>{{ goal.uuid|default:"&mdash;" }}</dd>
+        <dd>{{ goal.uuid|default:_("-") }}</dd>
         <dt>{% trans "Name" %}</dt>
-        <dd>{{ goal.display_name|default:"&mdash;" }}</dd>
+        <dd>{{ goal.display_name|default:_("-") }}</dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ goal.created_at|default:"&mdash;" }}</dd>
+        <dd>{{ goal.created_at|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ goal.updated_at|default:"&mdash;" }}</dd>
+        <dd>{{ goal.updated_at|default:_("-") }}</dd>
     </dl>
   </div>
 </div>

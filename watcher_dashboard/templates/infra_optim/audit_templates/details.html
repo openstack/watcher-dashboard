@@ -12,21 +12,21 @@
     <h4>{% trans "Audit Template Info" %}</h4>
     <dl class="dl-horizontal">
         <dt>{% trans "Name" %}</dt>
-        <dd>{{ audit_template.name|default:"&mdash;" }}</dd>
+        <dd>{{ audit_template.name|default:_("-") }}</dd>
         <dt>{% trans "UUID" %}</dt>
-        <dd>{{ audit_template.uuid|default:"&mdash;" }}</dd>
+        <dd>{{ audit_template.uuid|default:_("-") }}</dd>
         <dt>{% trans "Goal" %}</dt>
-        <dd>{{ audit_template.goal_name|default:"&mdash;" }}</dd>
+        <dd>{{ audit_template.goal_name|default:_("-") }}</dd>
         <dt>{% trans "Strategy" %}</dt>
-        <dd>{{ audit_template.strategy_name|default:"&mdash;" }}</dd>
+        <dd>{{ audit_template.strategy_name|default:_("-") }}</dd>
         <dt>{% trans "Audit Scope" %}</dt>
         <dd><code>{{ audit_template.scope|linebreaks }}</code></dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ audit_template.created_at|default:"&mdash;" }}</dd>
+        <dd>{{ audit_template.created_at|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ audit_template.updated_at|default:"&mdash;" }}</dd>
+        <dd>{{ audit_template.updated_at|default:_("-") }}</dd>
         <dt>{% trans "Deleted At" %}</dt>
-        <dd>{{ audit_template.deleted_at|default:"&mdash;" }}</dd>
+        <dd>{{ audit_template.deleted_at|default:_("-") }}</dd>
     </dl>
   </div>
 </div>

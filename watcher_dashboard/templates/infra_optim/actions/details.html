@@ -12,20 +12,20 @@
     <h4>{% trans "Action Info" %}</h4>
     <dl class="dl-horizontal">
         <dt>{% trans "UUID" %}</dt>
-        <dd>{{ action.uuid|default:"&mdash;" }}</dd>
+        <dd>{{ action.uuid|default:_("-") }}</dd>
         <dt>{% trans "Type" %}</dt>
-        <dd>{{ action.action_type|default:"&mdash;" }}</dd>
+        <dd>{{ action.action_type|default:_("-") }}</dd>
         {% url 'horizon:admin:action_plans:detail' action.action_plan_uuid as action_plan_url %}
         <dt>{% trans "Action Plan" %}</dt>
         <dd><a href="{{ action_plan_url }}">
-          {{ action.action_plan_uuid|default:_("&mdash;") }}
+          {{ action.action_plan_uuid|default:_("-") }}
         </a></dd>
         <dt>{% trans "State" %}</dt>
-        <dd>{{ action.state|default:"&mdash;" }}</dd>
+        <dd>{{ action.state|default:_("-") }}</dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ action.created_at|default:"&mdash;" }}</dd>
+        <dd>{{ action.created_at|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ action.updated_at|default:"&mdash;" }}</dd>
+        <dd>{{ action.updated_at|default:_("-") }}</dd>
     </dl>
   </div>
 </div>

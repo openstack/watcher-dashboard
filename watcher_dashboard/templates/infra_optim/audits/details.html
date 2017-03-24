@@ -12,22 +12,22 @@
     <h4>{% trans "Audit Info" %}</h4>
     <dl class="dl-horizontal">
         <dt>{% trans "UUID" %}</dt>
-        <dd>{{ audit.uuid|default:"&mdash;" }}</dd>
+        <dd>{{ audit.uuid|default:_("-") }}</dd>
         <dt>{% trans "Goal" %}</dt>
-        <dd>{{ audit.goal_name|default:"&mdash;" }}</dd>
+        <dd>{{ audit.goal_name|default:_("-") }}</dd>
         <dt>{% trans "Strategy" %}</dt>
-        <dd>{{ audit.strategy_name|default:"&mdash;" }}</dd>
+        <dd>{{ audit.strategy_name|default:_("-") }}</dd>
         <dt>{% trans "Type" %}</dt>
-        <dd>{{ audit.audit_type|default:"&mdash;" }}</dd>
+        <dd>{{ audit.audit_type|default:_("-") }}</dd>
         <dt>{% trans "Auto Trigger" %}</dt>
         <dd>{{ audit.auto_trigger }}</dd>
         {% url 'horizon:admin:audit_templates:detail' audit.audit_template_uuid as audit_template_url %}
         <dt>{% trans "State" %}</dt>
-        <dd>{{ audit.state|default:"&mdash;" }}</dd>
+        <dd>{{ audit.state|default:_("-") }}</dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ audit.created_at|default:"&mdash;" }}</dd>
+        <dd>{{ audit.created_at|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ audit.updated_at|default:"&mdash;" }}</dd>
+        <dd>{{ audit.updated_at|default:_("-") }}</dd>
     </dl>
   </div>
 </div>

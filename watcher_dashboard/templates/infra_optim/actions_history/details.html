@@ -12,13 +12,13 @@
     <h4>{% trans "Hardware Info" %}</h4>
     <dl class="dl-horizontal dl-horizontal-left">
         <dt>{% trans "Severity" %}</dt>
-        <dd>{{ audits.cpu_arch|default:"&mdash;" }}</dd>
+        <dd>{{ audits.cpu_arch|default:_("-") }}</dd>
         <dt>{% trans "CPUs" %}</dt>
-        <dd>{{ audits.vcpus|default:"&mdash;" }}</dd>
+        <dd>{{ audits.vcpus|default:_("-") }}</dd>
         <dt>{% trans "Memory" %}</dt>
-        <dd>{{ audits.ram_bytes|filesizeformat|default:"&mdash;" }}</dd>
+        <dd>{{ audits.ram_bytes|filesizeformat|default:_("-") }}</dd>
         <dt>{% trans "Disk" %}</dt>
-        <dd>{{ audits.disk_bytes|filesizeformat|default:"&mdash;" }}</dd>
+        <dd>{{ audits.disk_bytes|filesizeformat|default:_("-") }}</dd>
     </dl>
   </div>
 </div>
