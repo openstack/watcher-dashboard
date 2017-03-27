@@ -25,9 +25,9 @@
         <dt>{% trans "State" %}</dt>
         <dd>{{ audit.state|default:_("-") }}</dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ audit.created_at|default:_("-") }}</dd>
+        <dd>{{ audit.created_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ audit.updated_at|default:_("-") }}</dd>
+        <dd>{{ audit.updated_at|parse_isotime|default:_("-") }}</dd>
     </dl>
   </div>
 </div>

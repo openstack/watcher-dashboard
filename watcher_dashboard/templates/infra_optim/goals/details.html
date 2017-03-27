@@ -16,9 +16,9 @@
         <dt>{% trans "Name" %}</dt>
         <dd>{{ goal.display_name|default:_("-") }}</dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ goal.created_at|default:_("-") }}</dd>
+        <dd>{{ goal.created_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ goal.updated_at|default:_("-") }}</dd>
+        <dd>{{ goal.updated_at|parse_isotime|default:_("-") }}</dd>
     </dl>
   </div>
 </div>
