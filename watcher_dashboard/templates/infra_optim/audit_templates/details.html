@@ -22,11 +22,11 @@
         <dt>{% trans "Audit Scope" %}</dt>
         <dd><code>{{ audit_template.scope|linebreaks }}</code></dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ audit_template.created_at|default:_("-") }}</dd>
+        <dd>{{ audit_template.created_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ audit_template.updated_at|default:_("-") }}</dd>
+        <dd>{{ audit_template.updated_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Deleted At" %}</dt>
-        <dd>{{ audit_template.deleted_at|default:_("-") }}</dd>
+        <dd>{{ audit_template.deleted_at|parse_isotime|default:_("-") }}</dd>
     </dl>
   </div>
 </div>

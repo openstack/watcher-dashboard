@@ -19,9 +19,9 @@
         {% url 'horizon:admin:goals:detail' strategy.goal_name as goal_url %}
         <dd><a href="{{ goal_url }}">{{ strategy.goal_name|default:_("-") }}</a></dd>
         <dt>{% trans "Created At" %}</dt>
-        <dd>{{ strategy.created_at|default:_("-") }}</dd>
+        <dd>{{ strategy.created_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
-        <dd>{{ strategy.updated_at|default:_("-") }}</dd>
+        <dd>{{ strategy.updated_at|parse_isotime|default:_("-") }}</dd>
     </dl>
   </div>
 </div>
