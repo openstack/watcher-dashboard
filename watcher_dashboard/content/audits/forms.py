@@ -82,7 +82,7 @@ class CreateForm(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            params = {'audit_template_uuid': data['audit_template']}
+            params = {'audit_template_uuid': data.get('audit_template')}
             params['audit_type'] = data['audit_type'].upper()
             params['auto_trigger'] = data['auto_trigger']
             if data['audit_type'] == 'continuous':
