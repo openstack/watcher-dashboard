@@ -28,10 +28,13 @@ from horizon import messages
 from watcher_dashboard.api import watcher
 
 LOG = logging.getLogger(__name__)
+ADD_AUDIT_TEMPLATES_URL = "horizon:admin:audit_templates:create"
 
 
 class CreateForm(forms.SelfHandlingForm):
-    audit_template = forms.ChoiceField(label=_("Audit Template"))
+    audit_template = forms.DynamicChoiceField(
+        label=_("Audit Template"),
+        add_item_link=ADD_AUDIT_TEMPLATES_URL)
     audit_type = forms.ChoiceField(label=_("Audit Type"),
                                    choices=[(None, _("Select Audit Type")),
                                             ('oneshot', _('ONESHOT')),
@@ -56,11 +59,7 @@ class CreateForm(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
         audit_templates = self._get_audit_template_list(request)
-
-        if audit_templates:
-            self.fields['audit_template'].choices = audit_templates
-        else:
-            del self.fields['audit_template']
+        self.fields['audit_template'].choices = audit_templates
 
     def _get_audit_template_list(self, request):
         try:
@@ -78,6 +77,8 @@ class CreateForm(forms.SelfHandlingForm):
 
         if choices:
             choices.insert(0, ("", _("Select Audit Template")))
+        else:
+            choices.insert(0, ("", _("No Audit Template found")))
         return choices
 
     def handle(self, request, data):

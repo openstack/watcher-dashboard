@@ -80,6 +80,9 @@ class CreateView(forms.ModalFormView):
     submit_label = _("Create Audit Template")
     submit_url = reverse_lazy("horizon:admin:audit_templates:create")
 
+    def get_object_id(self, obj):
+        return obj.uuid
+
 
 class DetailView(horizon.tabs.TabbedTableView):
     tab_group_class = wtabs.AuditTemplateDetailTabs
