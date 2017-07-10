@@ -35,16 +35,23 @@ def data(TEST):
     )
 
     TEST.goals = utils.TestDataContainer()
+    TEST.efficacy_specifications = utils.TestDataContainer()
     TEST.api_goals = utils.TestDataContainer()
+    efficacy_specifications_dict1 = {'name': 'spec1'}
+    efficacy_specifications_dict2 = {'name': 'spec2'}
+    spec1 = watcher.EfficacyIndicatorSpec(efficacy_specifications_dict1)
+    spec2 = watcher.EfficacyIndicatorSpec(efficacy_specifications_dict2)
     goal_dict1 = {
         'uuid': 'gggggggg-1111-1111-1111-gggggggggggg',
         'name': 'MINIMIZE_LICENSING_COST',
         'display_name': 'Dummy',
+        'efficacy_specifications': spec1
     }
     goal_dict2 = {
         'uuid': 'gggggggg-2222-2222-2222-gggggggggggg',
         'name': 'SERVER_CONSOLIDATION',
         'display_name': 'Server consolidation',
+        'efficacy_specifications': spec2
     }
     TEST.api_goals.add(goal_dict1)
     TEST.api_goals.add(goal_dict2)

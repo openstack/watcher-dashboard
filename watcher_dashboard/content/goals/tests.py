@@ -51,12 +51,14 @@ class GoalsTest(test.BaseAdminViewTests):
         self.assertMessageCount(resp, error=1, warning=0)
 
     @test.create_stubs({api.watcher.Goal: ('get',)})
+    @test.create_stubs({api.watcher.Strategy: ('list',)})
     def test_details(self):
         goal = self.goals.first()
         goal_id = goal.uuid
         api.watcher.Goal.get(
             IsA(http.HttpRequest), goal_id).MultipleTimes().AndReturn(goal)
         self.mox.ReplayAll()
+
         DETAILS_URL = urlresolvers.reverse(DETAILS_VIEW, args=[goal_id])
         res = self.client.get(DETAILS_URL)
         self.assertTemplateUsed(res, 'infra_optim/goals/details.html')

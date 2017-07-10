@@ -416,7 +416,7 @@ class Goal(base.APIDictWrapper):
     """Goal resource."""
 
     _attrs = ('uuid', 'name', 'display_name', 'created_at',
-              'updated_at', 'deleted_at')
+              'updated_at', 'deleted_at', 'efficacy_specifications')
 
     def __init__(self, apiresource, request=None):
         super(Goal, self).__init__(apiresource)
