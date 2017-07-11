@@ -18,7 +18,7 @@
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
-    'oslosphinx',
+    'openstackdocstheme',
 ]
 
 wsme_protocols = ['restjson']
@@ -35,7 +35,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Watcher'
+project = u'Watcher Dashboard'
 copyright = u'OpenStack Foundation'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -84,7 +84,9 @@ man_pages = []
 # html_theme_path = ["."]
 # html_theme = '_theme'
 # html_static_path = ['static']
-html_theme_options = {'incubating': True}
+# html_theme_options = {'incubating': True}
+# html_theme_options = {"show_other_versions": "True"}
+html_theme = 'openstackdocs'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
@@ -101,3 +103,11 @@ latex_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 # intersphinx_mapping = {'http://docs.python.org/': None}
+
+# openstackdocstheme options
+repository_name = 'openstack/watcher-dashboard'
+bug_project = 'watcher-dashboard'
+bug_tag = ''
+
+# Must set this variable to include year, month, day, hours, and minutes.
+html_last_updated_fmt = '%Y-%m-%d %H:%M'
