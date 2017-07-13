@@ -33,16 +33,21 @@ specific prior release.
 .. _watcher-dashboard: https://git.openstack.org/cgit/openstack/watcher-dashboard/
 
 
-Developer Guide
-===============
-
-Introduction
-------------
+Install Guide
+=============
 
 .. toctree::
   :maxdepth: 1
 
-  deploy/installation
+  install/index
+
+Developer Guide
+===============
+
+.. toctree::
+  :maxdepth: 1
+
+  contributor/index
 
 
 Indices and tables
