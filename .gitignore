@@ -60,3 +60,6 @@ watcher_dashboard/test/.secret_key_store
 
 # Files created by releasenotes build
 releasenotes/build
+
+# DS_Store on Mac computers
+*.DS_Store
