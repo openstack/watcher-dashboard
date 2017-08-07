@@ -38,9 +38,9 @@ start the service via the following command::
 For more details on how to configure Horizon for a production environment, you
 can refer to their online `installation guide`_.
 
-.. _Horizon documentation: http://docs.openstack.org/developer/horizon
-.. _quickstart tutorial: http://docs.openstack.org/developer/horizon/quickstart.html
-.. _installation guide: http://docs.openstack.org/developer/horizon/topics/install.html
+.. _Horizon documentation: https://docs.openstack.org/horizon/latest
+.. _quickstart tutorial: https://docs.openstack.org/horizon/latest/contributor/quickstart.html
+.. _installation guide: https://docs.openstack.org/horizon/latest/install/index.html
 
 
 DevStack setup
