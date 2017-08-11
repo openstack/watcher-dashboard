@@ -43,15 +43,15 @@ class CreateForm(forms.SelfHandlingForm):
                                        'class': 'switchable',
                                        'data-slug': 'audit_type'
                                    }))
-    interval = forms.DurationField(initial="01:00:00",
-                                   label=_("Interval (format hh:mm:ss)"),
-                                   help_text=_("Interval in format hh:mm:ss "
-                                               "for CONTINUOUS audit"),
-                                   widget=forms.TextInput(attrs={
-                                       'class': 'switched',
-                                       'data-switch-on': 'audit_type',
-                                       'data-audit_type-continuous':
-                                       _("Interval (format hh:mm:ss)")}))
+    interval = forms.CharField(label=_("Interval (in seconds or cron format)"),
+                               help_text=_("Interval in seconds or cron"
+                                           "format for CONTINUOUS audit"),
+                               widget=forms.TextInput(attrs={
+                                   'class': 'switched',
+                                   'data-switch-on': 'audit_type',
+                                   'data-audit_type-continuous':
+                                   _("Interval (in seconds or cron"
+                                     " format)")}))
     failure_url = 'horizon:admin:audits:index'
     auto_trigger = forms.BooleanField(label=_("Auto Trigger"),
                                       required=False)
@@ -87,7 +87,7 @@ class CreateForm(forms.SelfHandlingForm):
             params['audit_type'] = data['audit_type'].upper()
             params['auto_trigger'] = data['auto_trigger']
             if data['audit_type'] == 'continuous':
-                params['interval'] = int(data['interval'].total_seconds())
+                params['interval'] = data['interval']
             else:
                 params['interval'] = None
             audit = watcher.Audit.create(request, **params)
