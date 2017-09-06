@@ -13,7 +13,7 @@ OpenStack Dashboard plugin for Watcher project
 The Watcher dashboard is a Horizon plugin that will allow users to realize a
 wide range of cloud optimization goals.
 
-Free software: Apache license
-Documentation: https://docs.openstack.org/watcher-dashboard/latest
-Source: https://git.openstack.org/cgit/openstack/watcher-dashboard
-Bugs: https://bugs.launchpad.net/watcher-dashboard
+* Free software: Apache license
+* Documentation: https://docs.openstack.org/watcher-dashboard/latest
+* Source: https://git.openstack.org/cgit/openstack/watcher-dashboard
+* Bugs: https://bugs.launchpad.net/watcher-dashboard
