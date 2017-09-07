@@ -1,0 +1,4 @@
+# DevStack settings
+
+# Enable Watcher dashboard services
+enable_service watcher-dashboard
