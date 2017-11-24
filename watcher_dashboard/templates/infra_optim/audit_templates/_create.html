@@ -15,37 +15,40 @@
 <p class="scope-example-yaml">
     {% trans "YAML example:" %}
     ---
-     - host_aggregates:
-       - id: 1
-       - id: 2
-       - id: 3
-     - availability_zones:
-       - name: AZ1
-       - name: AZ2
-     - exclude:
-       - instances:
-         - uuid: UUID1
-        - uuid: UUID2
-       - compute_nodes:
-         - name: compute1
+     - compute:
+       - host_aggregates:
+         - id: 1
+         - id: 2
+         - id: 3
+       - availability_zones:
+         - name: AZ1
+         - name: AZ2
+       - exclude:
+         - instances:
+           - uuid: UUID1
+          - uuid: UUID2
+         - compute_nodes:
+           - name: compute1
   </p>
   <p>
     {% trans "JSON example:" %}
-    [{'host_aggregates': [
-         {'id': 1},
-         {'id': 2},
-         {'id': 3}]},
-     {'availability_zones': [
-         {'name': 'AZ1'},
-         {'name': 'AZ2'}]},
-     {'exclude': [
-         {'instances': [
-             {'uuid': 'UUID1'},
-             {'uuid': 'UUID2'}
-         ]},
-         {'compute_nodes': [
-             {'name': 'compute1'}
-         ]}
-    ]}]
+    [{'compute':
+        [{'host_aggregates': [
+             {'id': 1},
+             {'id': 2},
+             {'id': 3}]},
+         {'availability_zones': [
+             {'name': 'AZ1'},
+             {'name': 'AZ2'}]},
+         {'exclude': [
+             {'instances': [
+                 {'uuid': 'UUID1'},
+                 {'uuid': 'UUID2'}
+             ]},
+             {'compute_nodes': [
+                 {'name': 'compute1'}
+             ]}
+        ]}]
+    }]
 </p>
 {% endblock %}
