@@ -125,7 +125,9 @@ to customize your policies.
 Links
 -----
 
-Watcher project: https://git.openstack.org/openstack/watcher
+Watcher project: https://git.openstack.org/cgit/openstack/watcher/
+
+Watcher at github: https://github.com/openstack/watcher
 
 Watcher at wiki.openstack.org: https://wiki.openstack.org/wiki/Watcher
 
