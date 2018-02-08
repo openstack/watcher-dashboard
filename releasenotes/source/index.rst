@@ -6,5 +6,6 @@ Watcher Dashboard Release Notes
    :maxdepth: 1
 
    unreleased
+   queens
    pike
    ocata
