@@ -14,7 +14,7 @@ We use OpenStack's Gerrit for the code contributions:
 
 `<https://review.openstack.org/#/q/status:open+project:openstack/watcher-dashboard,n,z>`__
 
-and we follow the `OpenStack Gerrit Workflow <http://docs.openstack.org/infra/manual/developers.html#development-workflow>`__.
+and we follow the `OpenStack Gerrit Workflow <https://docs.openstack.org/infra/manual/developers.html#development-workflow>`__.
 
 If you're interested in the code, here are some key places to start:
 
@@ -33,7 +33,7 @@ Using ``tox``:
 
     This is the easiest way to run tests. When run, tox installs dependencies,
     prepares the virtual python environment, then runs test commands. The gate
-    tests in gerrit usually also use tox to run tests. For avaliable tox
+    tests in gerrit usually also use tox to run tests. For available tox
     environments, see ``tox.ini``.
 
 By running ``run_tests.sh``:
