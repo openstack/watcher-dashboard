@@ -24,8 +24,8 @@ signed OpenStack's contributor's agreement.
 
 .. seealso::
 
-   * http://docs.openstack.org/infra/manual/developers.html
-   * http://wiki.openstack.org/CLA
+   * https://docs.openstack.org/infra/manual/developers.html
+   * https://wiki.openstack.org/wiki/CLA
 
 LaunchPad Project
 -----------------
@@ -37,17 +37,17 @@ notifications of important events.
 
 .. seealso::
 
-   * http://launchpad.net
-   * http://launchpad.net/watcher
-   * http://launchpad.net/watcher-dashboard
-   * http://launchpad.net/~openstack
+   * https://launchpad.net/
+   * https://launchpad.net/watcher
+   * https://launchpad.net/watcher-dashboard
+   * https://launchpad.net/~openstack
 
 
 Project Hosting Details
 -----------------------
 
 Bug tracker
-    http://launchpad.net/watcher-dashboard
+    https://launchpad.net/watcher-dashboard
 
 Blueprints
     https://blueprints.launchpad.net/watcher-dashboard
@@ -56,7 +56,7 @@ Mailing list (prefix subjects with ``[watcher]`` for faster responses)
     http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev
 
 Wiki
-    http://wiki.openstack.org/Watcher
+    https://wiki.openstack.org/wiki/Watcher
 
 Code Hosting
     https://git.openstack.org/cgit/openstack/watcher-dashboard
