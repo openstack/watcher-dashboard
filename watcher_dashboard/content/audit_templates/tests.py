@@ -14,8 +14,7 @@
 # limitations under the License.
 
 from django.core import urlresolvers
-from django import http
-from mox3.mox import IsA  # noqa
+import mock
 
 from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
@@ -34,47 +33,34 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         self.goal_list = self.goals.list()
         self.strategy_list = self.strategies.list()
 
-    @test.create_stubs({api.watcher.AuditTemplate: ('list',)})
-    def test_index(self):
-        search_opts = {}
-        api.watcher.AuditTemplate.list(
-            IsA(http.HttpRequest),
-            **search_opts).MultipleTimes().AndReturn(
-            self.audit_templates.list())
-        self.mox.ReplayAll()
+    @mock.patch.object(api.watcher.AuditTemplate, 'list')
+    def test_index(self, mock_list):
+        mock_list.return_value = self.audit_templates.list()
 
         res = self.client.get(INDEX_URL)
         self.assertTemplateUsed(res, 'infra_optim/audit_templates/index.html')
         audit_templates = res.context['audit_templates_table'].data
         self.assertItemsEqual(audit_templates, self.audit_templates.list())
 
-    @test.create_stubs({api.watcher.AuditTemplate: ('list',)})
-    def test_audit_template_list_unavailable(self):
-        search_opts = None
-        api.watcher.AuditTemplate.list(
-            IsA(http.HttpRequest),
-            filter=search_opts).MultipleTimes().AndRaise(
-            self.exceptions.watcher)
-        self.mox.ReplayAll()
+    @mock.patch.object(api.watcher.AuditTemplate, 'list')
+    def test_audit_template_list_unavailable(self, mock_list):
+        mock_list.side_effect = self.exceptions.watcher
 
         resp = self.client.get(INDEX_URL)
         self.assertMessageCount(resp, error=1, warning=0)
 
-    @test.create_stubs({api.watcher.Strategy: ('list',)})
-    @test.create_stubs({api.watcher.Goal: ('list',)})
-    def test_create_get(self):
-        api.watcher.Goal.list(
-            IsA(http.HttpRequest)).AndReturn(self.goal_list)
-        api.watcher.Strategy.list(
-            IsA(http.HttpRequest)).AndReturn(self.strategy_list)
-        self.mox.ReplayAll()
+    @mock.patch.object(api.watcher.Strategy, 'list')
+    @mock.patch.object(api.watcher.Goal, 'list')
+    def test_create_get(self, m_goal_list, m_strategy_list):
+        m_goal_list.return_value = self.goal_list
+        m_strategy_list.return_value = self.strategy_list
         res = self.client.get(CREATE_URL)
         self.assertTemplateUsed(res, 'infra_optim/audit_templates/create.html')
 
-    @test.create_stubs({api.watcher.Strategy: ('list',)})
-    @test.create_stubs({api.watcher.Goal: ('list',)})
-    @test.create_stubs({api.watcher.AuditTemplate: ('create',)})
-    def test_create_post(self):
+    @mock.patch.object(api.watcher.Strategy, 'list')
+    @mock.patch.object(api.watcher.Goal, 'list')
+    @mock.patch.object(api.watcher.AuditTemplate, 'create')
+    def test_create_post(self, m_audit_create, m_goal_list, m_strategy_list):
         at = self.audit_templates.first()
         form_data = {
             'name': at.name,
@@ -83,27 +69,20 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
             'description': at.description,
             'scope': at.scope,
         }
-        api.watcher.Goal.list(
-            IsA(http.HttpRequest)).AndReturn(self.goal_list)
-        api.watcher.Strategy.list(
-            IsA(http.HttpRequest)).AndReturn(self.strategy_list)
-
-        api.watcher.AuditTemplate.create(
-            IsA(http.HttpRequest), **form_data).AndReturn(at)
-        self.mox.ReplayAll()
+        m_goal_list.return_value = self.goal_list
+        m_strategy_list.return_value = self.strategy_list
+        m_audit_create.return_value = at
 
         res = self.client.post(CREATE_URL, form_data)
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.watcher.AuditTemplate: ('get',)})
-    def test_details(self):
+    @mock.patch.object(api.watcher.AuditTemplate, 'get')
+    def test_details(self, m_get):
         at = self.audit_templates.first()
         at_id = at.uuid
-        api.watcher.AuditTemplate.get(
-            IsA(http.HttpRequest), at_id).\
-            MultipleTimes().AndReturn(at)
-        self.mox.ReplayAll()
+        m_get.return_value = at
+
         DETAILS_URL = urlresolvers.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
         self.assertTemplateUsed(res,
@@ -111,30 +90,23 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         audit_templates = res.context['audit_template']
         self.assertItemsEqual([audit_templates], [at])
 
-    @test.create_stubs({api.watcher.AuditTemplate: ('get',)})
-    def test_details_exception(self):
+    @mock.patch.object(api.watcher.AuditTemplate, 'get')
+    def test_details_exception(self, m_get):
         at = self.audit_templates.first()
         at_id = at.uuid
-        api.watcher.AuditTemplate.get(IsA(http.HttpRequest), at_id) \
-            .AndRaise(self.exceptions.watcher)
-
-        self.mox.ReplayAll()
+        m_get.side_effect = self.exceptions.watcher
 
         DETAILS_URL = urlresolvers.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.watcher.AuditTemplate: ('delete', 'list')})
-    def test_delete(self):
-        search_opts = {}
+    @mock.patch.object(api.watcher.AuditTemplate, 'delete')
+    @mock.patch.object(api.watcher.AuditTemplate, 'list')
+    def test_delete(self, m_list, m_del):
         at_list = self.audit_templates.list()
         at = self.audit_templates.first()
         at_id = at.uuid
-        api.watcher.AuditTemplate.list(
-            IsA(http.HttpRequest),
-            **search_opts).MultipleTimes().AndReturn(at_list)
-        api.watcher.AuditTemplate.delete(IsA(http.HttpRequest), at_id)
-        self.mox.ReplayAll()
+        m_list.return_value = at_list
 
         form_data = {'action': 'audit_templates__delete',
                      'object_ids': at_id}
