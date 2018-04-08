@@ -14,8 +14,7 @@
 # limitations under the License.
 
 from django.core import urlresolvers
-from django import http
-from mox3.mox import IsA  # noqa
+import mock
 
 from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
@@ -35,38 +34,28 @@ class StrategiesTest(test.BaseAdminViewTests):
         'PREPARED_PLAN_OPERATION',
     ]
 
-    @test.create_stubs({api.watcher.Strategy: ('list',)})
-    def test_index(self):
-        search_opts = {}
-        api.watcher.Strategy.list(
-            IsA(http.HttpRequest), **search_opts
-        ).MultipleTimes().AndReturn(self.strategies.list())
-        self.mox.ReplayAll()
+    @mock.patch.object(api.watcher.Strategy, 'list')
+    def test_index(self, mock_list):
+        mock_list.return_value = self.strategies.list()
 
         res = self.client.get(INDEX_URL)
         self.assertTemplateUsed(res, 'infra_optim/strategies/index.html')
         strategies = res.context['strategies_table'].data
         self.assertItemsEqual(strategies, self.strategies.list())
 
-    @test.create_stubs({api.watcher.Strategy: ('list',)})
-    def test_strategy_list_unavailable(self):
-        search_opts = {}
-        api.watcher.Strategy.list(
-            IsA(http.HttpRequest), **search_opts).MultipleTimes().AndRaise(
-            self.exceptions.watcher)
-        self.mox.ReplayAll()
+    @mock.patch.object(api.watcher.Strategy, 'list')
+    def test_strategy_list_unavailable(self, mock_list):
+        mock_list.side_effect = self.exceptions.watcher
 
         resp = self.client.get(INDEX_URL)
         self.assertMessageCount(resp, error=1, warning=0)
 
-    @test.create_stubs({api.watcher.Strategy: ('get',)})
-    def test_details(self):
+    @mock.patch.object(api.watcher.Strategy, 'get')
+    def test_details(self, mock_get):
         at = self.strategies.first()
         at_id = at.uuid
-        api.watcher.Strategy.get(
-            IsA(http.HttpRequest), at_id).\
-            MultipleTimes().AndReturn(at)
-        self.mox.ReplayAll()
+        mock_get.return_value = at
+
         DETAILS_URL = urlresolvers.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
         self.assertTemplateUsed(res,
@@ -74,14 +63,11 @@ class StrategiesTest(test.BaseAdminViewTests):
         strategies = res.context['strategy']
         self.assertItemsEqual([strategies], [at])
 
-    @test.create_stubs({api.watcher.Strategy: ('get',)})
-    def test_details_exception(self):
+    @mock.patch.object(api.watcher.Strategy, 'get')
+    def test_details_exception(self, mock_get):
         at = self.strategies.first()
         at_id = at.uuid
-        api.watcher.Strategy.get(IsA(http.HttpRequest), at_id) \
-            .AndRaise(self.exceptions.watcher)
-
-        self.mox.ReplayAll()
+        mock_get.side_effect = self.exceptions.watcher
 
         DETAILS_URL = urlresolvers.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
