@@ -24,10 +24,6 @@ from watcher_dashboard import api
 from watcher_dashboard.test.test_data import utils
 
 
-def create_stubs(stubs_to_create={}):
-    return helpers.create_stubs(stubs_to_create)
-
-
 class WatcherTestsMixin(object):
     def _setup_test_data(self):
         super(WatcherTestsMixin, self)._setup_test_data()
