@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.core import urlresolvers
 from django import shortcuts
 from django.template.defaultfilters import title  # noqa
+from django import urls
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
@@ -74,7 +74,7 @@ class GoToActionPlan(horizon.tables.Action):
                 _("Unable to retrieve action_plan information."))
             return "javascript:void(0);"
 
-        return shortcuts.redirect(urlresolvers.reverse(
+        return shortcuts.redirect(urls.reverse(
             self.url,
             args=[action_plans[0].uuid]))
 

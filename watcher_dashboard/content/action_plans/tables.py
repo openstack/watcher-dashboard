@@ -15,8 +15,8 @@
 
 import logging
 
-from django.core import urlresolvers
 from django.template.defaultfilters import title  # noqa
+from django import urls
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
@@ -139,10 +139,10 @@ def format_global_efficacy(action_plan):
 
 def get_audit_link(datum):
     try:
-        return urlresolvers.reverse(
+        return urls.reverse(
             "horizon:admin:audits:detail",
             kwargs={"audit_uuid": getattr(datum, "audit_uuid", None)})
-    except urlresolvers.NoReverseMatch:
+    except urls.NoReverseMatch:
         return None
 
 

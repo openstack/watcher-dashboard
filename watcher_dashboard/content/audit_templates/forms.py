@@ -19,7 +19,7 @@ Forms for starting Watcher Audit Templates.
 import logging
 
 from django.core import exceptions as core_exc
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms

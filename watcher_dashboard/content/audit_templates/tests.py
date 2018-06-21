@@ -13,15 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.core import urlresolvers
+from django import urls
 import mock
 
 from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
 
-INDEX_URL = urlresolvers.reverse(
+INDEX_URL = urls.reverse(
     'horizon:admin:audit_templates:index')
-CREATE_URL = urlresolvers.reverse(
+CREATE_URL = urls.reverse(
     'horizon:admin:audit_templates:create')
 DETAILS_VIEW = 'horizon:admin:audit_templates:detail'
 
@@ -83,7 +83,7 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         at_id = at.uuid
         m_get.return_value = at
 
-        DETAILS_URL = urlresolvers.reverse(DETAILS_VIEW, args=[at_id])
+        DETAILS_URL = urls.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
         self.assertTemplateUsed(res,
                                 'infra_optim/audit_templates/details.html')
@@ -96,7 +96,7 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         at_id = at.uuid
         m_get.side_effect = self.exceptions.watcher
 
-        DETAILS_URL = urlresolvers.reverse(DETAILS_VIEW, args=[at_id])
+        DETAILS_URL = urls.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 

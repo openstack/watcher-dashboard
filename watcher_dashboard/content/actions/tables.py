@@ -15,8 +15,8 @@
 
 import logging
 
-from django.core import urlresolvers
 from django.template.defaultfilters import title  # noqa
+from django import urls
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 import horizon.exceptions
@@ -63,11 +63,11 @@ class ActionsFilterAction(horizon.tables.FilterAction):
 
 def get_action_plan_link(datum):
     try:
-        return urlresolvers.reverse(
+        return urls.reverse(
             "horizon:admin:action_plans:detail",
             kwargs={"action_plan_uuid": getattr(
                 datum, "action_plan_uuid", None)})
-    except urlresolvers.NoReverseMatch:
+    except urls.NoReverseMatch:
         return None
 
 
