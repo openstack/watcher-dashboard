@@ -35,6 +35,10 @@ class CreateForm(forms.SelfHandlingForm):
     audit_template = forms.DynamicChoiceField(
         label=_("Audit Template"),
         add_item_link=ADD_AUDIT_TEMPLATES_URL)
+    audit_name = forms.CharField(max_length=255, label=_("Name"),
+                                 help_text=_("An audit name should not "
+                                 "duplicate with existed audits' names."),
+                                 required=False)
     audit_type = forms.ChoiceField(label=_("Audit Type"),
                                    choices=[(None, _("Select Audit Type")),
                                             ('oneshot', _('ONESHOT')),
@@ -86,6 +90,7 @@ class CreateForm(forms.SelfHandlingForm):
             params = {'audit_template_uuid': data.get('audit_template')}
             params['audit_type'] = data['audit_type'].upper()
             params['auto_trigger'] = data['auto_trigger']
+            params['name'] = data['audit_name']
             if data['audit_type'] == 'continuous':
                 params['interval'] = data['interval']
             else:
