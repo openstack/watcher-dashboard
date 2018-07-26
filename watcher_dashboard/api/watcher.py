@@ -55,7 +55,7 @@ def insert_watcher_policy_file():
 
 
 class Audit(base.APIDictWrapper):
-    _attrs = ('uuid', 'created_at', 'modified_at', 'deleted_at',
+    _attrs = ('uuid', 'name', 'created_at', 'modified_at', 'deleted_at',
               'state', 'audit_type', 'audit_template_uuid',
               'audit_template_name', 'interval')
 
@@ -80,6 +80,9 @@ class Audit(base.APIDictWrapper):
 
         :param interval: Audit interval (default: None)
         :type  interval: int
+
+        :param name: Name for this audit
+        :type  name: string
 
         :return: the created Audit object
         :rtype:  :py:class:`~.Audit`

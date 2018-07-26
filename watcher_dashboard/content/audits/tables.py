@@ -104,9 +104,13 @@ class ArchiveAudits(horizon.tables.DeleteAction):
 
 
 class AuditsTable(horizon.tables.DataTable):
-    name = horizon.tables.Column(
+    uuid = horizon.tables.Column(
         'uuid',
         verbose_name=_("UUID"),
+        link="horizon:admin:audits:detail")
+    name = horizon.tables.Column(
+        'name',
+        verbose_name=_("Name"),
         link="horizon:admin:audits:detail")
     goal = horizon.tables.Column(
         'goal_name',
