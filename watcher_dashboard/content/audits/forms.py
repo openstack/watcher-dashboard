@@ -100,8 +100,8 @@ class CreateForm(forms.SelfHandlingForm):
             messages.success(request, message)
             return audit
         except Exception as exc:
-            if exc.http_status == 409:
-                msg = _('Quota exceeded for resource audit.')
+            if getattr(exc, 'http_status', None) == 409:
+                msg = _('Error: Audit name already exists.')
             else:
                 msg = _('Failed to create audit.')
             LOG.info(exc)
