@@ -207,7 +207,7 @@ class WatcherAPITests(test.APITestCase):
         ret_val = api.watcher.Audit.get(self.request, audit_id)
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.get.assert_called_with(
-            audit_id=audit_id)
+            audit=audit_id)
 
     def test_audit_create(self):
         audit = self.api_audits.first()
@@ -275,7 +275,7 @@ class WatcherAPITests(test.APITestCase):
 
         api.watcher.Audit.delete(self.request, audit_id)
         watcherclient.audit.delete.assert_called_with(
-            audit_id=audit_id)
+            audit=audit_id)
 
     def test_action_plan_list(self):
         action_plans = {'action_plans': self.api_action_plans.list()}

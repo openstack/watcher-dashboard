@@ -127,7 +127,7 @@ class Audit(base.APIDictWrapper):
                  the ID
         :rtype:  :py:class:`~.Audit`
         """
-        return watcherclient(request).audit.get(audit_id=audit_id)
+        return watcherclient(request).audit.get(audit=audit_id)
 
     @classmethod
     def delete(cls, request, audit_id):
@@ -139,7 +139,7 @@ class Audit(base.APIDictWrapper):
         :param audit_id: audit id
         :type  audit_id: int
         """
-        watcherclient(request).audit.delete(audit_id=audit_id)
+        return watcherclient(request).audit.delete(audit=audit_id)
 
     @property
     def id(self):
