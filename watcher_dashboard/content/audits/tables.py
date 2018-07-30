@@ -83,6 +83,9 @@ class ArchiveAudits(horizon.tables.DeleteAction):
     verbose_name = _("Archive Audits")
     policy_rules = (("infra-optim", "audit:delete"),)
 
+    def allowed(self, request, audit):
+        return audit or audit.state not in ("ONGOING", "PENDING")
+
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -139,7 +142,6 @@ class AuditsTable(horizon.tables.DataTable):
         launch_actions = (CreateAudit,)
         table_actions = launch_actions + (
             AuditsFilterAction,
-            ArchiveAudits,
         )
         row_actions = (
             GoToActionPlan,
