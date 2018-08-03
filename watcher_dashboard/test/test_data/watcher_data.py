@@ -123,12 +123,14 @@ def data(TEST):
     audit_dict = {
         'uuid': '22222222-2222-2222-2222-222222222222',
         'audit_type': 'ONESHOT',
+        'name': 'Audit 1',
         'audit_template_uuid': '11111111-1111-1111-1111-111111111111',
         'interval': None,
     }
     audit_dict2 = {
         'uuid': '33333333-3333-3333-3333-333333333333',
         'audit_type': 'CONTINUOUS',
+        'name': 'Audit 2',
         'audit_template_uuid': '11111111-1111-1111-1111-111111111111',
         'interval': 60,
     }

@@ -64,7 +64,7 @@ class Audit(base.APIDictWrapper):
         self._request = request
 
     @classmethod
-    def create(cls, request, audit_template_uuid,
+    def create(cls, request, name, audit_template_uuid,
                audit_type, auto_trigger=False, interval=None):
 
         """Create an audit in Watcher
@@ -91,11 +91,11 @@ class Audit(base.APIDictWrapper):
         if interval:
             return watcherclient(request).audit.create(
                 audit_template_uuid=audit_template_uuid, audit_type=audit_type,
-                auto_trigger=auto_trigger, interval=interval)
+                auto_trigger=auto_trigger, interval=interval, name=name)
         else:
             return watcherclient(request).audit.create(
                 audit_template_uuid=audit_template_uuid, audit_type=audit_type,
-                auto_trigger=auto_trigger)
+                auto_trigger=auto_trigger, name=name)
 
     @classmethod
     def list(cls, request, **filters):

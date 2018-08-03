@@ -214,6 +214,7 @@ class WatcherAPITests(test.APITestCase):
         audit_template_id = self.api_audit_templates.first()['uuid']
 
         audit_type = self.api_audits.first()['audit_type']
+        audit_name = self.api_audits.first()['name']
         audit_template_uuid = audit_template_id
 
         watcherclient = self.stub_watcherclient()
@@ -221,17 +222,18 @@ class WatcherAPITests(test.APITestCase):
             return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type)
+            self.request, audit_name, audit_template_uuid, audit_type)
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
-            audit_type=audit_type, auto_trigger=False)
+            audit_type=audit_type, auto_trigger=False, name=audit_name)
 
     def test_audit_create_with_interval(self):
         audit = self.api_audits.list()[1]
         audit_template_id = self.api_audit_templates.first()['uuid']
 
         audit_type = self.api_audits.first()['audit_type']
+        audit_name = self.api_audits.first()['name']
         interval = audit['interval']
         audit_template_uuid = audit_template_id
 
@@ -240,19 +242,22 @@ class WatcherAPITests(test.APITestCase):
             return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, False, interval)
+            self.request, audit_name, audit_template_uuid, audit_type,
+            False, interval)
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
             audit_type=audit_type,
             auto_trigger=False,
-            interval=interval)
+            interval=interval,
+            name=audit_name)
 
     def test_audit_create_with_auto_trigger(self):
         audit = self.api_audits.list()[1]
         audit_template_id = self.api_audit_templates.first()['uuid']
 
         audit_type = self.api_audits.first()['audit_type']
+        audit_name = self.api_audits.first()['name']
         audit_template_uuid = audit_template_id
 
         watcherclient = self.stub_watcherclient()
@@ -260,12 +265,13 @@ class WatcherAPITests(test.APITestCase):
             return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, True)
+            self.request, audit_name, audit_template_uuid, audit_type, True)
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
             audit_type=audit_type,
-            auto_trigger=True)
+            auto_trigger=True,
+            name=audit_name)
 
     def test_audit_delete(self):
         audit_id = self.api_audits.first()['uuid']
