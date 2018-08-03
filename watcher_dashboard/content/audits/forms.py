@@ -55,7 +55,8 @@ class CreateForm(forms.SelfHandlingForm):
                                    'data-switch-on': 'audit_type',
                                    'data-audit_type-continuous':
                                    _("Interval (in seconds or cron"
-                                     " format)")}))
+                                     " format)")}),
+                               required=False)
     failure_url = 'horizon:admin:audits:index'
     auto_trigger = forms.BooleanField(label=_("Auto Trigger"),
                                       required=False)
@@ -84,6 +85,14 @@ class CreateForm(forms.SelfHandlingForm):
         else:
             choices.insert(0, ("", _("No Audit Template found")))
         return choices
+
+    def clean(self):
+        cleaned_data = super(CreateForm, self).clean()
+        audit_type = cleaned_data.get('audit_type')
+        if audit_type == 'continuous' and not cleaned_data.get('interval'):
+            msg = _('Please input an interval for continuous audit')
+            raise forms.ValidationError(msg)
+        return cleaned_data
 
     def handle(self, request, data):
         try:
