@@ -21,7 +21,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.messages',
     'django.contrib.humanize',
-    'django_nose',
     'openstack_auth',
     'compressor',
     'horizon',
@@ -31,8 +30,6 @@ INSTALLED_APPS = (
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled
 import watcher_dashboard.local.enabled
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings_utils.update_dashboards(
