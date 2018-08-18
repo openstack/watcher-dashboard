@@ -4,7 +4,7 @@
 # Hacking already pins down pep8, pyflakes and flake8
 
 # Testing Requirements
-http://tarballs.openstack.org/horizon/horizon-master.tar.gz#egg=horizon
+http://tarballs.openstack.org/horizon/horizon-stable-pike.tar.gz#egg=horizon
 
 hacking!=0.13.0,<0.14,>=0.12.0 # Apache-2.0
 coverage!=4.4,>=4.0 # Apache-2.0
