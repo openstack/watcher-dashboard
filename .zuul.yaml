@@ -1,4 +1,10 @@
 - project:
+    templates:
+      - openstack-python-jobs-horizon
+      - openstack-python35-jobs-horizon
+      - publish-openstack-sphinx-docs
+      - release-notes-jobs
+      - check-requirements
     check:
       jobs:
         - openstack-tox-lower-constraints
