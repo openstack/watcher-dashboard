@@ -53,7 +53,7 @@ Blueprints
     https://blueprints.launchpad.net/watcher-dashboard
 
 Mailing list (prefix subjects with ``[watcher]`` for faster responses)
-    http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev
+    http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-discuss
 
 Wiki
     https://wiki.openstack.org/wiki/Watcher
