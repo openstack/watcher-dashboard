@@ -14,6 +14,10 @@
 from horizon.test.settings import *  # noqa
 from openstack_dashboard.test.settings import *  # noqa
 
+# Load the pluggable dashboard settings
+import openstack_dashboard.enabled
+import watcher_dashboard.local.enabled
+
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -26,10 +30,6 @@ INSTALLED_APPS = (
     'horizon',
     'openstack_dashboard',
 )
-
-# Load the pluggable dashboard settings
-import openstack_dashboard.enabled
-import watcher_dashboard.local.enabled
 
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings_utils.update_dashboards(
