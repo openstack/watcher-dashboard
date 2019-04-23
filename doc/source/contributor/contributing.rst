@@ -59,10 +59,10 @@ Wiki
     https://wiki.openstack.org/wiki/Watcher
 
 Code Hosting
-    https://git.openstack.org/cgit/openstack/watcher-dashboard
+    https://opendev.org/openstack/watcher-dashboard
 
 Code Review
-    https://review.openstack.org/#/q/status:open+project:openstack/watcher-dashboard,n,z
+    https://review.opendev.org/#/q/status:open+project:openstack/watcher-dashboard,n,z
 
 IRC Channel
     ``#openstack-watcher`` (changelog_)

@@ -12,7 +12,7 @@ The list of bugs and blueprints is on Launchpad:
 
 We use OpenStack's Gerrit for the code contributions:
 
-`<https://review.openstack.org/#/q/status:open+project:openstack/watcher-dashboard,n,z>`__
+`<https://review.opendev.org/#/q/status:open+project:openstack/watcher-dashboard,n,z>`__
 
 and we follow the `OpenStack Gerrit Workflow <https://docs.openstack.org/infra/manual/developers.html#development-workflow>`__.
 

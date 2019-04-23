@@ -15,7 +15,7 @@ If you want more details on how to install Horizon, you can have a look at the
 Then, you need to install Watcher Dashboard on the server running Horizon.
 To do so, you can issue the following commands::
 
-    $ git clone https://git.openstack.org/openstack/watcher-dashboard
+    $ git clone https://opendev.org/openstack/watcher-dashboard
     $ cd watcher-dashboard
     $ pip install -e .
 
@@ -50,7 +50,7 @@ Add the following to your DevStack ``local.conf`` file
 
 ::
 
-    enable_plugin watcher-dashboard https://git.openstack.org/openstack/watcher-dashboard
+    enable_plugin watcher-dashboard https://opendev.org/openstack/watcher-dashboard
 
 
 Unit testing
@@ -125,7 +125,7 @@ to customize your policies.
 Links
 -----
 
-Watcher project: https://git.openstack.org/cgit/openstack/watcher/
+Watcher project: https://opendev.org/openstack/watcher/
 
 Watcher at github: https://github.com/openstack/watcher
 

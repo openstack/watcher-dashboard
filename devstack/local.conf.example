@@ -1,2 +1,2 @@
 # settings file for watcher-dashboard plugin
-enable_plugin watcher-dashboard https://git.openstack.org/openstack/watcher-dashboard
+enable_plugin watcher-dashboard https://opendev.org/openstack/watcher-dashboard
