@@ -55,6 +55,6 @@ Manual tests:
 OpenStack Style Commandments
 ============================
 
-- Step 1: Read http://www.python.org/dev/peps/pep-0008/
-- Step 2: Read http://www.python.org/dev/peps/pep-0008/ again
-- Step 3: Read https://github.com/openstack-dev/hacking/blob/master/HACKING.rst
+- Step 1: Read https://www.python.org/dev/peps/pep-0008/
+- Step 2: Read https://www.python.org/dev/peps/pep-0008/ again
+- Step 3: Read https://github.com/openstack/hacking/blob/master/HACKING.rst
