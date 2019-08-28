@@ -127,17 +127,6 @@ class DetailView(horizon.tables.MultiTableView):
 
         return efficacy_indicators
 
-        try:
-            action_plan = self._get_data()
-            actions = watcher.Action.list(self.request,
-                                          action_plan=action_plan.uuid)
-        except Exception as exc:
-            LOG.exception(exc)
-            actions = []
-            msg = _('Action list can not be retrieved.')
-            horizon.exceptions.handle(self.request, msg)
-        return actions
-
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
         action_plan = self._get_data()
