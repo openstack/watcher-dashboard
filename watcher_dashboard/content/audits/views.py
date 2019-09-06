@@ -56,10 +56,10 @@ class IndexView(horizon.tables.DataTableView):
         search_opts = self.get_filters()
         try:
             audits = watcher.Audit.list(self.request, **search_opts)
-        except Exception:
+        except Exception as e:
             horizon.exceptions.handle(
                 self.request,
-                _("Unable to retrieve audit information."))
+                _("Unable to retrieve audit information: %s") % str(e))
         return audits
 
     def get_audits_count(self):
@@ -117,7 +117,7 @@ class DetailView(horizon.tables.MultiTableView):
         except Exception as exc:
             LOG.exception(exc)
             audits = []
-            msg = _('Action plan list cannot be retrieved.')
+            msg = _('Action plan list cannot be retrieved: %s') % str(exc)
             horizon.exceptions.handle(self.request, msg)
         return audits
 

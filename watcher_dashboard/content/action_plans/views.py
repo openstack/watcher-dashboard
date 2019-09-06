@@ -109,7 +109,7 @@ class DetailView(horizon.tables.MultiTableView):
         except Exception as exc:
             LOG.exception(exc)
             actions = []
-            msg = _('Action list can not be retrieved.')
+            msg = _('Action list can not be retrieved: %s') % str(exc)
             horizon.exceptions.handle(self.request, msg)
         return actions
 
@@ -121,7 +121,7 @@ class DetailView(horizon.tables.MultiTableView):
                 for indicator in action_plan.efficacy_indicators]
         except Exception as exc:
             LOG.exception(exc)
-            msg = _('Failed to get the efficacy indicators.')
+            msg = _('Failed to get the efficacy indicators: %s') % str(exc)
             LOG.info(msg)
             horizon.messages.warning(self.request, msg)
 

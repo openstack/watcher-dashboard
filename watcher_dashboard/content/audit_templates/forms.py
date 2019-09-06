@@ -79,7 +79,7 @@ class CreateForm(forms.SelfHandlingForm):
         try:
             goals = watcher.Goal.list(self.request)
         except Exception as exc:
-            msg = _('Failed to get goals list.')
+            msg = _('Failed to get goals list: %s') % str(exc)
             LOG.info(msg)
             messages.warning(request, msg)
             messages.warning(request, exc)
@@ -131,7 +131,7 @@ class CreateForm(forms.SelfHandlingForm):
             messages.success(request, message)
             return audit_tpl
         except Exception as exc:
-            msg = _('Failed to create audit template.')
+            msg = _('Failed to create audit template: %s') % str(exc)
             LOG.info(exc)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)

@@ -45,10 +45,10 @@ class IndexView(horizon.tables.DataTableView):
         search_opts = self.get_filters()
         try:
             goals = watcher.Goal.list(self.request, **search_opts)
-        except Exception:
+        except Exception as e:
             horizon.exceptions.handle(
                 self.request,
-                _("Unable to retrieve goal information."))
+                _("Unable to retrieve goal information: %s") % str(e))
         return goals
 
     def get_goals_count(self):
@@ -97,7 +97,7 @@ class DetailView(horizon.tables.MultiTableView):
         except Exception as exc:
             LOG.exception(exc)
             strategies = []
-            msg = _('Strategy list cannot be retrieved.')
+            msg = _('Strategy list cannot be retrieved: %s') % str(exc)
             horizon.exceptions.handle(self.request, msg)
 
         return strategies
@@ -110,7 +110,8 @@ class DetailView(horizon.tables.MultiTableView):
         except Exception as exc:
             LOG.exception(exc)
             indicators_spec = []
-            msg = _('Efficacy specification cannot be retrieved.')
+            msg = _('Efficacy specification cannot be '
+                    'retrieved: %s') % str(exc)
             horizon.exceptions.handle(self.request, msg)
 
         return indicators_spec
