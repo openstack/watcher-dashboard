@@ -18,3 +18,4 @@ wide range of cloud optimization goals.
 * Source: https://opendev.org/openstack/watcher-dashboard
 * Bugs: https://bugs.launchpad.net/watcher-dashboard
 * Release Notes: https://docs.openstack.org/releasenotes/watcher-dashboard
+* Blueprints: https://blueprints.launchpad.net/watcher-dashboard
