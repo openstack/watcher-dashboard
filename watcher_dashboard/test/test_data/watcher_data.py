@@ -91,7 +91,7 @@ def data(TEST):
         'uuid': '11111111-1111-1111-1111-111111111111',
         'name': 'Audit Template 1',
         'description': 'Audit Template 1 description',
-        'scope': None,
+        'scope': '',
         'goal_uuid': 'gggggggg-1111-1111-1111-gggggggggggg',
         'strategy_uuid': 'ssssssss-1111-1111-1111-ssssssssssss',
     }
@@ -99,7 +99,7 @@ def data(TEST):
         'uuid': '11111111-2222-2222-2222-111111111111',
         'name': 'Audit Template 2',
         'description': 'Audit Template 2 description',
-        'scope': None,
+        'scope': '',
         'goal_uuid': 'gggggggg-1111-1111-1111-gggggggggggg',
         'strategy_uuid': 'ssssssss-2222-2222-2222-ssssssssssss',
     }
@@ -107,7 +107,7 @@ def data(TEST):
         'uuid': '11111111-3333-3333-3333-111111111111',
         'name': 'Audit Template 1',
         'description': 'Audit Template 3 description',
-        'scope': None,
+        'scope': '',
         'goal_uuid': 'gggggggg-2222-2222-2222-gggggggggggg',
         'strategy_uuid': None,
     }
