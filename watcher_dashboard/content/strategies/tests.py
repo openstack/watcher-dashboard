@@ -41,7 +41,7 @@ class StrategiesTest(test.BaseAdminViewTests):
         res = self.client.get(INDEX_URL)
         self.assertTemplateUsed(res, 'infra_optim/strategies/index.html')
         strategies = res.context['strategies_table'].data
-        self.assertItemsEqual(strategies, self.strategies.list())
+        self.assertCountEqual(strategies, self.strategies.list())
 
     @mock.patch.object(api.watcher.Strategy, 'list')
     def test_strategy_list_unavailable(self, mock_list):
@@ -61,7 +61,7 @@ class StrategiesTest(test.BaseAdminViewTests):
         self.assertTemplateUsed(res,
                                 'infra_optim/strategies/details.html')
         strategies = res.context['strategy']
-        self.assertItemsEqual([strategies], [at])
+        self.assertCountEqual([strategies], [at])
 
     @mock.patch.object(api.watcher.Strategy, 'get')
     def test_details_exception(self, mock_get):

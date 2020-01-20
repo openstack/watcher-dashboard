@@ -40,7 +40,7 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         res = self.client.get(INDEX_URL)
         self.assertTemplateUsed(res, 'infra_optim/audit_templates/index.html')
         audit_templates = res.context['audit_templates_table'].data
-        self.assertItemsEqual(audit_templates, self.audit_templates.list())
+        self.assertCountEqual(audit_templates, self.audit_templates.list())
 
     @mock.patch.object(api.watcher.AuditTemplate, 'list')
     def test_audit_template_list_unavailable(self, mock_list):
@@ -88,7 +88,7 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         self.assertTemplateUsed(res,
                                 'infra_optim/audit_templates/details.html')
         audit_templates = res.context['audit_template']
-        self.assertItemsEqual([audit_templates], [at])
+        self.assertCountEqual([audit_templates], [at])
 
     @mock.patch.object(api.watcher.AuditTemplate, 'get')
     def test_details_exception(self, m_get):

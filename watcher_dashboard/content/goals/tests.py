@@ -32,7 +32,7 @@ class GoalsTest(test.BaseAdminViewTests):
         res = self.client.get(INDEX_URL)
         self.assertTemplateUsed(res, 'infra_optim/goals/index.html')
         goals = res.context['goals_table'].data
-        self.assertItemsEqual(goals, self.goals.list())
+        self.assertCountEqual(goals, self.goals.list())
 
     @mock.patch.object(api.watcher.Goal, 'list')
     def test_goal_list_unavailable(self, mock_list):
@@ -52,7 +52,7 @@ class GoalsTest(test.BaseAdminViewTests):
         res = self.client.get(DETAILS_URL)
         self.assertTemplateUsed(res, 'infra_optim/goals/details.html')
         goals = res.context['goal']
-        self.assertItemsEqual([goals], [goal])
+        self.assertCountEqual([goals], [goal])
 
     @mock.patch.object(api.watcher.Goal, 'get')
     def test_details_exception(self, mock_get):
