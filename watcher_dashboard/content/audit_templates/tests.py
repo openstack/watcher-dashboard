@@ -13,8 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from unittest import mock
+
 from django import urls
-import mock
 
 from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test

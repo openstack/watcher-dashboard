@@ -113,10 +113,6 @@ repository_name = 'openstack/watcher-dashboard'
 bug_project = 'watcher-dashboard'
 bug_tag = ''
 
-# Must set this variable to include year, month, day, hours, and minutes.
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
-
-
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.

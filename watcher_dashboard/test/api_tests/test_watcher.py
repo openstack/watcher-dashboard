@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-import mock
+from unittest import mock
+
 from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
 
