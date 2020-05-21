@@ -12,7 +12,3 @@ testtools>=2.2.0 # MIT
 # This also needs xvfb library installed on your OS
 xvfbwrapper>=0.1.3 #license: MIT
 
-# Doc requirements
-openstackdocstheme>=1.31.2 # Apache-2.0
-sphinx!=1.6.6,!=1.6.7,!=2.1.0,>=1.6.2  # BSD
-reno>=2.5.0 # Apache-2.0

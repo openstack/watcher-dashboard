@@ -68,7 +68,7 @@ add_function_parentheses = True
 add_module_names = True
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 # -- Options for man page output --------------------------------------------
 
@@ -116,6 +116,8 @@ latex_elements = {
 # intersphinx_mapping = {'http://docs.python.org/': None}
 
 # openstackdocstheme options
-repository_name = 'openstack/watcher-dashboard'
-bug_project = 'watcher-dashboard'
-bug_tag = ''
+openstackdocs_repo_name = 'openstack/watcher-dashboard'
+openstackdocs_pdf_link = True
+openstackdocs_auto_name = False
+openstackdocs_bug_project = 'watcher-dashboard'
+openstackdocs_bug_tag = ''
