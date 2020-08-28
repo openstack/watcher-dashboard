@@ -131,7 +131,7 @@ class CreateForm(forms.SelfHandlingForm):
             messages.success(request, message)
             return audit_tpl
         except Exception as exc:
-            msg = _('Failed to create audit template: %s') % str(exc)
+            msg = _('Failed to create audit template.')
             LOG.info(exc)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)

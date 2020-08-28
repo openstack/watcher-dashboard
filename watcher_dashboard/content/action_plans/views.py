@@ -109,7 +109,7 @@ class DetailView(horizon.tables.MultiTableView):
         except Exception as exc:
             LOG.exception(exc)
             actions = []
-            msg = _('Action list can not be retrieved: %s') % str(exc)
+            msg = _('Action list can not be retrieved.')
             horizon.exceptions.handle(self.request, msg)
         return actions
 

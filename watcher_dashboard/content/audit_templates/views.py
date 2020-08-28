@@ -52,8 +52,7 @@ class IndexView(horizon.tables.DataTableView):
             LOG.exception(exc)
             horizon.exceptions.handle(
                 self.request,
-                _("Unable to retrieve audit template "
-                  "information: %s") % str(exc))
+                _("Unable to retrieve audit template information."))
         return audit_templates
 
     def get_count(self):
@@ -118,7 +117,7 @@ class DetailView(horizon.tabs.TabbedTableView):
         except Exception as exc:
             LOG.exception(exc)
             audits = []
-            msg = _('Audits list cannot be retrieved: %s') % str(exc)
+            msg = _('Audits list cannot be retrieved.')
             horizon.exceptions.handle(self.request, msg)
         return audits
 

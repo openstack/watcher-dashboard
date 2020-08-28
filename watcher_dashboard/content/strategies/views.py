@@ -48,7 +48,7 @@ class IndexView(horizon.tables.DataTableView):
             LOG.exception(exc)
             horizon.exceptions.handle(
                 self.request,
-                _("Unable to retrieve strategy information: %s") % str(exc))
+                _("Unable to retrieve strategy information."))
         return strategies
 
     def get_strategies_count(self):

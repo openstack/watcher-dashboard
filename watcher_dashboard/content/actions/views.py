@@ -42,10 +42,10 @@ class IndexView(horizon.tables.DataTableView):
         search_opts = self.get_filters()
         try:
             actions = watcher.Action.list(self.request, **search_opts)
-        except Exception as e:
+        except Exception:
             horizon.exceptions.handle(
                 self.request,
-                _("Unable to retrieve action information: %s") % str(e))
+                _("Unable to retrieve action information."))
         return actions
 
     def get_actions_count(self):
