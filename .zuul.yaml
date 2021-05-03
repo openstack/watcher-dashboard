@@ -1,7 +1,6 @@
 - project:
     templates:
       - check-requirements
-      - openstack-lower-constraints-jobs
       - openstack-python-jobs-horizon
       - openstack-python3-train-jobs-horizon
       - publish-openstack-docs-pti
