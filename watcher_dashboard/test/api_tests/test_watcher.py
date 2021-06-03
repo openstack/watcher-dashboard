@@ -222,7 +222,7 @@ class WatcherAPITests(test.APITestCase):
             return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_name, audit_template_uuid, audit_type)
+            self.request, audit_template_uuid, audit_type, audit_name)
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
@@ -242,7 +242,7 @@ class WatcherAPITests(test.APITestCase):
             return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_name, audit_template_uuid, audit_type,
+            self.request, audit_template_uuid, audit_type, audit_name,
             False, interval)
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
@@ -265,7 +265,7 @@ class WatcherAPITests(test.APITestCase):
             return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_name, audit_template_uuid, audit_type, True)
+            self.request, audit_template_uuid, audit_type, audit_name, True)
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
