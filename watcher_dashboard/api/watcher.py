@@ -62,8 +62,8 @@ class Audit(base.APIDictWrapper):
         self._request = request
 
     @classmethod
-    def create(cls, request, name, audit_template_uuid,
-               audit_type, auto_trigger=False, interval=None):
+    def create(cls, request, audit_template_uuid, audit_type, name=None,
+               auto_trigger=False, interval=None):
 
         """Create an audit in Watcher
 
