@@ -135,7 +135,7 @@ Launchpad project: https://launchpad.net/watcher
 
 Join us on IRC (Internet Relay Chat)::
 
-    Network: Freenode (irc.freenode.net/watcher)
+    Network: OFTC (https://www.oftc.net/)
     Channel: #openstack-watcher
 
 Or send an email to openstack-discuss@lists.openstack.org using [watcher] in object
