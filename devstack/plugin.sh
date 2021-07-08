@@ -13,8 +13,8 @@ function configure_watcher_dashboard {
 
 function init_watcher_dashboard {
     # Setup alias for django-admin which could be different depending on distro
-    python ${DEST}/horizon/manage.py collectstatic --noinput
-    python ${DEST}/horizon//manage.py compress --force
+    python3 ${DEST}/horizon/manage.py collectstatic --noinput
+    python3 ${DEST}/horizon/manage.py compress --force
 }
 
 # check for service enabled
