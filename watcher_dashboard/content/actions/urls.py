@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf import urls
+from django.urls import re_path
 
 from watcher_dashboard.content.actions import views
 
 
 urlpatterns = [
-    urls.url(r'^$',
-             views.IndexView.as_view(), name='index'),
-    urls.url(r'^(?P<action_uuid>[^/]+)/detail$',
-             views.DetailView.as_view(), name='detail'),
+    re_path(r'^$',
+            views.IndexView.as_view(), name='index'),
+    re_path(r'^(?P<action_uuid>[^/]+)/detail$',
+            views.DetailView.as_view(), name='detail'),
 ]

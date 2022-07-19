@@ -12,8 +12,9 @@
 #    under the License.
 
 from django.conf import urls
+from django.urls import re_path
 import openstack_dashboard.urls
 
 urlpatterns = [
-    urls.url(r'', urls.include(openstack_dashboard.urls))
+    re_path(r'', urls.include(openstack_dashboard.urls))
 ]
