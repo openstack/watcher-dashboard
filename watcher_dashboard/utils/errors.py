@@ -39,7 +39,8 @@ def handle_errors(error_message, error_default=None, request_arg=None):
     def decorator(func):
         # XXX This is an ugly hack for finding the 'request' argument.
         if request_arg is None:
-            for _request_arg, name in enumerate(inspect.getargspec(func).args):
+            for _request_arg, name in enumerate(
+                    inspect.getfullargspec(func).args):
                 if name == 'request':
                     break
             else:
