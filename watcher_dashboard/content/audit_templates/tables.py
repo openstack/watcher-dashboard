@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ungettext_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 import horizon.exceptions
 import horizon.messages
 import horizon.tables
@@ -49,7 +49,7 @@ class LaunchAudit(horizon.tables.BatchAction):
 
     @staticmethod
     def action_present(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             "Launch Audit",
             "Launch Audits",
             count
@@ -57,7 +57,7 @@ class LaunchAudit(horizon.tables.BatchAction):
 
     @staticmethod
     def action_past(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             "Launched Audit",
             "Launched Audits",
             count
@@ -76,7 +76,7 @@ class ArchiveAuditTemplates(horizon.tables.DeleteAction):
 
     @staticmethod
     def action_present(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             "Archive Template",
             "Archive Templates",
             count
@@ -84,7 +84,7 @@ class ArchiveAuditTemplates(horizon.tables.DeleteAction):
 
     @staticmethod
     def action_past(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             "Archived Template",
             "Archived Templates",
             count
