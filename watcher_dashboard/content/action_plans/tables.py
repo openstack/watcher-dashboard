@@ -17,9 +17,9 @@ import logging
 
 from django.template.defaultfilters import title  # noqa
 from django import urls
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from django.utils.translation import pgettext_lazy
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ungettext_lazy
 import horizon.exceptions
 import horizon.messages
 import horizon.tables
@@ -55,7 +55,7 @@ class ArchiveActionPlan(horizon.tables.DeleteAction):
 
     @staticmethod
     def action_present(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             u"Archive Action Plan",
             u"Archive Action Plans",
             count
@@ -63,7 +63,7 @@ class ArchiveActionPlan(horizon.tables.DeleteAction):
 
     @staticmethod
     def action_past(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             u"Action Plan archived",
             u"Action Plans archived",
             count
@@ -81,7 +81,7 @@ class StartActionPlan(horizon.tables.BatchAction):
 
     @staticmethod
     def action_present(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             u"Start Action Plan",
             u"Start Action Plans",
             count
@@ -89,7 +89,7 @@ class StartActionPlan(horizon.tables.BatchAction):
 
     @staticmethod
     def action_past(count):
-        return ungettext_lazy(
+        return ngettext_lazy(
             u"Action Plan started",
             u"Action Plans started",
             count

@@ -13,15 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf import urls
+from django.urls import re_path
 
 from watcher_dashboard.content.audit_templates import views
 
 
 urlpatterns = [
-    urls.url(r'^$', views.IndexView.as_view(), name='index'),
-    urls.url(r'^create/$', views.CreateView.as_view(), name='create'),
-    urls.url(r'^(?P<audit_template_uuid>[^/]+)/detail$',
-             views.DetailView.as_view(),
-             name='detail'),
+    re_path(r'^$', views.IndexView.as_view(), name='index'),
+    re_path(r'^create/$', views.CreateView.as_view(), name='create'),
+    re_path(r'^(?P<audit_template_uuid>[^/]+)/detail$',
+            views.DetailView.as_view(),
+            name='detail'),
 ]
