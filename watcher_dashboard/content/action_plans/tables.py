@@ -126,7 +126,12 @@ class UpdateRow(horizon.tables.Row):
 
 def format_global_efficacy(action_plan):
     formatted_global_efficacy = None
-    global_efficacy = watcher.EfficacyIndicator(action_plan.global_efficacy)
+    # action_plan.global_efficacy is a list with one dict while we need a dict
+    if len(action_plan.global_efficacy) > 0:
+        global_efficacy_dict = action_plan.global_efficacy[0]
+    else:
+        global_efficacy_dict = {}
+    global_efficacy = watcher.EfficacyIndicator(global_efficacy_dict)
     if global_efficacy.value is not None and global_efficacy.unit:
         formatted_global_efficacy = "%(value)s %(unit)s" % dict(
             unit=global_efficacy.unit,
