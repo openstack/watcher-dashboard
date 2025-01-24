@@ -84,7 +84,7 @@ class ArchiveAudits(horizon.tables.DeleteAction):
     policy_rules = (("infra-optim", "audit:delete"),)
 
     def allowed(self, request, audit):
-        return audit or audit.state not in ("ONGOING", "PENDING")
+        return audit.state not in ("ONGOING", "PENDING")
 
     @staticmethod
     def action_present(count):
@@ -104,6 +104,34 @@ class ArchiveAudits(horizon.tables.DeleteAction):
 
     def delete(self, request, obj_id):
         watcher.Audit.delete(request, obj_id)
+
+
+class CancelAudits(horizon.tables.BatchAction):
+    name = _("Cancel")
+    verbose_name = _("Cancel Audits")
+    policy_rules = (("infra-optim", "audit:update"),)
+
+    def allowed(self, request, audit):
+        return audit.state in ("ONGOING", "PENDING")
+
+    @staticmethod
+    def action_present(count):
+        return ngettext_lazy(
+            "Cancel Audit",
+            "Cancel Audits",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ngettext_lazy(
+            "Cancelled Audit",
+            "Cancelled Audits",
+            count
+        )
+
+    def action(self, request, obj_id):
+        watcher.Audit.cancel(request, obj_id)
 
 
 class AuditsTable(horizon.tables.DataTable):
@@ -146,6 +174,7 @@ class AuditsTable(horizon.tables.DataTable):
         row_actions = (
             GoToActionPlan,
             ArchiveAudits,
+            CancelAudits,
         )
 
 

@@ -283,6 +283,17 @@ class WatcherAPITests(test.APITestCase):
         watcherclient.audit.delete.assert_called_with(
             audit=audit_id)
 
+    def test_audit_cancel(self):
+        audit_id = self.api_audits.first()['uuid']
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.audit.update = mock.Mock()
+
+        api.watcher.Audit.cancel(self.request, audit_id)
+        watcherclient.audit.update.assert_called_with(
+            audit=audit_id, patch=[{'op': 'replace', 'path': '/state',
+                                    'value': 'CANCELLED'}])
+
     def test_action_plan_list(self):
         action_plans = {'action_plans': self.api_action_plans.list()}
 

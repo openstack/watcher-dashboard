@@ -139,6 +139,21 @@ class Audit(base.APIDictWrapper):
         """
         return watcherclient(request).audit.delete(audit=audit_id)
 
+    @classmethod
+    def cancel(cls, request, audit_id):
+        """Cancel an audit
+
+        :param request: request object
+        :type  request: django.http.HttpRequest
+
+        :param audit_id: audit id
+        :type  audit_id: int
+        """
+        cancel_patch = [{'op': 'replace', 'path': '/state',
+                         'value': 'CANCELLED'}]
+        return watcherclient(request).audit.update(audit=audit_id,
+                                                   patch=cancel_patch)
+
     @property
     def id(self):
         return self.uuid
