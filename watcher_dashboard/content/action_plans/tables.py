@@ -15,6 +15,7 @@
 
 import logging
 
+from django import template
 from django.template.defaultfilters import title  # noqa
 from django import urls
 from django.utils.translation import gettext_lazy as _
@@ -125,21 +126,24 @@ class UpdateRow(horizon.tables.Row):
 
 
 def format_global_efficacy(action_plan):
-    formatted_global_efficacy = None
-    # action_plan.global_efficacy is a list with one dict while we need a dict
-    if len(action_plan.global_efficacy) > 0:
-        global_efficacy_dict = action_plan.global_efficacy[0]
-    else:
-        global_efficacy_dict = {}
-    global_efficacy = watcher.EfficacyIndicator(global_efficacy_dict)
-    if global_efficacy.value is not None and global_efficacy.unit:
-        formatted_global_efficacy = "%(value)s %(unit)s" % dict(
-            unit=global_efficacy.unit,
-            value=global_efficacy.value)
-    elif global_efficacy.value is not None:
-        formatted_global_efficacy = global_efficacy.value
+    template_name = 'infra_optim/action_plans/_global_efficacy.html'
 
-    return formatted_global_efficacy
+    global_efficacy_dict = {}
+    for indicator in action_plan.global_efficacy:
+        global_efficacy = watcher.EfficacyIndicator(indicator)
+        if (global_efficacy.value is not None and
+                global_efficacy.unit is not None):
+            global_efficacy_dict[global_efficacy.name] = (
+                f"{global_efficacy.value} {global_efficacy.unit}")
+        elif global_efficacy.value is not None:
+            global_efficacy_dict[global_efficacy.name] = str(
+                global_efficacy.value)
+
+    context = {
+        "global_indicators": global_efficacy_dict,
+    }
+
+    return template.loader.render_to_string(template_name, context)
 
 
 def get_audit_link(datum):

@@ -1,0 +1,8 @@
+{% load i18n %}
+<ul class="list-unstyled">
+{% for name, value in global_indicators.items %}
+    <li><b>{{ name }}</b>
+    {{ value }}</li>
+{% endfor %}
+</ul>
+
