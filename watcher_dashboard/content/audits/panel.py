@@ -20,3 +20,4 @@ import horizon
 class Audits(horizon.Panel):
     name = _("Audits")
     slug = "audits"
+    permissions = ('openstack.services.infra-optim',)

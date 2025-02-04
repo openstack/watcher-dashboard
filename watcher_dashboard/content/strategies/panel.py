@@ -20,3 +20,4 @@ import horizon
 class Strategies(horizon.Panel):
     name = _("Strategies")
     slug = "strategies"
+    permissions = ("openstack.services.infra-optim",)
