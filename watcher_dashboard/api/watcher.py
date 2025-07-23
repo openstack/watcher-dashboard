@@ -44,7 +44,7 @@ def watcherclient(request, api_version=None):
 
 def insert_watcher_policy_file():
     policy_files = getattr(settings, 'POLICY_FILES', {})
-    policy_files['infra-optim'] = 'watcher_policy.json'
+    policy_files['infra-optim'] = 'watcher_policy.yaml'
     setattr(settings, 'POLICY_FILES', policy_files)
 
 

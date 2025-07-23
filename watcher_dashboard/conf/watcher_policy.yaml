@@ -1,0 +1,46 @@
+---
+"admin_api": "role:admin or role:administrator"
+"show_password": "!"
+
+"action:detail": "rule:admin_api"
+"action:get": "rule:admin_api"
+"action:get_all": "rule:admin_api"
+"action:update": "rule:admin_api"
+"action_plan:delete": "rule:admin_api"
+"action_plan:detail": "rule:admin_api"
+"action_plan:get": "rule:admin_api"
+"action_plan:get_all": "rule:admin_api"
+"action_plan:update": "rule:admin_api"
+"action_plan:start": "rule:admin_api"
+
+"audit:create": "rule:admin_api"
+"audit:delete": "rule:admin_api"
+"audit:detail": "rule:admin_api"
+"audit:get": "rule:admin_api"
+"audit:get_all": "rule:admin_api"
+"audit:update": "rule:admin_api"
+"audit_template:create": "rule:admin_api"
+"audit_template:delete": "rule:admin_api"
+"audit_template:detail": "rule:admin_api"
+"audit_template:get": "rule:admin_api"
+"audit_template:get_all": "rule:admin_api"
+"audit_template:update": "rule:admin_api"
+
+"data_model:get_all": "rule:admin_api"
+
+"goal:detail": "rule:admin_api"
+"goal:get": "rule:admin_api"
+"goal:get_all": "rule:admin_api"
+
+"scoring_engine:detail": "rule:admin_api"
+"scoring_engine:get": "rule:admin_api"
+"scoring_engine:get_all": "rule:admin_api"
+
+"service:detail": "rule:admin_api"
+"service:get": "rule:admin_api"
+
+"service:get_all": "rule:admin_api"
+"strategy:detail": "rule:admin_api"
+"strategy:get": "rule:admin_api"
+"strategy:get_all": "rule:admin_api"
+"strategy:state": "rule:admin_api"

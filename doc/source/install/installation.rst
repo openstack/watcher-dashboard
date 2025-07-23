@@ -113,9 +113,11 @@ You can enable policies on Watcher ``Optimization`` panel, by updating in the
 ``<HORIZON_DIR>/openstack_dashboard/settings.py`` configuration file the
 following parameters
 
+.. code-block:: python
+
     POLICY_FILES = {
-    ...
-    'infra-optim': 'watcher_policy.json',
+        ...
+        'infra-optim': 'watcher_policy.yaml',
     }
 
 You can also update the file
