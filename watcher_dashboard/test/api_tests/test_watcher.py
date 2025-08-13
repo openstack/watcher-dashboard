@@ -297,6 +297,34 @@ class WatcherAPITests(test.APITestCase):
             name=audit_name,
             parameters=parameters)
 
+    def test_audit_create_with_start_end_time(self):
+        audit = self.api_audits.list()[1]
+        audit_template_id = self.api_audit_templates.first()['uuid']
+
+        audit_type = self.api_audits.first()['audit_type']
+        audit_name = self.api_audits.first()['name']
+        interval = audit['interval']
+        start_time = '2025-01-01 10:00:00'
+        end_time = '2025-01-02 18:30:00'
+        audit_template_uuid = audit_template_id
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.audit.create = mock.Mock(
+            return_value=audit)
+
+        ret_val = api.watcher.Audit.create(
+            self.request, audit_template_uuid, audit_type, audit_name,
+            False, interval, start_time=start_time, end_time=end_time)
+        self.assertIsInstance(ret_val, dict)
+        watcherclient.audit.create.assert_called_with(
+            audit_template_uuid=audit_template_uuid,
+            audit_type=audit_type,
+            auto_trigger=False,
+            interval=interval,
+            name=audit_name,
+            start_time=start_time,
+            end_time=end_time)
+
     def test_audit_create_with_complex_parameters(self):
         audit = self.api_audits.first()
         audit_template_id = self.api_audit_templates.first()['uuid']

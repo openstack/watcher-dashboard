@@ -1,0 +1,12 @@
+---
+features:
+  - |
+    Add support for specifying start and end times when creating CONTINUOUS
+    audits in the Watcher dashboard. The Create Audit form now shows
+    ISO 8601 local time fields "Start time" and "End time" for CONTINUOUS
+    audits and submits them to the Watcher API. Times are sent in ISO 8601
+    format and are converted to UTC by the server.
+
+  - |
+    It also makes 1.1 as minimal supported api version as it is required
+    for the Audit operations.

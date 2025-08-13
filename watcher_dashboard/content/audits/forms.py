@@ -75,6 +75,48 @@ class CreateForm(forms.SelfHandlingForm):
         }),
         required=False
     )
+    start_time = forms.DateTimeField(
+        label=_("Start time"),
+        help_text=_("Local time in ISO 8601 (e.g. 2025-01-02T18:30:00); "
+                    "only used for CONTINUOUS audits. Watcher converts local "
+                    "time to UTC."),
+        widget=forms.DateTimeInput(
+            format="%Y-%m-%dT%H:%M:%S",
+            attrs={
+                'class': 'switched',
+                'data-switch-on': 'audit_type',
+                'data-audit_type-continuous': _(
+                    "Start time (ISO 8601, local)"
+                ),
+                'placeholder': 'YYYY-MM-DDTHH:MM:SS'
+            }
+        ),
+        required=False,
+        input_formats=[
+            '%Y-%m-%dT%H:%M',
+            '%Y-%m-%dT%H:%M:%S',
+            '%Y-%m-%dT%H:%M:%S.%f',
+        ])
+    end_time = forms.DateTimeField(
+        label=_("End time"),
+        help_text=_("Local time in ISO 8601 (e.g. 2025-01-02T18:30:00); "
+                    "only used for CONTINUOUS audits. Watcher converts local "
+                    "time to UTC."),
+        widget=forms.DateTimeInput(
+            format="%Y-%m-%dT%H:%M:%S",
+            attrs={
+                'class': 'switched',
+                'data-switch-on': 'audit_type',
+                'data-audit_type-continuous': _("End time (ISO 8601, local)"),
+                'placeholder': 'YYYY-MM-DDTHH:MM:SS'
+            }
+        ),
+        required=False,
+        input_formats=[
+            '%Y-%m-%dT%H:%M',
+            '%Y-%m-%dT%H:%M:%S',
+            '%Y-%m-%dT%H:%M:%S.%f',
+        ])
     failure_url = 'horizon:admin:audits:index'
     auto_trigger = forms.BooleanField(label=_("Auto Trigger"),
                                       required=False)
@@ -83,6 +125,7 @@ class CreateForm(forms.SelfHandlingForm):
         super(CreateForm, self).__init__(request, *args, **kwargs)
         audit_templates = self._get_audit_template_list(request)
         self.fields['audit_template'].choices = audit_templates
+        # Keep fields visible; API microversion is enforced per-call in backend
 
     def _get_audit_template_list(self, request):
         try:
@@ -131,15 +174,19 @@ class CreateForm(forms.SelfHandlingForm):
         if audit_type == 'continuous' and not cleaned_data.get('interval'):
             msg = _('Please input an interval for continuous audit')
             raise forms.ValidationError(msg)
-
+        if audit_type == 'continuous':
+            start_time = cleaned_data.get('start_time')
+            end_time = cleaned_data.get('end_time')
+            if start_time and end_time and end_time <= start_time:
+                raise forms.ValidationError(
+                    _('End time must be later than start time'))
         # Validate parameters
         param_string = cleaned_data.get('parameters', '')
         try:
             parsed_params = self._parse_parameters(param_string)
             cleaned_data['parsed_parameters'] = parsed_params
         except forms.ValidationError:
-            raise  # Re-raise the validation error
-
+            raise
         return cleaned_data
 
     def handle(self, request, data):
@@ -150,6 +197,13 @@ class CreateForm(forms.SelfHandlingForm):
             params['name'] = data['audit_name']
             if data['audit_type'] == 'continuous':
                 params['interval'] = data['interval']
+                # Convert datetimes to ISO 8601 for API (local time)
+                if data.get('start_time'):
+                    params['start_time'] = data['start_time'].isoformat(
+                        timespec='seconds')
+                if data.get('end_time'):
+                    params['end_time'] = data['end_time'].isoformat(
+                        timespec='seconds')
             else:
                 params['interval'] = None
 

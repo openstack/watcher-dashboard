@@ -40,7 +40,8 @@ class APITestCase(WatcherTestsMixin, helpers.APITestCase):
 
         self._original_watcherclient = api.watcher.watcherclient
 
-        api.watcher.watcherclient = lambda request: self.stub_watcherclient()
+        api.watcher.watcherclient = (
+            lambda request, *args, **kwargs: self.stub_watcherclient())
 
     def tearDown(self):
         super(APITestCase, self).tearDown()
