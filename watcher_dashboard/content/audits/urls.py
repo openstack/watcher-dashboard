@@ -25,4 +25,6 @@ urlpatterns = [
             views.CreateView.as_view(), name='create'),
     re_path(r'^(?P<audit_uuid>[^/]+)/detail$',
             views.DetailView.as_view(), name='detail'),
+    re_path(r'^get_strategy_parameters/$',
+            views.get_strategy_parameters, name='get_strategy_parameters'),
 ]

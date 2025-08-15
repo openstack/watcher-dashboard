@@ -5,4 +5,143 @@
   <h3>{% trans "Description:" %}</h3>
   <p>{% trans "Creates a audit with specified parameters." %}</p>
   <p>{% trans "If you check 'Auto Trigger' option, the action plan, recommended by the audit, will be automatically started." %}</p>
+
+  <h3>{% trans "Strategy Parameters (JSON):" %}</h3>
+  <p>{% trans "Strategy parameters control how the optimization strategy behaves during audit execution." %}</p>
+
+  <div id="strategy-info" style="display: none; margin: 10px 0; padding: 10px; background: #e8f4fd; border-left: 4px solid #0088cc; border-radius: 4px;">
+    <h4 id="strategy-name" style="margin: 0 0 10px 0; color: #0088cc;"></h4>
+    <div id="parameters-list"></div>
+  </div>
+
+  <div id="loading-strategy" style="display: none; margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+    <p style="margin: 0;"><i class="fa fa-spinner fa-spin"></i> {% trans "Loading strategy parameters..." %}</p>
+  </div>
+
+  <p><strong>{% trans "Parameter format:" %}</strong><br/>
+    {% trans "Enter a JSON object with parameter names as keys." %}
+  </p>
+
+  <p><strong>{% trans "Example:" %}</strong></p>
+  <pre style="font-size: 12px; padding: 8px; background: #f8f9fa; border: 1px solid #eee; border-radius: 4px;">
+{
+  "memory_threshold": 0.8,
+  "cpu_threshold": 0.9,
+  "enable_migration": true,
+  "compute_nodes": [
+    {"src_node": "compute1", "dst_node": "compute2"}
+  ]
+}
+  </pre>
+
+  <script>
+    $(document).ready(function() {
+      var auditTemplateSelect = $('#id_audit_template');
+      var strategyInfo = $('#strategy-info');
+      var loadingDiv = $('#loading-strategy');
+      var strategyName = $('#strategy-name');
+      var parametersList = $('#parameters-list');
+
+      function loadStrategyParameters(auditTemplateUuid) {
+        if (!auditTemplateUuid) {
+          strategyInfo.hide();
+          return;
+        }
+
+        loadingDiv.show();
+        strategyInfo.hide();
+
+        $.ajax({
+          url: "{% url 'horizon:admin:audits:get_strategy_parameters' %}",
+          data: { audit_template_uuid: auditTemplateUuid },
+          success: function(data) {
+            loadingDiv.hide();
+
+            if (data.error) {
+              console.error('Error loading strategy parameters:', data.error);
+              return;
+            }
+
+            strategyName.text('Strategy: ' + data.strategy_name);
+
+            var paramHtml = '';
+            if (data.parameters_spec && Object.keys(data.parameters_spec).length > 0) {
+              paramHtml = '<p><strong>Available parameters:</strong></p><ul style="margin: 5px 0; padding-left: 20px;">';
+              for (var param in data.parameters_spec) {
+                var spec = data.parameters_spec[param];
+                var typeInfo = spec.type ? ' (type: ' + spec.type + ')' : '';
+                var defaultInfo = '';
+                if (spec.hasOwnProperty('default')) {
+                  var renderedDefault = spec.default;
+                  // Render objects/arrays as compact JSON
+                  if (renderedDefault && (typeof renderedDefault === 'object')) {
+                    try {
+                      renderedDefault = JSON.stringify(renderedDefault);
+                    } catch (e) {
+                      renderedDefault = String(renderedDefault);
+                    }
+                  }
+                  defaultInfo = ' - default: ' + renderedDefault;
+                }
+                var description = spec.description ? ' - ' + spec.description : '';
+                paramHtml += '<li style="margin: 2px 0;"><code>' + param + '</code>' + typeInfo + defaultInfo + description + '</li>';
+              }
+              paramHtml += '</ul>';
+            } else if (data.message) {
+              paramHtml = '<p><em>' + data.message + '</em></p>';
+            } else {
+              paramHtml = '<p><em>No parameter specifications available for this strategy.</em></p>';
+            }
+
+            parametersList.html(paramHtml);
+            strategyInfo.show();
+          },
+          error: function(xhr, status, error) {
+            loadingDiv.hide();
+            console.error('AJAX error:', error);
+          }
+        });
+      }
+
+      // Load parameters when audit template changes
+      auditTemplateSelect.change(function() {
+        loadStrategyParameters($(this).val());
+      });
+
+      // Some Horizon helpers may programmatically update the select without
+      // triggering a native change event (e.g., after creating a new
+      // Audit Template via the + button). Use a MutationObserver to detect
+      // option/selection changes and load parameters accordingly.
+      var lastSelectedValue = auditTemplateSelect.val();
+      if (window.MutationObserver) {
+        var observer = new MutationObserver(function(mutations) {
+          var current = auditTemplateSelect.val();
+          if (current !== lastSelectedValue) {
+            lastSelectedValue = current;
+            loadStrategyParameters(current);
+          }
+        });
+        observer.observe(auditTemplateSelect[0], {
+          attributes: true,
+          childList: true,
+          subtree: true
+        });
+      }
+
+      // If Chosen or similar libraries are used, listen for their update event
+      // to catch programmatic selection changes.
+      auditTemplateSelect.on('chosen:updated', function() {
+        var current = auditTemplateSelect.val();
+        if (current !== lastSelectedValue) {
+          lastSelectedValue = current;
+          loadStrategyParameters(current);
+        }
+      });
+
+      // Load parameters for initially selected template
+      if (auditTemplateSelect.val()) {
+        loadStrategyParameters(auditTemplateSelect.val());
+      }
+    });
+  </script>
 {% endblock %}

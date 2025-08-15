@@ -1,0 +1,18 @@
+---
+features:
+  - |
+    Watcher Dashboard now supports passing strategy parameters when creating
+    audits, matching the OpenStack CLI ``openstack optimize audit create -p
+    <name=value>``.
+
+    A new "Strategy Parameters" field accepts all the parameters as a JSON object. 
+    Server-side validation parses and validates the input, and the field remains
+    backward compatible when left empty.
+
+    The Create Audit dialog also shows available parameters for the selected
+    strategy (when the Watcher API exposes ``parameters_spec``), including
+    types, defaults, and descriptions from audit templates. This provides
+    real-time guidance to users and improves parity with the CLI experience.
+
+    The Audit Details view now displays the parameters that were used for the
+    audit.

@@ -273,6 +273,82 @@ class WatcherAPITests(test.APITestCase):
             auto_trigger=True,
             name=audit_name)
 
+    def test_audit_create_with_parameters(self):
+        audit = self.api_audits.first()
+        audit_template_id = self.api_audit_templates.first()['uuid']
+
+        audit_type = self.api_audits.first()['audit_type']
+        audit_name = self.api_audits.first()['name']
+        audit_template_uuid = audit_template_id
+        parameters = {'memory_threshold': 0.8, 'cpu_threshold': 0.9}
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.audit.create = mock.Mock(
+            return_value=audit)
+
+        ret_val = api.watcher.Audit.create(
+            self.request, audit_template_uuid, audit_type, audit_name,
+            False, None, parameters)
+        self.assertIsInstance(ret_val, dict)
+        watcherclient.audit.create.assert_called_with(
+            audit_template_uuid=audit_template_uuid,
+            audit_type=audit_type,
+            auto_trigger=False,
+            name=audit_name,
+            parameters=parameters)
+
+    def test_audit_create_with_complex_parameters(self):
+        audit = self.api_audits.first()
+        audit_template_id = self.api_audit_templates.first()['uuid']
+
+        audit_type = self.api_audits.first()['audit_type']
+        audit_name = self.api_audits.first()['name']
+        audit_template_uuid = audit_template_id
+        # Test complex JSON parameters like arrays and objects
+        parameters = {
+            'memory_threshold': 0.8,
+            'enable_migration': True,
+            'compute_nodes': [{'src_node': 's01', 'dst_node': 'd01'}],
+            'excluded_instances': ['instance1', 'instance2']
+        }
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.audit.create = mock.Mock(
+            return_value=audit)
+
+        ret_val = api.watcher.Audit.create(
+            self.request, audit_template_uuid, audit_type, audit_name,
+            False, None, parameters)
+        self.assertIsInstance(ret_val, dict)
+        watcherclient.audit.create.assert_called_with(
+            audit_template_uuid=audit_template_uuid,
+            audit_type=audit_type,
+            auto_trigger=False,
+            name=audit_name,
+            parameters=parameters)
+
+    def test_audit_show_with_parameters(self):
+        """Test that audit detail view shows parameters when present"""
+        audit = self.api_audits.first()
+        audit_id = audit['uuid']
+        # Add parameters to the audit data
+        audit_with_params = dict(audit)
+        audit_with_params['parameters'] = {
+            'memory_threshold': 0.8,
+            'cpu_threshold': 0.9
+        }
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.audit.get = mock.Mock(
+            return_value=audit_with_params)
+
+        ret_val = api.watcher.Audit.get(self.request, audit_id)
+        self.assertIsInstance(ret_val, dict)
+        expected_params = {'memory_threshold': 0.8, 'cpu_threshold': 0.9}
+        self.assertEqual(ret_val['parameters'], expected_params)
+        watcherclient.audit.get.assert_called_with(
+            audit=audit_id)
+
     def test_audit_delete(self):
         audit_id = self.api_audits.first()['uuid']
 

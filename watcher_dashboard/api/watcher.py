@@ -55,7 +55,8 @@ def insert_watcher_policy_file():
 class Audit(base.APIDictWrapper):
     _attrs = ('uuid', 'name', 'created_at', 'modified_at', 'deleted_at',
               'state', 'audit_type', 'audit_template_uuid',
-              'audit_template_name', 'interval')
+              'audit_template_name', 'interval', 'parameters', 'auto_trigger',
+              'goal_name', 'strategy_name')
 
     def __init__(self, apiresource, request=None):
         super(Audit, self).__init__(apiresource)
@@ -63,7 +64,7 @@ class Audit(base.APIDictWrapper):
 
     @classmethod
     def create(cls, request, audit_template_uuid, audit_type, name=None,
-               auto_trigger=False, interval=None):
+               auto_trigger=False, interval=None, parameters=None):
 
         """Create an audit in Watcher
 
@@ -82,18 +83,28 @@ class Audit(base.APIDictWrapper):
         :param name: Name for this audit
         :type  name: string
 
+        :param parameters: Strategy parameters (default: None)
+        :type  parameters: dict
+
         :return: the created Audit object
         :rtype:  :py:class:`~.Audit`
         """
 
+        # Build the parameters to pass to watcherclient
+        create_params = {
+            'audit_template_uuid': audit_template_uuid,
+            'audit_type': audit_type,
+            'auto_trigger': auto_trigger
+        }
+
+        if name:
+            create_params['name'] = name
         if interval:
-            return watcherclient(request).audit.create(
-                audit_template_uuid=audit_template_uuid, audit_type=audit_type,
-                auto_trigger=auto_trigger, interval=interval, name=name)
-        else:
-            return watcherclient(request).audit.create(
-                audit_template_uuid=audit_template_uuid, audit_type=audit_type,
-                auto_trigger=auto_trigger, name=name)
+            create_params['interval'] = interval
+        if parameters:
+            create_params['parameters'] = parameters
+
+        return watcherclient(request).audit.create(**create_params)
 
     @classmethod
     def list(cls, request, **filters):
@@ -478,7 +489,7 @@ class Strategy(base.APIDictWrapper):
     """Strategy resource."""
 
     _attrs = ('uuid', 'name', 'display_name', 'goal_uuid', 'goal_name',
-              'created_at', 'updated_at', 'deleted_at')
+              'created_at', 'updated_at', 'deleted_at', 'parameters_spec')
 
     def __init__(self, apiresource, request=None):
         super(Strategy, self).__init__(apiresource)
