@@ -1,0 +1,11 @@
+---
+fixes:
+  - |
+    Fixed incorrect use of ``status_choices`` parameter in state columns
+    across all Watcher Dashboard tables (ActionPlans, Actions, and Audits).
+    The deprecated ``status_choices`` parameter has been replaced with the
+    correct ``display_choices`` parameter.
+
+    This ensures that state values are properly displayed as translated,
+    human-readable text (e.g., "Succeeded" instead of "SUCCEEDED") and aligns
+    with Horizon's table column best practices.

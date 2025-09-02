@@ -102,7 +102,7 @@ class ActionsTable(horizon.tables.DataTable):
     state = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status_choices=ACTION_STATE_DISPLAY_CHOICES,
+        display_choices=ACTION_STATE_DISPLAY_CHOICES,
     )
     action_plan = horizon.tables.Column(
         'action_plan_uuid',
@@ -134,7 +134,7 @@ class RelatedActionsTable(horizon.tables.DataTable):
     state = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status_choices=ACTION_STATE_DISPLAY_CHOICES,
+        display_choices=ACTION_STATE_DISPLAY_CHOICES,
     )
     action_plan = horizon.tables.Column(
         'action_plan_uuid',

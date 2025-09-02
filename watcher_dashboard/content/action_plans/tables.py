@@ -166,8 +166,7 @@ class ActionPlansTable(horizon.tables.DataTable):
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status=True,
-        status_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES,
+        display_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES,
     )
     efficacy = horizon.tables.Column(
         transform=format_global_efficacy, verbose_name=_('Efficacy')
@@ -212,8 +211,7 @@ class RelatedActionPlansTable(horizon.tables.DataTable):
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status=True,
-        status_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES,
+        display_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES,
     )
     efficacy = horizon.tables.Column(
         transform=format_global_efficacy, verbose_name=_('Efficacy')
