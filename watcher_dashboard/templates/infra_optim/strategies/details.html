@@ -22,6 +22,14 @@
         <dd>{{ strategy.created_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
         <dd>{{ strategy.updated_at|parse_isotime|default:_("-") }}</dd>
+        <dt>{% trans "Parameters Spec" %}</dt>
+        <dd>
+          {% if strategy_parameters_spec_pretty %}
+            {{ strategy_parameters_spec_pretty|safe }}
+          {% else %}
+            {{ _("-") }}
+          {% endif %}
+        </dd>
     </dl>
   </div>
 </div>

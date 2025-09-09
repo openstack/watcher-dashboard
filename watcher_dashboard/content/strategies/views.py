@@ -13,7 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
+
+from django.utils.safestring import mark_safe
 
 from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
@@ -91,8 +94,62 @@ class DetailView(horizon.tabs.TabbedTableView):
         context = super(DetailView, self).get_context_data(**kwargs)
         strategy = self._get_data()
         context["strategy"] = strategy
+        # Render parameters_spec in a readable format for the template
+        context["strategy_parameters_spec_pretty"] = (
+            self._render_pretty_parameters_spec(
+                getattr(strategy, 'parameters_spec', None)
+            )
+        )
         return context
 
     def get_tabs(self, request, *args, **kwargs):
         strategy = self._get_data()
         return self.tab_group_class(request, strategy=strategy, **kwargs)
+
+    def _render_pretty_parameters_spec(self, spec):
+        """Return a human-friendly rendering of parameters_spec.
+
+        Rules:
+        - If spec is a JSON string, parse it first.
+        - If spec is a JSON schema, prefer the 'properties' mapping.
+        - If result is a dict/list, pretty-print as indented YAML in a <pre>.
+        - If result is a scalar (str/int/bool), return it as-is.
+        - On any error or empty value, return None.
+        """
+        try:
+            obj = spec
+            if not obj:
+                return None
+
+            # Parse JSON-encoded strings if needed
+            if isinstance(obj, str):
+                try:
+                    obj = json.loads(obj)
+                except Exception:
+                    # Keep raw string if not JSON
+                    return obj
+
+            # If JSON schema-like, extract properties for readability
+            if isinstance(obj, dict) and 'properties' in obj \
+                    and isinstance(obj.get('properties'), dict):
+                obj = obj['properties']
+
+            # Pretty print dict/list as YAML-like preformatted block
+            if isinstance(obj, (dict, list)):
+                try:
+                    import yaml  # Lazy import
+                    dumped = yaml.safe_dump(
+                        obj,
+                        default_flow_style=False,
+                        sort_keys=False,
+                    )
+                except Exception:
+                    dumped = json.dumps(obj, indent=2, ensure_ascii=False)
+                return mark_safe(
+                    '<pre style="margin:0">{}</pre>'.format(dumped)
+                )
+
+            # Scalars
+            return obj
+        except Exception:
+            return None
