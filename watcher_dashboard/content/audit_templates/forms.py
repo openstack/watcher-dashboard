@@ -63,17 +63,28 @@ class CreateForm(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
         goals = self._get_goal_list(request)
-        strategies = self._get_strategy_list(request, goals)
 
         if goals:
             self.fields['goal'].choices = goals
         else:
             del self.fields['goal']
 
-        if strategies:
-            self.fields['strategy'].choices = strategies
-        else:
-            del self.fields['strategy']
+        # Defer strategy choices to be populated dynamically based on goal
+        # selection via AJAX in the template. Start with only the default.
+        if 'strategy' in self.fields:
+            self.fields['strategy'].choices = [("", _("Select Strategy"))]
+
+        # If this is a POST, populate strategies for the selected goal so that
+        # server-side validation accepts the submitted value (mirrors the AJAX
+        # behavior in the template for client-side population).
+        selected_goal = (
+            self.data.get('goal') if hasattr(self, 'data') else None
+        )
+        if selected_goal and 'strategy' in self.fields:
+            filtered_strategies = self._get_strategy_list_for_goal(
+                request, selected_goal)
+            if filtered_strategies:
+                self.fields['strategy'].choices = filtered_strategies
 
     def _get_goal_list(self, request):
         try:
@@ -111,6 +122,29 @@ class CreateForm(forms.SelfHandlingForm):
         choices = [
             (strategy.uuid, strategy.display_name +
              ' (GOAL: ' + _goals[strategy.goal_uuid] + ')')
+            for strategy in strategies
+        ]
+
+        if choices:
+            choices.insert(0, ("", _("Select Strategy")))
+        return choices
+
+    def _get_strategy_list_for_goal(self, request, goal_uuid):
+        try:
+            strategies = watcher.Strategy.list(self.request, goal=goal_uuid)
+        except Exception as exc:
+            msg = _('Failed to get strategies for selected goal.')
+            LOG.info(msg)
+            messages.warning(request, msg)
+            messages.warning(request, exc)
+            strategies = []
+
+        choices = [
+            (
+                strategy.uuid,
+                getattr(strategy, 'display_name', None) or
+                getattr(strategy, 'name', '')
+            )
             for strategy in strategies
         ]
 
