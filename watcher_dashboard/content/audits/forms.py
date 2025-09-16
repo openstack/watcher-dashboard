@@ -16,6 +16,7 @@
 """
 Forms for starting Watcher Audits.
 """
+import json
 import logging
 
 from django.urls import reverse
@@ -57,6 +58,23 @@ class CreateForm(forms.SelfHandlingForm):
                                    _("Interval (in seconds or cron"
                                      " format)")}),
                                required=False)
+    parameters = forms.CharField(
+        label=_("Strategy Parameters (JSON)"),
+        help_text=_("Provide strategy parameters as a JSON object. "
+                    "See examples on the right."),
+        widget=forms.widgets.Textarea(attrs={
+            'rows': 8,
+            'placeholder': ('{\n'
+                            '  "memory_threshold": 0.8,\n'
+                            '  "enable_migration": true,\n'
+                            '  "compute_nodes": [\n'
+                            '    {"src_node": "compute1", '
+                            '"dst_node": "compute2"}\n'
+                            '  ]\n'
+                            '}')
+        }),
+        required=False
+    )
     failure_url = 'horizon:admin:audits:index'
     auto_trigger = forms.BooleanField(label=_("Auto Trigger"),
                                       required=False)
@@ -86,12 +104,42 @@ class CreateForm(forms.SelfHandlingForm):
             choices.insert(0, ("", _("No Audit Template found")))
         return choices
 
+    def _parse_parameters(self, param_string):
+        """Parse parameters JSON string into a dictionary
+
+        :param param_string: String containing a JSON object
+        :returns: Dictionary of parsed parameters
+        """
+        if not param_string or not param_string.strip():
+            return {}
+
+        try:
+            parsed = json.loads(param_string)
+        except ValueError as e:
+            raise forms.ValidationError(
+                _('Parameters must be valid JSON: %s') % str(e))
+
+        if not isinstance(parsed, dict):
+            raise forms.ValidationError(
+                _('Parameters must be a JSON object'))
+
+        return parsed
+
     def clean(self):
         cleaned_data = super(CreateForm, self).clean()
         audit_type = cleaned_data.get('audit_type')
         if audit_type == 'continuous' and not cleaned_data.get('interval'):
             msg = _('Please input an interval for continuous audit')
             raise forms.ValidationError(msg)
+
+        # Validate parameters
+        param_string = cleaned_data.get('parameters', '')
+        try:
+            parsed_params = self._parse_parameters(param_string)
+            cleaned_data['parsed_parameters'] = parsed_params
+        except forms.ValidationError:
+            raise  # Re-raise the validation error
+
         return cleaned_data
 
     def handle(self, request, data):
@@ -104,6 +152,12 @@ class CreateForm(forms.SelfHandlingForm):
                 params['interval'] = data['interval']
             else:
                 params['interval'] = None
+
+            # Add parsed parameters if they exist
+            parsed_parameters = data.get('parsed_parameters')
+            if parsed_parameters:
+                params['parameters'] = parsed_parameters
+
             audit = watcher.Audit.create(request, **params)
             message = _('Audit was successfully created.')
             messages.success(request, message)

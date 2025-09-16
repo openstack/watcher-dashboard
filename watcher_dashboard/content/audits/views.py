@@ -13,10 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 
+from django.http import JsonResponse
 from django.urls import reverse
 from django.urls import reverse_lazy
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
 from horizon import forms
@@ -24,6 +27,7 @@ import horizon.tables
 import horizon.tabs
 from horizon.utils import memoized
 import horizon.workflows
+import yaml
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.content.action_plans import tables as action_plan_tables
@@ -109,6 +113,46 @@ class DetailView(horizon.tables.MultiTableView):
                 redirect=self.redirect_url)
         return audit
 
+    def _render_pretty_parameters(self, params):
+        """Return a human-friendly rendering of parameters.
+
+        It is used to render parameters on the audit details page
+        in a YAML format for readability.
+
+        Rules:
+        - If params is a JSON string, parse it first.
+        - If result is a dict/list, pretty-print as YAML in a <pre> block.
+        - If result is a scalar (str/int/bool), return it as-is.
+        - On any error, fall back to the original params value.
+        """
+        try:
+            obj = params
+            # Parameters may be stored as a JSON-serialized string. Try to
+            # decode it but tolerate non-JSON strings (e.g. plain text).
+            if isinstance(params, str):
+                try:
+                    obj = json.loads(params)
+                except Exception:
+                    obj = params
+
+            # Dicts/lists are presented as indented YAML for readability.
+            if isinstance(obj, (dict, list)):
+                dumped = yaml.safe_dump(
+                    obj,
+                    default_flow_style=False,
+                    sort_keys=False,
+                )
+                return mark_safe(
+                    '<pre style="margin:0">{}</pre>'.format(dumped)
+                )
+
+            # Scalars or unknown types: return directly.
+            if obj is not None:
+                return obj
+        except Exception:
+            # Any unexpected issue: show the raw parameters.
+            return params
+
     def get_related_action_plans_data(self):
         try:
             action_plan = self._get_data()
@@ -125,9 +169,62 @@ class DetailView(horizon.tables.MultiTableView):
         context = super(DetailView, self).get_context_data(**kwargs)
         audit = self._get_data()
         context["audit"] = audit
+        # Prepare pretty parameters rendering (YAML) for the template. The
+        # helper encapsulates the logic so it is easier to test/maintain.
+        context["audit_parameters_pretty"] = self._render_pretty_parameters(
+            getattr(audit, 'parameters', None)
+        )
         return context
 
     def get_tabs(self, request, *args, **kwargs):
         audit = self._get_data()
         # ports = self._get_ports()
         return self.tab_group_class(request, audit=audit, **kwargs)
+
+
+def get_strategy_parameters(request):
+    """AJAX endpoint to get strategy parameters based on audit template."""
+    try:
+        audit_template_uuid = request.GET.get('audit_template_uuid')
+        if not audit_template_uuid:
+            return JsonResponse(
+                {'error': 'Audit template UUID is required'},
+                status=400)
+
+        # Get the audit template
+        audit_template = watcher.AuditTemplate.get(
+            request, audit_template_uuid)
+
+        if not audit_template.strategy_uuid:
+            return JsonResponse({
+                'strategy_name': audit_template.strategy_name or 'auto',
+                'parameters_spec': {},
+                'message': ('No specific strategy selected. Parameters will '
+                            'be automatically determined.')
+            })
+
+        # Get the strategy details
+        strategy = watcher.Strategy.get(request, audit_template.strategy_uuid)
+
+        # Parse parameters_spec if it exists
+        parameters_spec = {}
+        if hasattr(strategy, 'parameters_spec') and strategy.parameters_spec:
+            if isinstance(strategy.parameters_spec, dict):
+                properties = strategy.parameters_spec.get('properties', {})
+                parameters_spec = properties
+            elif isinstance(strategy.parameters_spec, str):
+                try:
+                    parsed_spec = json.loads(strategy.parameters_spec)
+                    parameters_spec = parsed_spec.get('properties', {})
+                except ValueError:
+                    parameters_spec = {}
+
+        return JsonResponse({
+            'strategy_name': strategy.display_name or strategy.name,
+            'strategy_uuid': strategy.uuid,
+            'parameters_spec': parameters_spec
+        })
+
+    except Exception as e:
+        LOG.exception("Error getting strategy parameters")
+        return JsonResponse({'error': str(e)}, status=500)

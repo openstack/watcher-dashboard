@@ -19,6 +19,10 @@
         <dd>{{ audit.strategy_name|default:_("-") }}</dd>
         <dt>{% trans "Type" %}</dt>
         <dd>{{ audit.audit_type|default:_("-") }}</dd>
+        {% if audit_parameters_pretty %}
+        <dt>{% trans "Parameters" %}</dt>
+        <dd>{{ audit_parameters_pretty|safe }}</dd>
+        {% endif %}
         <dt>{% trans "Auto Trigger" %}</dt>
         <dd>{{ audit.auto_trigger }}</dd>
         {% url 'horizon:admin:audit_templates:detail' audit.audit_template_uuid as audit_template_url %}
