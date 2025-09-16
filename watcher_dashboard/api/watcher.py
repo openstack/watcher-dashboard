@@ -40,7 +40,6 @@ def watcherclient(request, password=None):
         insecure=insecure,
         ca_file=ca_file,
         username=request.user.username,
-        password=password,
         os_auth_token=request.user.token.id
     )
     return client
