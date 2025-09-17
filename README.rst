@@ -1,14 +1,10 @@
-========================
-Team and repository tags
-========================
-
-.. image:: https://governance.openstack.org/tc/badges/watcher-dashboard.svg
-    :target: https://governance.openstack.org/tc/reference/tags/index.html
-
-.. Change things from this point on
-
+==============================================
 OpenStack Dashboard plugin for Watcher project
 ==============================================
+
+.. image:: https://governance.openstack.org/tc/badges/watcher-dashboard.svg
+
+.. Change things from this point on
 
 The Watcher dashboard is a Horizon plugin that will allow users to realize a
 wide range of cloud optimization goals.
