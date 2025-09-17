@@ -1,11 +1,46 @@
 [build-system]
-requires = ["pbr>=6.0.0", "setuptools>=64.0.0"]
+requires = ["pbr>=6.1.1"]
 build-backend = "pbr.build"
 
+[project]
+name = "watcher-dashboard"
+description = "Watcher Management Dashboard"
+authors = [
+    {name = "OpenStack", email = "openstack-discuss@lists.openstack.org"},
+]
+readme = {file = "README.rst", content-type = "text/x-rst"}
+license = {text = "Apache-2.0"}
+dynamic = ["version", "dependencies"]
+requires-python = ">=3.10"
+classifiers = [
+  "Environment :: OpenStack",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+
+[project.urls]
+Homepage = "https://docs.openstack.org/watcher-dashboard/latest/"
+Repository = "https://opendev.org/openstack/watcher-dashboard"
+
+[tool.setuptools]
+packages = [
+    "watcher_dashboard"
+]
 
 [tool.ruff]
 line-length = 79
 target-version = "py310"
+
 [tool.ruff.lint]
 select = ["E4", "E5", "E7", "E9", "F", "S", "U", "W", "C90"]
 ignore = [
@@ -22,8 +57,10 @@ ignore = [
     # S110 `try`-`except`-`pass` detected, consider logging the exception
     "S110",
 ]
+
 [tool.ruff.lint.per-file-ignores]
 "watcher_dashboard/tests/*" = ["S"]
+
 [tool.ruff.lint.mccabe]
 # Flag errors (`C901`) whenever the complexity level exceeds 5.
 max-complexity = 20
