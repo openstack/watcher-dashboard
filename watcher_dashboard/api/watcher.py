@@ -15,7 +15,7 @@ import logging
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from openstack_dashboard.api import base
-from watcherclient import client as wc
+from watcher_dashboard.common import client as wv
 
 from watcher_dashboard.utils import errors as errors_utils
 
@@ -23,10 +23,7 @@ LOG = logging.getLogger(__name__)
 WATCHER_SERVICE = 'infra-optim'
 
 
-def watcherclient(request, password=None):
-    api_version = "1"
-    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
-    ca_file = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
+def watcherclient(request, api_version=None):
     insert_watcher_policy_file()
 
     endpoint = base.url_for(request, WATCHER_SERVICE)
@@ -34,14 +31,11 @@ def watcherclient(request, password=None):
     LOG.debug('watcherclient connection created using token "%s" and url "%s"'
               % (request.user.token.id, endpoint))
 
-    client = wc.get_client(
-        api_version,
-        watcher_url=endpoint,
-        insecure=insecure,
-        ca_file=ca_file,
-        username=request.user.username,
-        os_auth_token=request.user.token.id
-    )
+    # Default to minimal microversion (1.0) unless explicitly overridden.
+    microversion = api_version or wv.MIN_DEFAULT
+
+    # Prefer centralized client helper
+    client = wv.get_client(request, required=microversion)
     return client
 
 
@@ -55,7 +49,7 @@ class Audit(base.APIDictWrapper):
     _attrs = ('uuid', 'name', 'created_at', 'modified_at', 'deleted_at',
               'state', 'audit_type', 'audit_template_uuid',
               'audit_template_name', 'interval', 'parameters', 'auto_trigger',
-              'goal_name', 'strategy_name')
+              'goal_name', 'strategy_name', 'start_time', 'end_time')
 
     def __init__(self, apiresource, request=None):
         super(Audit, self).__init__(apiresource)
@@ -63,7 +57,8 @@ class Audit(base.APIDictWrapper):
 
     @classmethod
     def create(cls, request, audit_template_uuid, audit_type, name=None,
-               auto_trigger=False, interval=None, parameters=None):
+               auto_trigger=False, interval=None, parameters=None,
+               start_time=None, end_time=None):
 
         """Create an audit in Watcher
 
@@ -90,20 +85,26 @@ class Audit(base.APIDictWrapper):
         """
 
         # Build the parameters to pass to watcherclient
-        create_params = {
+        payload = {
             'audit_template_uuid': audit_template_uuid,
             'audit_type': audit_type,
-            'auto_trigger': auto_trigger
+            'auto_trigger': auto_trigger,
         }
 
         if name:
-            create_params['name'] = name
+            payload['name'] = name
         if interval:
-            create_params['interval'] = interval
+            payload['interval'] = interval
         if parameters:
-            create_params['parameters'] = parameters
+            payload['parameters'] = parameters
+        if start_time:
+            payload['start_time'] = start_time
+        if end_time:
+            payload['end_time'] = end_time
 
-        return watcherclient(request).audit.create(**create_params)
+        # Use microversion 1.1 to support start/end_time
+        client = watcherclient(request, api_version=wv.MV_START_END)
+        return client.audit.create(**payload)
 
     @classmethod
     def list(cls, request, **filters):
@@ -118,7 +119,11 @@ class Audit(base.APIDictWrapper):
         :return: list of audits, or an empty list if there are none
         :rtype:  list of :py:class:`~.Audit`
         """
-        return watcherclient(request).audit.list(detail=True, **filters)
+        return watcherclient(
+            request, api_version=wv.MV_START_END
+        ).audit.list(
+            detail=True, **filters
+        )
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve audit"))
@@ -135,7 +140,11 @@ class Audit(base.APIDictWrapper):
                  the ID
         :rtype:  :py:class:`~.Audit`
         """
-        return watcherclient(request).audit.get(audit=audit_id)
+        return watcherclient(
+            request, api_version=wv.MV_START_END
+        ).audit.get(
+            audit=audit_id
+        )
 
     @classmethod
     def delete(cls, request, audit_id):
@@ -431,7 +440,8 @@ class Action(base.APIDictWrapper):
         """
         patch = []
         patch.append({'op': 'replace', 'path': '/state', 'value': 'PENDING'})
-        watcherclient(request).action.update(action_id, patch)
+        client = watcherclient(request, api_version=None)
+        client.action.update(action_id, patch)
 
     @property
     def id(self):

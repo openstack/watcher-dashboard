@@ -25,6 +25,12 @@
         {% endif %}
         <dt>{% trans "Auto Trigger" %}</dt>
         <dd>{{ audit.auto_trigger }}</dd>
+        {% if audit.start_time or audit.end_time %}
+        <dt>{% trans "Start Time" %}</dt>
+        <dd>{{ audit.start_time|parse_isotime|default:_("-") }}</dd>
+        <dt>{% trans "End Time" %}</dt>
+        <dd>{{ audit.end_time|parse_isotime|default:_("-") }}</dd>
+        {% endif %}
         {% url 'horizon:admin:audit_templates:detail' audit.audit_template_uuid as audit_template_url %}
         <dt>{% trans "State" %}</dt>
         <dd>{{ audit.state|default:_("-") }}</dd>
