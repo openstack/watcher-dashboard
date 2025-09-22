@@ -1,0 +1,10 @@
+---
+fixes:
+  - |
+    The Create Audit Template form now filters the ``Strategy`` dropdown
+    by the selected ``Goal``. Previously, all strategies were listed,
+    which could lead to selecting an incompatible strategy. The UI now
+    loads strategies dynamically after a goal is chosen, mirroring the
+    CLI behavior of ``openstack optimize strategy list --goal <goal>``.
+    When no goal is selected, the Strategy field remains empty with only
+    the default "Select Strategy" option.

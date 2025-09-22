@@ -24,4 +24,6 @@ urlpatterns = [
     re_path(r'^(?P<audit_template_uuid>[^/]+)/detail$',
             views.DetailView.as_view(),
             name='detail'),
+    re_path(r'^ajax/strategies/$', views.get_strategies_for_goal,
+            name='get_strategies_for_goal'),
 ]

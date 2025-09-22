@@ -51,3 +51,65 @@
     }]
 </p>
 {% endblock %}
+
+{% block modal-footer %}
+  {{ block.super }}
+  <script>
+    (function() {
+      function resetStrategies() {
+        var strategySelect = document.getElementById('id_strategy');
+        if (!strategySelect) { return; }
+        strategySelect.innerHTML = '';
+        var defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '{{ _('Select Strategy') }}';
+        strategySelect.appendChild(defaultOption);
+      }
+
+      function loadStrategies(goalUuid) {
+        var strategySelect = document.getElementById('id_strategy');
+        if (!strategySelect) { return; }
+        resetStrategies();
+        if (!goalUuid) { return; }
+
+        var url = "{% url 'horizon:admin:audit_templates:get_strategies_for_goal' %}" + '?goal_uuid=' + encodeURIComponent(goalUuid);
+        fetch(url, { credentials: 'same-origin' })
+          .then(function(resp) { return resp.json(); })
+          .then(function(data) {
+            if (!data || data.error) { return; }
+            (data.strategies || []).forEach(function(s) {
+              var opt = document.createElement('option');
+              opt.value = s.uuid;
+              opt.textContent = s.display_name || s.uuid;
+              strategySelect.appendChild(opt);
+            });
+          })
+          .catch(function(err) { if (window.console) { console.error(err); } });
+      }
+
+      // Use jQuery to ensure binding works in AJAX-loaded modals
+      if (window.jQuery) {
+        (function($) {
+          $(document).on('change', '#id_goal', function() {
+            loadStrategies(this.value);
+          });
+          // Trigger once after modal content is inserted
+          $(function() {
+            var pre = $('#id_goal').val();
+            loadStrategies(pre);
+          });
+        })(window.jQuery);
+      } else {
+        // Fallback without jQuery
+        document.addEventListener('change', function(e) {
+          if (e.target && e.target.id === 'id_goal') {
+            loadStrategies(e.target.value);
+          }
+        });
+        // Initial load
+        var el = document.getElementById('id_goal');
+        loadStrategies(el ? el.value : '');
+      }
+    })();
+  </script>
+{% endblock %}

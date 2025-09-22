@@ -16,6 +16,8 @@
 import json
 import logging
 
+from django.http import JsonResponse
+
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
@@ -132,3 +134,33 @@ class DetailView(horizon.tabs.TabbedTableView):
         # ports = self._get_ports()
         return self.tab_group_class(
             request, audit_template=audit_template, **kwargs)
+
+
+def get_strategies_for_goal(request):
+    """AJAX endpoint to get strategies filtered by selected goal.
+
+    Expects a GET parameter 'goal_uuid'. Returns a JSON with a list of
+    strategies each containing 'uuid' and 'display_name'.
+    """
+    try:
+        goal_uuid = request.GET.get('goal_uuid')
+        if not goal_uuid:
+            return JsonResponse({'error': 'goal_uuid is required'}, status=400)
+
+        strategies = watcher.Strategy.list(request, goal=goal_uuid)
+
+        data = [
+            {
+                'uuid': strategy.uuid,
+                'display_name': (
+                    getattr(strategy, 'display_name', None) or
+                    getattr(strategy, 'name', '')
+                ),
+            }
+            for strategy in strategies
+        ]
+
+        return JsonResponse({'strategies': data})
+    except Exception as exc:
+        LOG.exception("Error getting strategies for goal")
+        return JsonResponse({'error': str(exc)}, status=500)
