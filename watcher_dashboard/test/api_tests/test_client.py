@@ -55,14 +55,3 @@ class WatcherClientAPITests(test.APITestCase):
 
             wc.assert_called_with(self.request, api_version='1.1')
             client_mock.audit.create.assert_called_once()
-
-    def test_action_start_uses_default(self):
-        with mock.patch('watcher_dashboard.api.watcher.watcherclient') as wc:
-            client_mock = mock.Mock()
-            wc.return_value = client_mock
-            client_mock.action.update = mock.Mock(return_value={})
-
-            api.watcher.Action.start(self.request, action_id='act-1')
-
-            wc.assert_called_with(self.request, api_version=None)
-            client_mock.action.update.assert_called_once()

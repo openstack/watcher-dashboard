@@ -428,21 +428,6 @@ class Action(base.APIDictWrapper):
         watcherclient(request).action.delete(
             action_id=action_id)
 
-    @classmethod
-    def start(cls, request, action_id):
-        """Start an Action Plan
-
-        :param request: request object
-        :type  request: django.http.HttpRequest
-
-        :param action_id: action_plan id
-        :type  action_id: int
-        """
-        patch = []
-        patch.append({'op': 'replace', 'path': '/state', 'value': 'PENDING'})
-        client = watcherclient(request, api_version=None)
-        client.action.update(action_id, patch)
-
     @property
     def id(self):
         return self.uuid

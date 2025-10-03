@@ -23,7 +23,7 @@
         <dt>{% trans "Update At" %}</dt>
         <dd>{{ strategy.updated_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Parameters Spec" %}</dt>
-        <dd>
+        <dd style="height: auto; max-height: 500px; overflow: auto">
           {% if strategy_parameters_spec_pretty %}
             {{ strategy_parameters_spec_pretty|safe }}
           {% else %}
