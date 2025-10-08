@@ -113,7 +113,7 @@ class AuditTemplatesTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "audit_templates"
         verbose_name = _("Audit Templates")
         table_actions = (

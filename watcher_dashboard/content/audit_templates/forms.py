@@ -31,7 +31,7 @@ from watcher_dashboard.api import watcher
 LOG = logging.getLogger(__name__)
 
 
-class YamlValidator(object):
+class YamlValidator:
     message = _('Enter a valid YAML or JSON value.')
     code = 'invalid'
 
@@ -61,7 +61,7 @@ class CreateForm(forms.SelfHandlingForm):
     failure_url = 'horizon:admin:audit_templates:index'
 
     def __init__(self, request, *args, **kwargs):
-        super(CreateForm, self).__init__(request, *args, **kwargs)
+        super().__init__(request, *args, **kwargs)
         goals = self._get_goal_list(request)
 
         if goals:

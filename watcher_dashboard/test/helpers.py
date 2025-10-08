@@ -24,9 +24,9 @@ from watcher_dashboard import api
 from watcher_dashboard.test.test_data import utils
 
 
-class WatcherTestsMixin(object):
+class WatcherTestsMixin:
     def _setup_test_data(self):
-        super(WatcherTestsMixin, self)._setup_test_data()
+        super()._setup_test_data()
         utils.load_test_data(self)
 
 
@@ -36,7 +36,7 @@ class TestCase(WatcherTestsMixin, helpers.TestCase):
 
 class APITestCase(WatcherTestsMixin, helpers.APITestCase):
     def setUp(self):
-        super(APITestCase, self).setUp()
+        super().setUp()
 
         self._original_watcherclient = api.watcher.watcherclient
 
@@ -44,7 +44,7 @@ class APITestCase(WatcherTestsMixin, helpers.APITestCase):
             lambda request, *args, **kwargs: self.stub_watcherclient())
 
     def tearDown(self):
-        super(APITestCase, self).tearDown()
+        super().tearDown()
         api.watcher.watcherclient = self._original_watcherclient
 
     def stub_watcherclient(self):

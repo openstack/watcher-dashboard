@@ -38,7 +38,7 @@ class IndexView(horizon.tables.DataTableView):
     page_title = _("Strategies")
 
     def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['strategies_count'] = self.get_strategies_count()
         return context
 
@@ -91,7 +91,7 @@ class DetailView(horizon.tabs.TabbedTableView):
         return strategy
 
     def get_context_data(self, **kwargs):
-        context = super(DetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         strategy = self._get_data()
         context["strategy"] = strategy
         # Render parameters_spec in a readable format for the template
@@ -135,7 +135,7 @@ class DetailView(horizon.tabs.TabbedTableView):
                 obj = obj['properties']
 
             # Pretty print dict/list as YAML-like preformatted block
-            if isinstance(obj, (dict, list)):
+            if isinstance(obj, dict | list):
                 try:
                     import yaml  # Lazy import
                     dumped = yaml.safe_dump(
@@ -145,8 +145,8 @@ class DetailView(horizon.tabs.TabbedTableView):
                     )
                 except Exception:
                     dumped = json.dumps(obj, indent=2, ensure_ascii=False)
-                return mark_safe(  # nosec B703,B308
-                    '<pre style="margin:0">{}</pre>'.format(dumped)
+                return mark_safe(  # noqa: S308  # nosec B703,B308
+                    f'<pre style="margin:0">{dumped}</pre>'
                 )
 
             # Scalars

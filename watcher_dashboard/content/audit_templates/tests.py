@@ -30,7 +30,7 @@ DETAILS_VIEW = 'horizon:admin:audit_templates:detail'
 class AuditTemplatesTest(test.BaseAdminViewTests):
 
     def setUp(self):
-        super(AuditTemplatesTest, self).setUp()
+        super().setUp()
         self.goal_list = self.goals.list()
         self.strategy_list = self.strategies.list()
 

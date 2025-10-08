@@ -46,7 +46,7 @@ class AuditsPage(basepage.BaseNavigationPage):
     AUDIT_TABLE_TEMPLATE_COLUMN_INDEX = 1
 
     def __init__(self, driver, conf):
-        super(AuditsPage, self).__init__(driver, conf)
+        super().__init__(driver, conf)
         self._page_title = "Audits"
 
     @property

@@ -28,7 +28,7 @@ import subprocess  # nosec B404 - needed for virtual environment setup
 import sys
 
 
-class InstallVenv(object):
+class InstallVenv:
 
     def __init__(self, root, venv, requirements,
                  test_requirements, py_version,
@@ -45,8 +45,7 @@ class InstallVenv(object):
         sys.exit(1)
 
     def check_python_version(self):
-        if sys.version_info < (2, 6):
-            self.die("Need Python Version >= 2.6")
+        pass
 
     def run_command_with_code(self, cmd, redirect_output=True,
                               check_exit_code=True):
@@ -59,7 +58,7 @@ class InstallVenv(object):
         else:
             stdout = None
 
-        proc = subprocess.Popen(
+        proc = subprocess.Popen(  # noqa: S603
             cmd, cwd=self.root, stdout=stdout)  # nosec B603
         output = proc.communicate()[0]
         if check_exit_code and proc.returncode != 0:
@@ -146,9 +145,9 @@ class Distro(InstallVenv):
             else:
                 print('Failed')
 
-        self.die('ERROR: virtualenv not found.\n\n%s development'
+        self.die(f'ERROR: virtualenv not found.\n\n{self.project} development'
                  ' requires virtualenv, please install it using your'
-                 ' favorite package management tool' % self.project)
+                 ' favorite package management tool')
 
 
 class Fedora(Distro):
@@ -168,4 +167,4 @@ class Fedora(Distro):
         if not self.check_pkg('python-virtualenv'):
             self.die("Please install 'python-virtualenv'.")
 
-        super(Fedora, self).install_virtualenv()
+        super().install_virtualenv()

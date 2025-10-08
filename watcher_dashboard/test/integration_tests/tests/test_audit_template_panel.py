@@ -26,7 +26,7 @@ class AuditTemplateCreatePanelTests(helpers.AdminTestCase):
         * Deletes this audit template (in tearDown)
         * Checks that the audit template is removed
         """
-        audit_template_name = "audit_template_%s" % uuid.uuid1()
+        audit_template_name = f"audit_template_{uuid.uuid1()}"
         audit_template_page = \
             self.home_pg.go_to_optimization_audittemplatespage()
         audit_template_page.create_audit_template(audit_template_name)
@@ -37,8 +37,8 @@ class AuditTemplateCreatePanelTests(helpers.AdminTestCase):
 class AuditTemplatePanelTests(helpers.AdminTestCase):
 
     def setUp(self):
-        super(AuditTemplatePanelTests, self).setUp()
-        self.audit_template_name = "audit_template_%s" % uuid.uuid1()
+        super().setUp()
+        self.audit_template_name = f"audit_template_{uuid.uuid1()}"
         audit_template_page = \
             self.home_pg.go_to_optimization_audittemplatespage()
         audit_template_page.create_audit_template(self.audit_template_name)
@@ -50,7 +50,7 @@ class AuditTemplatePanelTests(helpers.AdminTestCase):
         # Uncomment this line when <Delete> button will be implemented
         self.assertFalse(audit_template_page.is_audit_template_present(
             self.audit_template_name))
-        super(AuditTemplatePanelTests, self).tearDown()
+        super().tearDown()
 
     def test_show_audit_template_info(self):
         """Test the audit template panel information page

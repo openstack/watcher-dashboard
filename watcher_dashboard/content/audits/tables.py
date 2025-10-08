@@ -27,13 +27,13 @@ from horizon.utils import filters
 from watcher_dashboard.api import watcher
 
 AUDIT_STATE_DISPLAY_CHOICES = (
-    ("NO STATE", pgettext_lazy("State of an audit", u"No State")),
-    ("ONGOING", pgettext_lazy("State of an audit", u"On Going")),
-    ("SUCCEEDED", pgettext_lazy("State of an audit", u"Succeeded")),
-    ("SUBMITTED", pgettext_lazy("State of an audit", u"Submitted")),
-    ("FAILED", pgettext_lazy("State of an audit", u"Failed")),
-    ("DELETED", pgettext_lazy("State of an audit", u"Deleted")),
-    ("PENDING", pgettext_lazy("State of an audit", u"Pending")),
+    ("NO STATE", pgettext_lazy("State of an audit", "No State")),
+    ("ONGOING", pgettext_lazy("State of an audit", "On Going")),
+    ("SUCCEEDED", pgettext_lazy("State of an audit", "Succeeded")),
+    ("SUBMITTED", pgettext_lazy("State of an audit", "Submitted")),
+    ("FAILED", pgettext_lazy("State of an audit", "Failed")),
+    ("DELETED", pgettext_lazy("State of an audit", "Deleted")),
+    ("PENDING", pgettext_lazy("State of an audit", "Pending")),
 )
 
 
@@ -164,7 +164,7 @@ class AuditsTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "audits"
         verbose_name = _("Audits")
         launch_actions = (CreateAudit,)
@@ -196,7 +196,7 @@ class RelatedAuditsTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "audits"
         verbose_name = _("Related audits")
         hidden_title = False

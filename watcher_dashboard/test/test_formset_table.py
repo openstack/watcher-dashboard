@@ -25,7 +25,7 @@ class FormsetTableTests(test.TestCase):
     def test_populate(self):
         """Create a FormsetDataTable and populate it with data."""
 
-        class TableObj(object):
+        class TableObj:
             pass
 
         obj = TableObj()
@@ -46,7 +46,7 @@ class FormsetTableTests(test.TestCase):
             name = tables.Column('name')
             value = tables.Column('value')
 
-            class Meta(object):
+            class Meta:
                 name = 'table'
 
         table = Table(self.request)

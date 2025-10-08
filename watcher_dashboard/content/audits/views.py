@@ -44,7 +44,7 @@ class IndexView(horizon.tables.DataTableView):
     page_title = _("Audits")
 
     def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         create_action = {
             'name': _("New Audit"),
             'url': reverse('horizon:admin:audits:create'),
@@ -136,14 +136,14 @@ class DetailView(horizon.tables.MultiTableView):
                     obj = params
 
             # Dicts/lists are presented as indented YAML for readability.
-            if isinstance(obj, (dict, list)):
+            if isinstance(obj, dict | list):
                 dumped = yaml.safe_dump(
                     obj,
                     default_flow_style=False,
                     sort_keys=False,
                 )
-                return mark_safe(  # nosec B703,B308
-                    '<pre style="margin:0">{}</pre>'.format(dumped)
+                return mark_safe(  # noqa: S308  # nosec B703,B308
+                    f'<pre style="margin:0">{dumped}</pre>'
                 )
 
             # Scalars or unknown types: return directly.
@@ -166,7 +166,7 @@ class DetailView(horizon.tables.MultiTableView):
         return audits
 
     def get_context_data(self, **kwargs):
-        context = super(DetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         audit = self._get_data()
         context["audit"] = audit
         # Prepare pretty parameters rendering (YAML) for the template. The

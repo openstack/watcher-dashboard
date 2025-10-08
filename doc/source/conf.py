@@ -35,8 +35,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Watcher Dashboard'
-copyright = u'OpenStack Foundation'
+project = 'Watcher Dashboard'
+copyright = 'OpenStack Foundation'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -89,7 +89,7 @@ man_pages = []
 html_theme = 'openstackdocs'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = '%sdoc' % project
+htmlhelp_basename = f'{project}doc'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass
@@ -97,8 +97,8 @@ htmlhelp_basename = '%sdoc' % project
 latex_documents = [
     ('index',
      'doc-watcher-dashboard.tex',
-     u'%s Documentation' % project,
-     u'OpenStack Foundation', 'manual'),
+     f'{project} Documentation',
+     'OpenStack Foundation', 'manual'),
 ]
 
 # Disable usage of xindy https://bugzilla.redhat.com/show_bug.cgi?id=1643664

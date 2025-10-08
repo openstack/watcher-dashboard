@@ -37,7 +37,7 @@ class IndexView(horizon.tables.DataTableView):
     page_title = _("Action Plans")
 
     def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['action_plans_count'] = self.get_action_plans_count()
         return context
 
@@ -128,7 +128,7 @@ class DetailView(horizon.tables.MultiTableView):
         return efficacy_indicators
 
     def get_context_data(self, **kwargs):
-        context = super(DetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         action_plan = self._get_data()
         context["action_plan"] = action_plan
         LOG.info('*********************************')
