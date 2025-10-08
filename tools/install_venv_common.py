@@ -24,7 +24,7 @@ Synced in from openstack-common
 
 import optparse
 import os
-import subprocess
+import subprocess  # nosec B404 - needed for virtual environment setup
 import sys
 
 
@@ -59,7 +59,8 @@ class InstallVenv(object):
         else:
             stdout = None
 
-        proc = subprocess.Popen(cmd, cwd=self.root, stdout=stdout)
+        proc = subprocess.Popen(
+            cmd, cwd=self.root, stdout=stdout)  # nosec B603
         output = proc.communicate()[0]
         if check_exit_code and proc.returncode != 0:
             self.die('Command "%s" failed.\n%s', ' '.join(cmd), output)

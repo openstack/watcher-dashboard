@@ -13,6 +13,8 @@
 
 from horizon.test.settings import *  # noqa
 from openstack_dashboard.test.settings import *  # noqa
+from horizon.test.settings import settings_utils  # noqa
+from openstack_dashboard.test.settings import HORIZON_CONFIG  # noqa
 
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled

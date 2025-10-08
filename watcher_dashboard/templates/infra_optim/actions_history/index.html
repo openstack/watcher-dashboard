@@ -1,11 +1,11 @@
 {% extends 'infra_optim/base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Audits' %}{% endblock %}
- 
+
 {% block page_header %}
   {% include 'horizon/common/_items_count_domain_page_header.html' with title=_('Audits') items_count=flavors_count %}
 {% endblock page_header %}
- 
+
 {% block main %}
 {% if suggested_flavors_count %}
 <table id="suggested-flavors-header" class="table">
@@ -22,12 +22,12 @@
   </tr>
   </thead>
 </table>
- 
+
 <div id="suggested-flavors" class="panel-collapse collapse">
   {{ suggested_flavors_table.render }}
 </div>
 {% endif %}
- 
+
 <div id="audits">
   {{ audits_table.render }}
 </div>
