@@ -1,7 +1,10 @@
-{% extends "horizon/common/_modal_form.html" %}
+{% extends "infra_optim/_modal_form_xl.html" %}
 {% load i18n %}
 
+{% block modal-dialog-class %}modal-xl{% endblock %}
+
 {% block modal-body-right %}
+  <div style="max-height: 80vh; overflow-y: auto;">
   <h3>{% trans "Description:" %}</h3>
   <p>{% trans "Creates a audit with specified parameters." %}</p>
   <p>{% trans "If you check 'Auto Trigger' option, the action plan, recommended by the audit, will be automatically started." %}</p>
@@ -84,7 +87,7 @@
                   defaultInfo = ' - default: ' + renderedDefault;
                 }
                 var description = spec.description ? ' - ' + spec.description : '';
-                paramHtml += '<li style="margin: 2px 0;"><code>' + param + '</code>' + typeInfo + defaultInfo + description + '</li>';
+                paramHtml += '<li class="word-wrap" style="margin: 2px 0;"><code>' + param + '</code>' + typeInfo + defaultInfo + description + '</li>';
               }
               paramHtml += '</ul>';
             } else if (data.message) {
@@ -144,4 +147,5 @@
       }
     });
   </script>
+  </div>
 {% endblock %}
