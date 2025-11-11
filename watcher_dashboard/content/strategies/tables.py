@@ -51,7 +51,7 @@ class StrategiesTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "strategies"
         verbose_name = _("Strategies")
         table_actions = (
@@ -82,7 +82,7 @@ class RelatedStrategiesTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "related_strategies"
         verbose_name = _("Related strategies")
         hidden_title = False

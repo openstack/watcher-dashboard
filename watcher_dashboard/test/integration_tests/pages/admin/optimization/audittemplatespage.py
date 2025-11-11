@@ -59,7 +59,7 @@ class AudittemplatesPage(basepage.BaseNavigationPage):
     _audittemplates_info_title_locator = (by.By.CSS_SELECTOR, 'div.detail>h4')
 
     def __init__(self, driver, conf):
-        super(AudittemplatesPage, self).__init__(driver, conf)
+        super().__init__(driver, conf)
         self._page_title = "Audit Templates"
 
     @property

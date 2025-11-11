@@ -21,7 +21,7 @@ from selenium.common import exceptions as selenium_exceptions
 
 class BrowserTests(test.SeleniumTestCase):
     def test_jasmine(self):
-        url = "%s%s" % (self.live_server_url, "/jasmine/")
+        url = "{}{}".format(self.live_server_url, "/jasmine/")
         self.selenium.get(url)
         wait = self.ui.WebDriverWait(self.selenium, 10)
 
@@ -48,5 +48,9 @@ class BrowserTests(test.SeleniumTestCase):
                 continue
             message = elem.find_element_by_class_name("test-message").text
             source = elem.find_element_by_tag_name("pre").text
-            logger.error("Module: %s, message: %s, source: %s" % (
-                module, message, source))
+            logger.error(
+                "Module: %s, message: %s, source: %s",
+                module,
+                message,
+                source,
+            )

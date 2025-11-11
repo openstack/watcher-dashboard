@@ -122,7 +122,7 @@ class CreateForm(forms.SelfHandlingForm):
                                       required=False)
 
     def __init__(self, request, *args, **kwargs):
-        super(CreateForm, self).__init__(request, *args, **kwargs)
+        super().__init__(request, *args, **kwargs)
         audit_templates = self._get_audit_template_list(request)
         self.fields['audit_template'].choices = audit_templates
         # Keep fields visible; API microversion is enforced per-call in backend
@@ -169,7 +169,7 @@ class CreateForm(forms.SelfHandlingForm):
         return parsed
 
     def clean(self):
-        cleaned_data = super(CreateForm, self).clean()
+        cleaned_data = super().clean()
         audit_type = cleaned_data.get('audit_type')
         if audit_type == 'continuous' and not cleaned_data.get('interval'):
             msg = _('Please input an interval for continuous audit')

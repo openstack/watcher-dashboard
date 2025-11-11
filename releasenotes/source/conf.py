@@ -54,8 +54,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Watcher Dashboard Release Notes'
-copyright = u'2017, Watcher Developers'
+project = 'Watcher Dashboard Release Notes'
+copyright = '2017, Watcher Developers'
 
 # Release notes are version independent.
 # The full version, including alpha/beta/rc tags.
@@ -211,8 +211,8 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     ('index', 'WatcherDashboardReleaseNotes.tex',
-     u'Watcher Dashboard Release Notes Documentation',
-     u'Watcher Developers', 'manual'),
+     'Watcher Dashboard Release Notes Documentation',
+     'Watcher Developers', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -242,8 +242,8 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'watcherdashboardreleasenotes',
-     u'Watcher Dashboard Release Notes Documentation',
-     [u'Watcher Developers'], 1)
+     'Watcher Dashboard Release Notes Documentation',
+     ['Watcher Developers'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -257,8 +257,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'WatcherDashboardReleaseNotes',
-     u'Watcher Dashboard Release Notes Documentation',
-     u'Watcher Developers', 'WatcherDashboardReleaseNotes',
+     'Watcher Dashboard Release Notes Documentation',
+     'Watcher Developers', 'WatcherDashboardReleaseNotes',
      'One line description of project.',
      'Miscellaneous'),
 ]

@@ -30,13 +30,13 @@ LOG = logging.getLogger(__name__)
 
 
 ACTION_STATE_DISPLAY_CHOICES = (
-    ("NO STATE", pgettext_lazy("Power state of an Instance", u"No State")),
-    ("ONGOING", pgettext_lazy("Power state of an Instance", u"On Going")),
-    ("SUCCEEDED", pgettext_lazy("Power state of an Instance", u"Succeeded")),
-    ("CANCELLED", pgettext_lazy("Power state of an Instance", u"Cancelled")),
-    ("FAILED", pgettext_lazy("Power state of an Instance", u"Failed")),
-    ("DELETED", pgettext_lazy("Power state of an Instance", u"Deleted")),
-    ("PENDING", pgettext_lazy("Power state of an Instance", u"Pending")),
+    ("NO STATE", pgettext_lazy("Power state of an Instance", "No State")),
+    ("ONGOING", pgettext_lazy("Power state of an Instance", "On Going")),
+    ("SUCCEEDED", pgettext_lazy("Power state of an Instance", "Succeeded")),
+    ("CANCELLED", pgettext_lazy("Power state of an Instance", "Cancelled")),
+    ("FAILED", pgettext_lazy("Power state of an Instance", "Failed")),
+    ("DELETED", pgettext_lazy("Power state of an Instance", "Deleted")),
+    ("PENDING", pgettext_lazy("Power state of an Instance", "Pending")),
 )
 
 
@@ -92,7 +92,7 @@ class ActionsTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "wactions"
         verbose_name = _("Actions")
         table_actions = (ActionsFilterAction, )
@@ -121,7 +121,7 @@ class RelatedActionsTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "related_wactions"
         verbose_name = _("Related Actions")
         hidden_title = False
@@ -138,7 +138,7 @@ class ActionParametersTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.name
 
-    class Meta(object):
+    class Meta:
         name = "parameters"
         verbose_name = _("Related parameters")
         hidden_title = False

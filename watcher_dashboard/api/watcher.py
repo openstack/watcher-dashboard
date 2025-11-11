@@ -28,8 +28,11 @@ def watcherclient(request, api_version=None):
 
     endpoint = base.url_for(request, WATCHER_SERVICE)
 
-    LOG.debug('watcherclient connection created using token "%s" and url "%s"'
-              % (request.user.token.id, endpoint))
+    LOG.debug(
+        'watcherclient connection created using token "%s" and url "%s"',
+        request.user.token.id,
+        endpoint,
+    )
 
     # Default to minimal microversion (1.0) unless explicitly overridden.
     microversion = api_version or wv.MIN_DEFAULT
@@ -52,7 +55,7 @@ class Audit(base.APIDictWrapper):
               'goal_name', 'strategy_name', 'start_time', 'end_time')
 
     def __init__(self, apiresource, request=None):
-        super(Audit, self).__init__(apiresource)
+        super().__init__(apiresource)
         self._request = request
 
     @classmethod
@@ -183,7 +186,7 @@ class AuditTemplate(base.APIDictWrapper):
               'deleted_at')
 
     def __init__(self, apiresource, request=None):
-        super(AuditTemplate, self).__init__(apiresource)
+        super().__init__(apiresource)
         self._request = request
 
     @classmethod
@@ -307,7 +310,7 @@ class ActionPlan(base.APIDictWrapper):
               'audit_uuid', 'state')
 
     def __init__(self, apiresource, request=None):
-        super(ActionPlan, self).__init__(apiresource)
+        super().__init__(apiresource)
         self._request = request
 
     @classmethod
@@ -379,7 +382,7 @@ class Action(base.APIDictWrapper):
               'action_type', 'applies_to', 'src', 'dst', 'parameter')
 
     def __init__(self, apiresource, request=None):
-        super(Action, self).__init__(apiresource)
+        super().__init__(apiresource)
         self._request = request
 
     @classmethod
@@ -439,7 +442,7 @@ class Goal(base.APIDictWrapper):
               'updated_at', 'deleted_at', 'efficacy_specifications')
 
     def __init__(self, apiresource, request=None):
-        super(Goal, self).__init__(apiresource)
+        super().__init__(apiresource)
         self._request = request
 
     @classmethod
@@ -485,7 +488,7 @@ class Strategy(base.APIDictWrapper):
               'created_at', 'updated_at', 'deleted_at', 'parameters_spec')
 
     def __init__(self, apiresource, request=None):
-        super(Strategy, self).__init__(apiresource)
+        super().__init__(apiresource)
         self._request = request
 
     @classmethod
@@ -532,7 +535,7 @@ class EfficacyIndicatorSpec(base.APIDictWrapper):
 class EfficacyIndicator(base.APIDictWrapper):
 
     def __init__(self, indicator):
-        super(EfficacyIndicator, self).__init__(indicator)
+        super().__init__(indicator)
         self.value = indicator.get('value', None)
         self.name = indicator.get('name', None)
         self.description = indicator.get('description', None)

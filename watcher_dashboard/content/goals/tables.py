@@ -37,7 +37,7 @@ class GoalsTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "goals"
         verbose_name = _("Goals")
 
@@ -63,7 +63,7 @@ class EfficacySpecificationTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.name
 
-    class Meta(object):
+    class Meta:
         name = "efficacy_specification"
         verbose_name = _("Efficacy specification")
         hidden_title = False

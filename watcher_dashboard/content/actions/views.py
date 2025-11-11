@@ -33,7 +33,7 @@ class IndexView(horizon.tables.DataTableView):
     page_title = _("Actions")
 
     def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['audits_count'] = self.get_actions_count()
         return context
 
@@ -93,7 +93,7 @@ class DetailView(horizon.tables.MultiTableView):
                 for name, value in action.input_parameters.items()]
 
     def get_context_data(self, **kwargs):
-        context = super(DetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         action = self._get_data()
         context["action"] = action
         return context

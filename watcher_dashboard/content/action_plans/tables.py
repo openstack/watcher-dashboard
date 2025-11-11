@@ -31,13 +31,13 @@ from watcher_dashboard.api import watcher
 LOG = logging.getLogger(__name__)
 
 ACTION_PLAN_STATE_DISPLAY_CHOICES = (
-    ("NO STATE", pgettext_lazy("State of an action plan", u"No State")),
-    ("ONGOING", pgettext_lazy("State of an action plan", u"On Going")),
-    ("SUCCEEDED", pgettext_lazy("State of an action plan", u"Succeeded")),
-    ("SUBMITTED", pgettext_lazy("State of an action plan", u"Submitted")),
-    ("FAILED", pgettext_lazy("State of an action plan", u"Failed")),
-    ("DELETED", pgettext_lazy("State of an action plan", u"Deleted")),
-    ("RECOMMENDED", pgettext_lazy("State of an action plan", u"Recommended")),
+    ("NO STATE", pgettext_lazy("State of an action plan", "No State")),
+    ("ONGOING", pgettext_lazy("State of an action plan", "On Going")),
+    ("SUCCEEDED", pgettext_lazy("State of an action plan", "Succeeded")),
+    ("SUBMITTED", pgettext_lazy("State of an action plan", "Submitted")),
+    ("FAILED", pgettext_lazy("State of an action plan", "Failed")),
+    ("DELETED", pgettext_lazy("State of an action plan", "Deleted")),
+    ("RECOMMENDED", pgettext_lazy("State of an action plan", "Recommended")),
 )
 
 
@@ -57,16 +57,16 @@ class ArchiveActionPlan(horizon.tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ngettext_lazy(
-            u"Archive Action Plan",
-            u"Archive Action Plans",
+            "Archive Action Plan",
+            "Archive Action Plans",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ngettext_lazy(
-            u"Action Plan archived",
-            u"Action Plans archived",
+            "Action Plan archived",
+            "Action Plans archived",
             count
         )
 
@@ -83,16 +83,16 @@ class StartActionPlan(horizon.tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ngettext_lazy(
-            u"Start Action Plan",
-            u"Start Action Plans",
+            "Start Action Plan",
+            "Start Action Plans",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ngettext_lazy(
-            u"Action Plan started",
-            u"Action Plans started",
+            "Action Plan started",
+            "Action Plans started",
             count
         )
 
@@ -182,7 +182,7 @@ class ActionPlansTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "action_plans"
         verbose_name = _("Action Plans")
         table_actions = (
@@ -228,7 +228,7 @@ class RelatedActionPlansTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.uuid
 
-    class Meta(object):
+    class Meta:
         name = "related_action_plans"
         verbose_name = _("Related Action Plans")
         hidden_title = False
@@ -260,7 +260,7 @@ class RelatedEfficacyIndicatorsTable(horizon.tables.DataTable):
     def get_object_id(self, datum):
         return datum.name
 
-    class Meta(object):
+    class Meta:
         name = "related_efficacy_indicators"
         verbose_name = _("Related Efficacy Indicators")
         hidden_title = False
