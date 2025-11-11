@@ -46,8 +46,8 @@ By running ``run_tests.sh``:
 
 Manual tests:
 
-    To manually check watcher-dashboard, it is possible to run a development server
-    for watcher-dashboard by running ``run_tests.sh --runserver``.
+    To manually check watcher-dashboard, it is possible to run a development
+    server for watcher-dashboard by running ``run_tests.sh --runserver``.
 
     To run the server with the settings used by the test environment:
     ``run_tests.sh --runserver 0.0.0.0:8000``

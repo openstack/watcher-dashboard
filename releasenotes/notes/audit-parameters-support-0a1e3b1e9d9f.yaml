@@ -5,7 +5,7 @@ features:
     audits, matching the OpenStack CLI ``openstack optimize audit create -p
     <name=value>``.
 
-    A new "Strategy Parameters" field accepts all the parameters as a JSON object. 
+    A new "Strategy Parameters" field accepts all the parameters as a JSON object.
     Server-side validation parses and validates the input, and the field remains
     backward compatible when left empty.
 

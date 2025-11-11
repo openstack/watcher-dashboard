@@ -118,7 +118,8 @@ following parameters
     'infra-optim': 'watcher_policy.json',
     }
 
-You can also update the file ``<HORIZON_DIR>/openstack_dashboard/conf/watcher_policy.conf``
+You can also update the file
+``<HORIZON_DIR>/openstack_dashboard/conf/watcher_policy.conf``
 to customize your policies.
 
 
@@ -138,4 +139,5 @@ Join us on IRC (Internet Relay Chat)::
     Network: OFTC (https://www.oftc.net/)
     Channel: #openstack-watcher
 
-Or send an email to openstack-discuss@lists.openstack.org using [watcher] in object
+Or send an email to openstack-discuss@lists.openstack.org using
+[watcher] in object

@@ -59,7 +59,6 @@ class Audit(base.APIDictWrapper):
     def create(cls, request, audit_template_uuid, audit_type, name=None,
                auto_trigger=False, interval=None, parameters=None,
                start_time=None, end_time=None):
-
         """Create an audit in Watcher
 
         :param request: request object
@@ -205,7 +204,7 @@ class AuditTemplate(base.APIDictWrapper):
                          template
         :type  strategy: string
 
-        :param description: Descrition of the audit template
+        :param description: Description of the audit template
         :type  description: string
 
         :param scope: Audit scope

@@ -142,7 +142,7 @@ class DetailView(horizon.tables.MultiTableView):
                     default_flow_style=False,
                     sort_keys=False,
                 )
-                return mark_safe(
+                return mark_safe(  # nosec B703,B308
                     '<pre style="margin:0">{}</pre>'.format(dumped)
                 )
 

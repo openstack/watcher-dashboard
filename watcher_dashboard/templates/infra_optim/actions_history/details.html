@@ -1,11 +1,11 @@
 {% extends 'infra_optim/base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Audits: ' %}{{ audits.name }}{% endblock %}
- 
+
 {% block page_header %}
   {% include 'horizon/common/_page_header.html' with title=_('Audits: ')|add:audits.name %}
 {% endblock page_header %}
- 
+
 {% block main %}
 <div class="row">
   <div class="col-md-4">
@@ -27,5 +27,5 @@
     {{ table.render }}
   </div>
 </div>
- 
+
 {% endblock %}

@@ -29,7 +29,7 @@ from watcher_dashboard.api import watcher
 AUDIT_STATE_DISPLAY_CHOICES = (
     ("NO STATE", pgettext_lazy("State of an audit", u"No State")),
     ("ONGOING", pgettext_lazy("State of an audit", u"On Going")),
-    ("SUCCEEDED", pgettext_lazy("State of an audit", u"Succeeeded")),
+    ("SUCCEEDED", pgettext_lazy("State of an audit", u"Succeeded")),
     ("SUBMITTED", pgettext_lazy("State of an audit", u"Submitted")),
     ("FAILED", pgettext_lazy("State of an audit", u"Failed")),
     ("DELETED", pgettext_lazy("State of an audit", u"Deleted")),

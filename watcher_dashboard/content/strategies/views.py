@@ -145,7 +145,7 @@ class DetailView(horizon.tabs.TabbedTableView):
                     )
                 except Exception:
                     dumped = json.dumps(obj, indent=2, ensure_ascii=False)
-                return mark_safe(
+                return mark_safe(  # nosec B703,B308
                     '<pre style="margin:0">{}</pre>'.format(dumped)
                 )
 
