@@ -30,6 +30,7 @@ nosetests.xml
 .testrepository
 .venv
 node_modules
+.stestr
 
 # Translations
 *.mo
@@ -59,6 +60,10 @@ ChangeLog
 # Horizon related
 *.lock
 watcher_dashboard/test/.secret_key_store
+
+# Playwright test artifacts
+playwright/
+.playwright/
 
 # Files created by releasenotes build
 releasenotes/build

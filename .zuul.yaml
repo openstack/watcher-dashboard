@@ -1,3 +1,40 @@
+- job:
+    name: watcher-dashboard-integration-tests-playwright
+    parent: devstack
+    nodeset: devstack-single-node-debian-bookworm
+    pre-run: playbooks/playwright/pre.yaml
+    run: playbooks/playwright/run.yaml
+    post-run: playbooks/playwright/post.yaml
+    required-projects:
+      - name: openstack/horizon
+      - name: openstack/watcher-dashboard
+      - name: openstack/watcher
+      - name: openstack/python-watcherclient
+    roles:
+      - zuul: openstack/devstack
+      - zuul: openstack/horizon
+    vars:
+      zuul_copy_output:
+        '{{ zuul.project.src_dir }}/playwright': logs
+      devstack_plugins:
+        watcher: https://opendev.org/openstack/watcher
+        watcher-dashboard: https://opendev.org/openstack/watcher-dashboard
+      devstack_services:
+        horizon: true
+        watcher-api: true
+        watcher-decision-engine: true
+        watcher-applier: true
+        s-account: false
+        s-container: false
+        s-object: false
+        s-proxy: false
+      tox_envlist: integration-playwright
+      tox_environment:
+        PLAYWRIGHT_BROWSER: webkit
+        PLAYWRIGHT_VIDEO: retain-on-failure
+        PLAYWRIGHT_TRACE: retain-on-failure
+        PLAYWRIGHT_HEADLESS: true
+
 - project:
     templates:
       - check-requirements
@@ -6,3 +43,9 @@
       - openstack-cover-jobs
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
+    check:
+      jobs:
+        - watcher-dashboard-integration-tests-playwright
+    gate:
+      jobs:
+        - watcher-dashboard-integration-tests-playwright
