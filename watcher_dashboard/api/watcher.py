@@ -12,11 +12,11 @@
 
 import logging
 
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from openstack_dashboard.api import base
 from watcherclient.common.apiclient import exceptions as wc_exc
 
+from watcher_dashboard import config
 from watcher_dashboard.common import client as common_client
 from watcher_dashboard.common import exceptions as watcher_exc
 from watcher_dashboard.utils import errors as errors_utils
@@ -44,10 +44,10 @@ def watcherclient(request, api_version=None):
     return client
 
 
-def insert_watcher_policy_file():
-    policy_files = getattr(settings, 'POLICY_FILES', {})
-    policy_files[common_client.WATCHER_SERVICE] = 'watcher_policy.yaml'
-    setattr(settings, 'POLICY_FILES', policy_files)
+def insert_watcher_policy_file() -> None:
+    svc = common_client.WATCHER_SERVICE
+    if svc not in config.get_policy_files():
+        config.set_policy_file(svc, 'watcher_policy.yaml')
 
 
 class Audit(base.APIDictWrapper):
