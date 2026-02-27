@@ -13,10 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
 import horizon.messages
 import horizon.tables
+
+from django.utils.translation import gettext_lazy as _
 
 
 class StrategiesFilterAction(horizon.tables.FilterAction):

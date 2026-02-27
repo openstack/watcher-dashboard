@@ -11,9 +11,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import openstack_dashboard.urls
+
 from django.conf import urls
 from django.urls import re_path
-import openstack_dashboard.urls
+
 
 urlpatterns = [
     re_path(r'', urls.include(openstack_dashboard.urls))

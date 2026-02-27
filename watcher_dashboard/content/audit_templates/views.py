@@ -16,22 +16,23 @@
 import json
 import logging
 
-from django.http import JsonResponse
-
-from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
-from horizon import forms
 import horizon.tables
 import horizon.tabs
-from horizon.utils import memoized
 import horizon.workflows
+
+from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from horizon import forms
+from horizon.utils import memoized
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.common import client as common_client
 from watcher_dashboard.content.audit_templates import forms as wforms
 from watcher_dashboard.content.audit_templates import tables
 from watcher_dashboard.content.audit_templates import tabs as wtabs
+
 
 LOG = logging.getLogger(__name__)
 

@@ -42,7 +42,8 @@ line-length = 79
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["E4", "E5", "E7", "E9", "F", "S", "U", "W", "C90"]
+select = ["C90", "E4", "E5", "E7", "E9", "F", "I", "S", "U", "W"]
+external = ["H"]
 ignore = [
     # we only use asserts for type narrowing
     "S101",
@@ -59,8 +60,25 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"watcher_dashboard/tests/*" = ["S"]
+"watcher_dashboard/test/*" = ["S"]
+# test/settings.py uses star imports inherited from openstack_dashboard.test.settings
+"watcher_dashboard/test/settings.py" = ["F403", "F405"]
 
 [tool.ruff.lint.mccabe]
 # Flag errors (`C901`) whenever the complexity level exceeds 5.
 max-complexity = 20
+
+[tool.ruff.lint.isort]
+known-first-party = ["watcher_dashboard"]
+force-single-line = true
+lines-after-imports = 2
+lines-between-types = 1
+section-order = ["future", "standard-library", "third-party",  "first-party"]
+# this is the default but just being explicit about the behavior
+# in case that ever changes.
+force-sort-within-sections = false
+
+[tool.ruff.format]
+quote-style = "preserve"
+docstring-code-format = true
+skip-magic-trailing-comma = true

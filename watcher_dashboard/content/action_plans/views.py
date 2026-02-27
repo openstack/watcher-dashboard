@@ -15,19 +15,21 @@
 
 import logging
 
-from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
-from horizon import forms
 import horizon.tables
 import horizon.tabs
-from horizon.utils import memoized
 import horizon.workflows
+
+from django.utils.translation import gettext_lazy as _
+from horizon import forms
+from horizon.utils import memoized
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.common import client as common_client
 from watcher_dashboard.content.action_plans import tables
 from watcher_dashboard.content.actions import tables as action_tables
 from watcher_dashboard.content.audits import forms as wforms
+
 
 LOG = logging.getLogger(__name__)
 

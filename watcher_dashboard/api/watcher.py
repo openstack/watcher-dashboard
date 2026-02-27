@@ -21,6 +21,7 @@ from watcher_dashboard.common import client as common_client
 from watcher_dashboard.common import exceptions as watcher_exc
 from watcher_dashboard.utils import errors as errors_utils
 
+
 LOG = logging.getLogger(__name__)
 
 

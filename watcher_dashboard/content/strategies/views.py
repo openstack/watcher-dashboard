@@ -16,18 +16,19 @@
 import json
 import logging
 
-from django.utils.safestring import mark_safe
-
-from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
 import horizon.tables
 import horizon.tabs
-from horizon.utils import memoized
 import horizon.workflows
+
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
+from horizon.utils import memoized
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.content.strategies import tables
 from watcher_dashboard.content.strategies import tabs as wtabs
+
 
 LOG = logging.getLogger(__name__)
 

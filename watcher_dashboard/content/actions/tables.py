@@ -15,16 +15,18 @@
 
 import logging
 
-from django.template.defaultfilters import title  # noqa
-from django import urls
-from django.utils.translation import gettext_lazy as _
-from django.utils.translation import pgettext_lazy
 import horizon.exceptions
 import horizon.messages
 import horizon.tables
+
+from django import urls
+from django.template.defaultfilters import title  # noqa
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 from horizon.utils import filters
 
 from watcher_dashboard.api import watcher
+
 
 LOG = logging.getLogger(__name__)
 

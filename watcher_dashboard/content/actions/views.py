@@ -15,14 +15,15 @@
 
 import collections
 
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
-from horizon import forms
 import horizon.tables
 import horizon.tabs
-from horizon.utils import memoized
 import horizon.workflows
+
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from horizon import forms
+from horizon.utils import memoized
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.common import client as common_client

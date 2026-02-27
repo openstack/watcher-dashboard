@@ -15,8 +15,9 @@ import logging
 from django.conf import settings
 from openstack_dashboard.api import base
 from watcherclient import client as wc
-from watcherclient.common import api_versioning
 from watcherclient import exceptions as wc_exc
+from watcherclient.common import api_versioning
+
 
 LOG = logging.getLogger(__name__)
 

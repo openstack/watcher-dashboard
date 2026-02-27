@@ -527,8 +527,7 @@ class WatcherAPITests(test.APITestCase):
             self.request, action_id)
 
     def test_action_update_method_not_allowed(self):
-        from watcherclient.common.apiclient import (
-            exceptions as wc_exc)
+        from watcherclient.common.apiclient import exceptions as wc_exc
         action_id = self.api_actions.first()['uuid']
         with mock.patch(
                 'watcher_dashboard.api.watcher.watcherclient',

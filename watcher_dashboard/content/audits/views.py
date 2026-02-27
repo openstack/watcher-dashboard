@@ -16,18 +16,19 @@
 import json
 import logging
 
+import horizon.exceptions
+import horizon.tables
+import horizon.tabs
+import horizon.workflows
+import yaml
+
 from django.http import JsonResponse
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-import horizon.exceptions
 from horizon import forms
-import horizon.tables
-import horizon.tabs
 from horizon.utils import memoized
-import horizon.workflows
-import yaml
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.common import client as common_client
@@ -35,6 +36,7 @@ from watcher_dashboard.content.action_plans import tables as action_plan_tables
 from watcher_dashboard.content.audits import forms as wforms
 from watcher_dashboard.content.audits import tables
 from watcher_dashboard.content.audits import tabs as wtabs
+
 
 LOG = logging.getLogger(__name__)
 

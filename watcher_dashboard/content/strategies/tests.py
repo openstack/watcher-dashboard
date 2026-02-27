@@ -20,6 +20,7 @@ from django import urls
 from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
 
+
 INDEX_URL = urls.reverse(
     'horizon:admin:strategies:index')
 DETAILS_VIEW = 'horizon:admin:strategies:detail'

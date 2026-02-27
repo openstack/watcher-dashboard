@@ -21,13 +21,13 @@ import logging
 
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.common import client as common_client
+
 
 LOG = logging.getLogger(__name__)
 ADD_AUDIT_TEMPLATES_URL = "horizon:admin:audit_templates:create"

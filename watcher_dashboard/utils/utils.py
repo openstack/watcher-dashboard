@@ -12,6 +12,7 @@
 #    under the License.
 import re
 
+
 CAMEL_RE = re.compile(r'([A-Z][a-z]+|[A-Z]+(?=[A-Z\s]|$))')
 
 

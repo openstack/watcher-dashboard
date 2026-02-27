@@ -18,15 +18,17 @@ Forms for starting Watcher Audit Templates.
 """
 import logging
 
+import yaml
+
 from django.core import exceptions as core_exc
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-import yaml
 
 from watcher_dashboard.api import watcher
+
 
 LOG = logging.getLogger(__name__)
 
