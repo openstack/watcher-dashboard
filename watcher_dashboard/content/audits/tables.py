@@ -42,9 +42,7 @@ AUDIT_STATE_DISPLAY_CHOICES = (
 class AuditsFilterAction(horizon.tables.FilterAction):
     # server = choices query = text
     filter_type = "server"
-    filter_choices = (
-        ('audit_template', _("Audit Template ="), True),
-    )
+    filter_choices = (('audit_template', _("Audit Template ="), True),)
     policy_rules = (("infra-optim", "audit:detail"),)
 
 
@@ -63,22 +61,20 @@ class GoToActionPlan(horizon.tables.Action):
     policy_rules = (("infra-optim", "action_plan:detail"),)
 
     def allowed(self, request, audit):
-        return audit or audit.state in ("SUCCEEDED", )
+        return audit or audit.state in ("SUCCEEDED",)
 
     def single(self, table, request, audit_id):
         try:
-            action_plans = watcher.ActionPlan.list(
-                request,
-                audit=audit_id)
+            action_plans = watcher.ActionPlan.list(request, audit=audit_id)
         except Exception:
             horizon.exceptions.handle(
-                request,
-                _("Unable to retrieve action_plan information."))
+                request, _("Unable to retrieve action_plan information.")
+            )
             return "javascript:void(0);"
 
-        return shortcuts.redirect(urls.reverse(
-            self.url,
-            args=[action_plans[0].uuid]))
+        return shortcuts.redirect(
+            urls.reverse(self.url, args=[action_plans[0].uuid])
+        )
 
 
 class ArchiveAudits(horizon.tables.DeleteAction):
@@ -90,19 +86,11 @@ class ArchiveAudits(horizon.tables.DeleteAction):
 
     @staticmethod
     def action_present(count):
-        return ngettext_lazy(
-            "Archive Audit",
-            "Archive Audits",
-            count
-        )
+        return ngettext_lazy("Archive Audit", "Archive Audits", count)
 
     @staticmethod
     def action_past(count):
-        return ngettext_lazy(
-            "Archived Audit",
-            "Archived Audits",
-            count
-        )
+        return ngettext_lazy("Archived Audit", "Archived Audits", count)
 
     def delete(self, request, obj_id):
         watcher.Audit.delete(request, obj_id)
@@ -118,19 +106,11 @@ class CancelAudits(horizon.tables.BatchAction):
 
     @staticmethod
     def action_present(count):
-        return ngettext_lazy(
-            "Cancel Audit",
-            "Cancel Audits",
-            count
-        )
+        return ngettext_lazy("Cancel Audit", "Cancel Audits", count)
 
     @staticmethod
     def action_past(count):
-        return ngettext_lazy(
-            "Cancelled Audit",
-            "Cancelled Audits",
-            count
-        )
+        return ngettext_lazy("Cancelled Audit", "Cancelled Audits", count)
 
     def action(self, request, obj_id):
         watcher.Audit.cancel(request, obj_id)
@@ -138,30 +118,27 @@ class CancelAudits(horizon.tables.BatchAction):
 
 class AuditsTable(horizon.tables.DataTable):
     uuid = horizon.tables.Column(
-        'uuid',
-        verbose_name=_("UUID"),
-        link="horizon:admin:audits:detail")
+        'uuid', verbose_name=_("UUID"), link="horizon:admin:audits:detail"
+    )
     name = horizon.tables.Column(
-        'name',
-        verbose_name=_("Name"),
-        link="horizon:admin:audits:detail")
-    goal = horizon.tables.Column(
-        'goal_name',
-        verbose_name=_('Goal'))
+        'name', verbose_name=_("Name"), link="horizon:admin:audits:detail"
+    )
+    goal = horizon.tables.Column('goal_name', verbose_name=_('Goal'))
     strategy = horizon.tables.Column(
-        'strategy_name',
-        verbose_name=_('Strategy'))
+        'strategy_name', verbose_name=_('Strategy')
+    )
     audit_type = horizon.tables.Column(
-        'audit_type',
-        verbose_name=_('Audit Type'))
+        'audit_type', verbose_name=_('Audit Type')
+    )
     auto_trigger = horizon.tables.Column(
-        'auto_trigger',
-        verbose_name=_('Auto Trigger'))
+        'auto_trigger', verbose_name=_('Auto Trigger')
+    )
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
         status=True,
-        status_choices=AUDIT_STATE_DISPLAY_CHOICES)
+        status_choices=AUDIT_STATE_DISPLAY_CHOICES,
+    )
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -170,30 +147,25 @@ class AuditsTable(horizon.tables.DataTable):
         name = "audits"
         verbose_name = _("Audits")
         launch_actions = (CreateAudit,)
-        table_actions = launch_actions + (
-            AuditsFilterAction,
-        )
-        row_actions = (
-            GoToActionPlan,
-            ArchiveAudits,
-            CancelAudits,
-        )
+        table_actions = launch_actions + (AuditsFilterAction,)
+        row_actions = (GoToActionPlan, ArchiveAudits, CancelAudits)
 
 
 class RelatedAuditsTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
-        'uuid',
-        verbose_name=_("UUID"),
-        link="horizon:admin:audits:detail")
+        'uuid', verbose_name=_("UUID"), link="horizon:admin:audits:detail"
+    )
     audit_template = horizon.tables.Column(
         'audit_template_name',
         verbose_name=_('Audit Template'),
-        filters=(title, filters.replace_underscores))
+        filters=(title, filters.replace_underscores),
+    )
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
         status=True,
-        status_choices=AUDIT_STATE_DISPLAY_CHOICES)
+        status_choices=AUDIT_STATE_DISPLAY_CHOICES,
+    )
 
     def get_object_id(self, datum):
         return datum.uuid

@@ -19,12 +19,16 @@ from watcher_dashboard.content.audits import views
 
 
 urlpatterns = [
-    re_path(r'^$',
-            views.IndexView.as_view(), name='index'),
-    re_path(r'^create/$',
-            views.CreateView.as_view(), name='create'),
-    re_path(r'^(?P<audit_uuid>[^/]+)/detail$',
-            views.DetailView.as_view(), name='detail'),
-    re_path(r'^get_strategy_parameters/$',
-            views.get_strategy_parameters, name='get_strategy_parameters'),
+    re_path(r'^$', views.IndexView.as_view(), name='index'),
+    re_path(r'^create/$', views.CreateView.as_view(), name='create'),
+    re_path(
+        r'^(?P<audit_uuid>[^/]+)/detail$',
+        views.DetailView.as_view(),
+        name='detail',
+    ),
+    re_path(
+        r'^get_strategy_parameters/$',
+        views.get_strategy_parameters,
+        name='get_strategy_parameters',
+    ),
 ]

@@ -50,19 +50,11 @@ class LaunchAudit(horizon.tables.BatchAction):
 
     @staticmethod
     def action_present(count):
-        return ngettext_lazy(
-            "Launch Audit",
-            "Launch Audits",
-            count
-        )
+        return ngettext_lazy("Launch Audit", "Launch Audits", count)
 
     @staticmethod
     def action_past(count):
-        return ngettext_lazy(
-            "Launched Audit",
-            "Launched Audits",
-            count
-        )
+        return ngettext_lazy("Launched Audit", "Launched Audits", count)
 
     def action(self, request, obj_id):
         params = {'audit_template_uuid': obj_id}
@@ -77,19 +69,11 @@ class ArchiveAuditTemplates(horizon.tables.DeleteAction):
 
     @staticmethod
     def action_present(count):
-        return ngettext_lazy(
-            "Archive Template",
-            "Archive Templates",
-            count
-        )
+        return ngettext_lazy("Archive Template", "Archive Templates", count)
 
     @staticmethod
     def action_past(count):
-        return ngettext_lazy(
-            "Archived Template",
-            "Archived Templates",
-            count
-        )
+        return ngettext_lazy("Archived Template", "Archived Templates", count)
 
     def delete(self, request, obj_id):
         watcher.AuditTemplate.delete(request, obj_id)
@@ -99,16 +83,13 @@ class AuditTemplatesTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
         'name',
         verbose_name=_("Name"),
-        link="horizon:admin:audit_templates:detail")
+        link="horizon:admin:audit_templates:detail",
+    )
     goal = horizon.tables.Column(
-        'goal_name',
-        verbose_name=_('Goal'),
-        status=True,
+        'goal_name', verbose_name=_('Goal'), status=True
     )
     strategy = horizon.tables.Column(
-        'strategy_name',
-        verbose_name=_('Strategy'),
-        status=True,
+        'strategy_name', verbose_name=_('Strategy'), status=True
     )
 
     def get_object_id(self, datum):
@@ -123,7 +104,4 @@ class AuditTemplatesTable(horizon.tables.DataTable):
             LaunchAudit,
             ArchiveAuditTemplates,
         )
-        row_actions = (
-            LaunchAudit,
-            ArchiveAuditTemplates,
-        )
+        row_actions = (LaunchAudit, ArchiveAuditTemplates)

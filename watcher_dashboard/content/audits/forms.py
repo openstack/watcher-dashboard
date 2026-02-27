@@ -16,6 +16,7 @@
 """
 Forms for starting Watcher Audits.
 """
+
 import json
 import logging
 
@@ -35,52 +36,71 @@ ADD_AUDIT_TEMPLATES_URL = "horizon:admin:audit_templates:create"
 
 class CreateForm(forms.SelfHandlingForm):
     audit_template = forms.DynamicChoiceField(
-        label=_("Audit Template"),
-        add_item_link=ADD_AUDIT_TEMPLATES_URL)
-    audit_name = forms.CharField(max_length=255, label=_("Name"),
-                                 help_text=_("An audit name should not "
-                                 "duplicate with existed audits' names."),
-                                 required=False)
-    audit_type = forms.ChoiceField(label=_("Audit Type"),
-                                   choices=[(None, _("Select Audit Type")),
-                                            ('oneshot', _('ONESHOT')),
-                                            ('continuous', _('CONTINUOUS'))],
-                                   widget=forms.Select(attrs={
-                                       'class': 'switchable',
-                                       'data-slug': 'audit_type'
-                                   }))
-    interval = forms.CharField(label=_("Interval (in seconds or cron format)"),
-                               help_text=_("Interval in seconds or cron"
-                                           "format for CONTINUOUS audit"),
-                               widget=forms.TextInput(attrs={
-                                   'class': 'switched',
-                                   'data-switch-on': 'audit_type',
-                                   'data-audit_type-continuous':
-                                   _("Interval (in seconds or cron"
-                                     " format)")}),
-                               required=False)
+        label=_("Audit Template"), add_item_link=ADD_AUDIT_TEMPLATES_URL
+    )
+    audit_name = forms.CharField(
+        max_length=255,
+        label=_("Name"),
+        help_text=_(
+            "An audit name should not duplicate with existed audits' names."
+        ),
+        required=False,
+    )
+    audit_type = forms.ChoiceField(
+        label=_("Audit Type"),
+        choices=[
+            (None, _("Select Audit Type")),
+            ('oneshot', _('ONESHOT')),
+            ('continuous', _('CONTINUOUS')),
+        ],
+        widget=forms.Select(
+            attrs={'class': 'switchable', 'data-slug': 'audit_type'}
+        ),
+    )
+    interval = forms.CharField(
+        label=_("Interval (in seconds or cron format)"),
+        help_text=_("Interval in seconds or cron format for CONTINUOUS audit"),
+        widget=forms.TextInput(
+            attrs={
+                'class': 'switched',
+                'data-switch-on': 'audit_type',
+                'data-audit_type-continuous': _(
+                    "Interval (in seconds or cron format)"
+                ),
+            }
+        ),
+        required=False,
+    )
     parameters = forms.CharField(
         label=_("Strategy Parameters (JSON)"),
-        help_text=_("Provide strategy parameters as a JSON object. "
-                    "See examples on the right."),
-        widget=forms.widgets.Textarea(attrs={
-            'rows': 8,
-            'placeholder': ('{\n'
-                            '  "memory_threshold": 0.8,\n'
-                            '  "enable_migration": true,\n'
-                            '  "compute_nodes": [\n'
-                            '    {"src_node": "compute1", '
-                            '"dst_node": "compute2"}\n'
-                            '  ]\n'
-                            '}')
-        }),
-        required=False
+        help_text=_(
+            "Provide strategy parameters as a JSON object. "
+            "See examples on the right."
+        ),
+        widget=forms.widgets.Textarea(
+            attrs={
+                'rows': 8,
+                'placeholder': (
+                    '{\n'
+                    '  "memory_threshold": 0.8,\n'
+                    '  "enable_migration": true,\n'
+                    '  "compute_nodes": [\n'
+                    '    {"src_node": "compute1", '
+                    '"dst_node": "compute2"}\n'
+                    '  ]\n'
+                    '}'
+                ),
+            }
+        ),
+        required=False,
     )
     start_time = forms.DateTimeField(
         label=_("Start time"),
-        help_text=_("Local time in ISO 8601 (e.g. 2025-01-02T18:30:00); "
-                    "only used for CONTINUOUS audits. Watcher converts local "
-                    "time to UTC."),
+        help_text=_(
+            "Local time in ISO 8601 (e.g. 2025-01-02T18:30:00); "
+            "only used for CONTINUOUS audits. Watcher converts local "
+            "time to UTC."
+        ),
         widget=forms.DateTimeInput(
             format="%Y-%m-%dT%H:%M:%S",
             attrs={
@@ -89,38 +109,41 @@ class CreateForm(forms.SelfHandlingForm):
                 'data-audit_type-continuous': _(
                     "Start time (ISO 8601, local)"
                 ),
-                'placeholder': 'YYYY-MM-DDTHH:MM:SS'
-            }
+                'placeholder': 'YYYY-MM-DDTHH:MM:SS',
+            },
         ),
         required=False,
         input_formats=[
             '%Y-%m-%dT%H:%M',
             '%Y-%m-%dT%H:%M:%S',
             '%Y-%m-%dT%H:%M:%S.%f',
-        ])
+        ],
+    )
     end_time = forms.DateTimeField(
         label=_("End time"),
-        help_text=_("Local time in ISO 8601 (e.g. 2025-01-02T18:30:00); "
-                    "only used for CONTINUOUS audits. Watcher converts local "
-                    "time to UTC."),
+        help_text=_(
+            "Local time in ISO 8601 (e.g. 2025-01-02T18:30:00); "
+            "only used for CONTINUOUS audits. Watcher converts local "
+            "time to UTC."
+        ),
         widget=forms.DateTimeInput(
             format="%Y-%m-%dT%H:%M:%S",
             attrs={
                 'class': 'switched',
                 'data-switch-on': 'audit_type',
                 'data-audit_type-continuous': _("End time (ISO 8601, local)"),
-                'placeholder': 'YYYY-MM-DDTHH:MM:SS'
-            }
+                'placeholder': 'YYYY-MM-DDTHH:MM:SS',
+            },
         ),
         required=False,
         input_formats=[
             '%Y-%m-%dT%H:%M',
             '%Y-%m-%dT%H:%M:%S',
             '%Y-%m-%dT%H:%M:%S.%f',
-        ])
+        ],
+    )
     failure_url = 'horizon:admin:audits:index'
-    auto_trigger = forms.BooleanField(label=_("Auto Trigger"),
-                                      required=False)
+    auto_trigger = forms.BooleanField(label=_("Auto Trigger"), required=False)
 
     def __init__(self, request, *args, **kwargs):
         super().__init__(request, *args, **kwargs)
@@ -130,7 +153,8 @@ class CreateForm(forms.SelfHandlingForm):
         # support microversion 1.1 (MV_START_END).
         self._max_ver = common_client.get_max_version(request)
         if not common_client.is_microversion_supported(
-                self._max_ver, common_client.MV_START_END):
+            self._max_ver, common_client.MV_START_END
+        ):
             del self.fields['start_time']
             del self.fields['end_time']
 
@@ -167,11 +191,11 @@ class CreateForm(forms.SelfHandlingForm):
             parsed = json.loads(param_string)
         except ValueError as e:
             raise forms.ValidationError(
-                _('Parameters must be valid JSON: %s') % str(e))
+                _('Parameters must be valid JSON: %s') % str(e)
+            )
 
         if not isinstance(parsed, dict):
-            raise forms.ValidationError(
-                _('Parameters must be a JSON object'))
+            raise forms.ValidationError(_('Parameters must be a JSON object'))
 
         return parsed
 
@@ -186,7 +210,8 @@ class CreateForm(forms.SelfHandlingForm):
             end_time = cleaned_data.get('end_time')
             if start_time and end_time and end_time <= start_time:
                 raise forms.ValidationError(
-                    _('End time must be later than start time'))
+                    _('End time must be later than start time')
+                )
         # Validate parameters
         param_string = cleaned_data.get('parameters', '')
         try:
@@ -207,10 +232,12 @@ class CreateForm(forms.SelfHandlingForm):
                 # Convert datetimes to ISO 8601 for API (local time)
                 if data.get('start_time'):
                     params['start_time'] = data['start_time'].isoformat(
-                        timespec='seconds')
+                        timespec='seconds'
+                    )
                 if data.get('end_time'):
                     params['end_time'] = data['end_time'].isoformat(
-                        timespec='seconds')
+                        timespec='seconds'
+                    )
             else:
                 params['interval'] = None
 
@@ -225,10 +252,13 @@ class CreateForm(forms.SelfHandlingForm):
             api_ver = (
                 common_client.MV_START_END
                 if common_client.is_microversion_supported(
-                    self._max_ver, common_client.MV_START_END)
-                else None)
+                    self._max_ver, common_client.MV_START_END
+                )
+                else None
+            )
             audit = watcher.Audit.create(
-                request, api_version=api_ver, **params)
+                request, api_version=api_ver, **params
+            )
             message = _('Audit was successfully created.')
             messages.success(request, message)
             return audit

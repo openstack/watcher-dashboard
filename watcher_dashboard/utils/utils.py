@@ -52,7 +52,7 @@ def check_image_type(image, image_type):
     be sure what type of image it is.
     """
 
-    return (image.properties.get('type', image_type) == image_type)
+    return image.properties.get('type', image_type) == image_type
 
 
 def filter_items(items, **kwargs):
@@ -62,6 +62,7 @@ def filter_items(items, **kwargs):
     >>> class Item(object):
     ...     def __init__(self, index):
     ...         self.index = index
+    ...
     ...     def __repr__(self):
     ...         return '<Item index=%d>' % self.index
     >>> items = [Item(i) for i in range(7)]
@@ -75,10 +76,10 @@ def filter_items(items, **kwargs):
     for item in items:
         for name, value in kwargs.items():
             if name.endswith('__in'):
-                if getattr(item, name[:-len('__in')]) not in value:
+                if getattr(item, name[: -len('__in')]) not in value:
                     break
             elif name.endswith('__not_in'):
-                if getattr(item, name[:-len('__not_in')]) in value:
+                if getattr(item, name[: -len('__not_in')]) in value:
                     break
             else:
                 if getattr(item, name) != value:

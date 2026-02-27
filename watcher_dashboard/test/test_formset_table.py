@@ -22,7 +22,6 @@ from watcher_dashboard.test import helpers as test
 
 
 class FormsetTableTests(test.TestCase):
-
     def test_populate(self):
         """Create a FormsetDataTable and populate it with data."""
 
@@ -38,8 +37,9 @@ class FormsetTableTests(test.TestCase):
             name = django.forms.CharField()
             value = django.forms.IntegerField()
 
-        TableFormset = django.forms.formsets.formset_factory(TableForm,
-                                                             extra=0)
+        TableFormset = django.forms.formsets.formset_factory(
+            TableForm, extra=0
+        )
 
         class Table(hformset.FormsetDataTable):
             formset_class = TableFormset

@@ -23,31 +23,22 @@ from django.utils.translation import gettext_lazy as _
 class StrategiesFilterAction(horizon.tables.FilterAction):
     # server = choices query = text
     filter_type = "server"
-    filter_choices = (
-        ('goal', _("Goal ="), True),
-    )
+    filter_choices = (('goal', _("Goal ="), True),)
     policy_rules = (("infra-optim", "strategy:detail"),)
 
 
 class StrategiesTable(horizon.tables.DataTable):
-
     uuid = horizon.tables.Column(
-        'uuid',
-        verbose_name=_("UUID"),
-        link="horizon:admin:strategies:detail")
+        'uuid', verbose_name=_("UUID"), link="horizon:admin:strategies:detail"
+    )
 
-    name = horizon.tables.Column(
-        'name',
-        verbose_name=_('Name'))
+    name = horizon.tables.Column('name', verbose_name=_('Name'))
 
     display_name = horizon.tables.Column(
-        'display_name',
-        verbose_name=_('Verbose Name'))
-
-    goal = horizon.tables.Column(
-        'goal_name',
-        verbose_name=_("Goal"),
+        'display_name', verbose_name=_('Verbose Name')
     )
+
+    goal = horizon.tables.Column('goal_name', verbose_name=_("Goal"))
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -55,30 +46,21 @@ class StrategiesTable(horizon.tables.DataTable):
     class Meta:
         name = "strategies"
         verbose_name = _("Strategies")
-        table_actions = (
-            StrategiesFilterAction,
-        )
+        table_actions = (StrategiesFilterAction,)
 
 
 class RelatedStrategiesTable(horizon.tables.DataTable):
-
     uuid = horizon.tables.Column(
-        'uuid',
-        verbose_name=_("UUID"),
-        link="horizon:admin:strategies:detail")
+        'uuid', verbose_name=_("UUID"), link="horizon:admin:strategies:detail"
+    )
 
-    name = horizon.tables.Column(
-        'name',
-        verbose_name=_('Name'))
+    name = horizon.tables.Column('name', verbose_name=_('Name'))
 
     display_name = horizon.tables.Column(
-        'display_name',
-        verbose_name=_('Verbose Name'))
-
-    goal = horizon.tables.Column(
-        'goal_name',
-        verbose_name=_("Goal"),
+        'display_name', verbose_name=_('Verbose Name')
     )
+
+    goal = horizon.tables.Column('goal_name', verbose_name=_("Goal"))
 
     def get_object_id(self, datum):
         return datum.uuid

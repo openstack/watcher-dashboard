@@ -36,10 +36,7 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-    'openstackdocstheme',
-    'reno.sphinxext',
-]
+extensions = ['openstackdocstheme', 'reno.sphinxext']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -198,10 +195,8 @@ htmlhelp_basename = 'WatcherDashboardReleaseNotesdoc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     # 'preamble': '',
 }
@@ -210,9 +205,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ('index', 'WatcherDashboardReleaseNotes.tex',
-     'Watcher Dashboard Release Notes Documentation',
-     'Watcher Developers', 'manual'),
+    (
+        'index',
+        'WatcherDashboardReleaseNotes.tex',
+        'Watcher Dashboard Release Notes Documentation',
+        'Watcher Developers',
+        'manual',
+    )
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -241,9 +240,13 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'watcherdashboardreleasenotes',
-     'Watcher Dashboard Release Notes Documentation',
-     ['Watcher Developers'], 1)
+    (
+        'index',
+        'watcherdashboardreleasenotes',
+        'Watcher Dashboard Release Notes Documentation',
+        ['Watcher Developers'],
+        1,
+    )
 ]
 
 # If true, show URL addresses after external links.
@@ -256,11 +259,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'WatcherDashboardReleaseNotes',
-     'Watcher Dashboard Release Notes Documentation',
-     'Watcher Developers', 'WatcherDashboardReleaseNotes',
-     'One line description of project.',
-     'Miscellaneous'),
+    (
+        'index',
+        'WatcherDashboardReleaseNotes',
+        'Watcher Dashboard Release Notes Documentation',
+        'Watcher Developers',
+        'WatcherDashboardReleaseNotes',
+        'One line description of project.',
+        'Miscellaneous',
+    )
 ]
 
 # Documents to append as an appendix to all manuals.

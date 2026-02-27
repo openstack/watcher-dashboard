@@ -52,12 +52,14 @@ class IndexView(horizon.tables.DataTableView):
         search_opts = self.get_filters()
         try:
             audit_templates = watcher.AuditTemplate.list(
-                self.request, **search_opts)
+                self.request, **search_opts
+            )
         except Exception as exc:
             LOG.exception(exc)
             horizon.exceptions.handle(
                 self.request,
-                _("Unable to retrieve audit template information."))
+                _("Unable to retrieve audit template information."),
+            )
         return audit_templates
 
     def get_count(self):
@@ -104,17 +106,20 @@ class DetailView(horizon.tabs.TabbedTableView):
         try:
             audit_template_uuid = self.kwargs['audit_template_uuid']
             audit_template = watcher.AuditTemplate.get(
-                self.request, audit_template_uuid)
+                self.request, audit_template_uuid
+            )
             if audit_template.scope:
                 audit_template.scope = json.dumps(audit_template.scope)
 
         except Exception as exc:
             LOG.exception(exc)
-            msg = _('Unable to retrieve details for audit template "%s".') \
+            msg = (
+                _('Unable to retrieve details for audit template "%s".')
                 % audit_template_uuid
+            )
             horizon.exceptions.handle(
-                self.request, msg,
-                redirect=self.redirect_url)
+                self.request, msg, redirect=self.redirect_url
+            )
         return audit_template
 
     def get_related_audits_data(self):
@@ -124,12 +129,15 @@ class DetailView(horizon.tabs.TabbedTableView):
             version = (
                 common_client.MV_START_END
                 if common_client.is_microversion_supported(
-                    server_version, common_client.MV_START_END)
-                else None)
+                    server_version, common_client.MV_START_END
+                )
+                else None
+            )
             audits = watcher.Audit.list(
                 self.request,
                 api_version=version,
-                audit_template=audit_template.uuid)
+                audit_template=audit_template.uuid,
+            )
         except Exception as exc:
             LOG.exception(exc)
             audits = []
@@ -147,7 +155,8 @@ class DetailView(horizon.tabs.TabbedTableView):
         audit_template = self._get_data()
         # ports = self._get_ports()
         return self.tab_group_class(
-            request, audit_template=audit_template, **kwargs)
+            request, audit_template=audit_template, **kwargs
+        )
 
 
 def get_strategies_for_goal(request):
@@ -166,7 +175,7 @@ def get_strategies_for_goal(request):
         data = [
             {
                 'uuid': strategy.uuid,
-                'display_name': watcher.get_strategy_display_name(strategy)
+                'display_name': watcher.get_strategy_display_name(strategy),
             }
             for strategy in strategies
         ]

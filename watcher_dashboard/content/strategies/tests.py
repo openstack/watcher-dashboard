@@ -21,13 +21,11 @@ from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
 
 
-INDEX_URL = urls.reverse(
-    'horizon:admin:strategies:index')
+INDEX_URL = urls.reverse('horizon:admin:strategies:index')
 DETAILS_VIEW = 'horizon:admin:strategies:detail'
 
 
 class StrategiesTest(test.BaseAdminViewTests):
-
     goal_list = [
         'BASIC_CONSOLIDATION',
         'MINIMIZE_ENERGY_CONSUMPTION',
@@ -60,8 +58,7 @@ class StrategiesTest(test.BaseAdminViewTests):
 
         DETAILS_URL = urls.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
-        self.assertTemplateUsed(res,
-                                'infra_optim/strategies/details.html')
+        self.assertTemplateUsed(res, 'infra_optim/strategies/details.html')
         strategies = res.context['strategy']
         self.assertCountEqual([strategies], [at])
 

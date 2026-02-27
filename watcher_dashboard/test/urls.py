@@ -17,6 +17,4 @@ from django.conf import urls
 from django.urls import re_path
 
 
-urlpatterns = [
-    re_path(r'', urls.include(openstack_dashboard.urls))
-]
+urlpatterns = [re_path(r'', urls.include(openstack_dashboard.urls))]

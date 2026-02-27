@@ -35,10 +35,7 @@ INSTALLED_APPS = (
 
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings_utils.update_dashboards(
-    [
-        watcher_dashboard.local.enabled,
-        openstack_dashboard.enabled,
-    ],
+    [watcher_dashboard.local.enabled, openstack_dashboard.enabled],
     HORIZON_CONFIG,
     INSTALLED_APPS,
 )

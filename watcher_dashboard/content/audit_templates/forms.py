@@ -16,6 +16,7 @@
 """
 Forms for starting Watcher Audit Templates.
 """
+
 import logging
 
 import yaml
@@ -50,15 +51,18 @@ class YamlValidator:
 
 class CreateForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255, label=_("Name"))
-    description = forms.CharField(max_length=255, label=_("Description"),
-                                  required=False)
+    description = forms.CharField(
+        max_length=255, label=_("Description"), required=False
+    )
     goal = forms.ChoiceField(label=_('Goal'))
     strategy = forms.DynamicChoiceField(label=_('Strategy'), required=False)
 
     scope = forms.CharField(
-        label=_('Scope'), required=False,
+        label=_('Scope'),
+        required=False,
         widget=forms.widgets.Textarea,
-        validators=[YamlValidator()])
+        validators=[YamlValidator()],
+    )
 
     failure_url = 'horizon:admin:audit_templates:index'
 
@@ -83,7 +87,8 @@ class CreateForm(forms.SelfHandlingForm):
 
         if selected_goal and 'strategy' in self.fields:
             filtered_strategies = self._get_strategy_list_for_goal(
-                request, selected_goal)
+                request, selected_goal
+            )
             if filtered_strategies:
                 self.fields['strategy'].choices = filtered_strategies
 
@@ -97,10 +102,7 @@ class CreateForm(forms.SelfHandlingForm):
             messages.warning(request, exc)
             goals = []
 
-        choices = [
-            (goal.uuid, goal.display_name)
-            for goal in goals
-        ]
+        choices = [(goal.uuid, goal.display_name) for goal in goals]
 
         if choices:
             choices.insert(0, ("", _("Select Goal")))
@@ -117,10 +119,7 @@ class CreateForm(forms.SelfHandlingForm):
             strategies = []
 
         choices = [
-            (
-                strategy.uuid,
-                watcher.get_strategy_display_name(strategy)
-            )
+            (strategy.uuid, watcher.get_strategy_display_name(strategy))
             for strategy in strategies
         ]
 
@@ -134,8 +133,9 @@ class CreateForm(forms.SelfHandlingForm):
             params['description'] = data['description']
             params['goal'] = data['goal']
             params['strategy'] = data['strategy'] or None
-            params['scope'] = [] if not data['scope'] else yaml.safe_load(
-                data['scope'])
+            params['scope'] = (
+                [] if not data['scope'] else yaml.safe_load(data['scope'])
+            )
             audit_tpl = watcher.AuditTemplate.create(request, **params)
             message = _('Audit Template was successfully created.')
             messages.success(request, message)

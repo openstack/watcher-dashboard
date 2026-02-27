@@ -51,8 +51,8 @@ class IndexView(horizon.tables.DataTableView):
         except Exception as exc:
             LOG.exception(exc)
             horizon.exceptions.handle(
-                self.request,
-                _("Unable to retrieve strategy information."))
+                self.request, _("Unable to retrieve strategy information.")
+            )
         return strategies
 
     def get_strategies_count(self):
@@ -84,11 +84,13 @@ class DetailView(horizon.tabs.TabbedTableView):
             strategy = watcher.Strategy.get(self.request, strategy_uuid)
         except Exception as exc:
             LOG.exception(exc)
-            msg = _('Unable to retrieve details for strategy "%s".') \
+            msg = (
+                _('Unable to retrieve details for strategy "%s".')
                 % strategy_uuid
+            )
             horizon.exceptions.handle(
-                self.request, msg,
-                redirect=self.redirect_url)
+                self.request, msg, redirect=self.redirect_url
+            )
         return strategy
 
     def get_context_data(self, **kwargs):
@@ -131,18 +133,20 @@ class DetailView(horizon.tabs.TabbedTableView):
                     return obj
 
             # If JSON schema-like, extract properties for readability
-            if isinstance(obj, dict) and 'properties' in obj \
-                    and isinstance(obj.get('properties'), dict):
+            if (
+                isinstance(obj, dict)
+                and 'properties' in obj
+                and isinstance(obj.get('properties'), dict)
+            ):
                 obj = obj['properties']
 
             # Pretty print dict/list as YAML-like preformatted block
             if isinstance(obj, dict | list):
                 try:
                     import yaml  # Lazy import
+
                     dumped = yaml.safe_dump(
-                        obj,
-                        default_flow_style=False,
-                        sort_keys=False,
+                        obj, default_flow_style=False, sort_keys=False
                     )
                 except Exception:
                     dumped = json.dumps(obj, indent=2, ensure_ascii=False)

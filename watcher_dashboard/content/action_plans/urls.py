@@ -19,10 +19,11 @@ from watcher_dashboard.content.action_plans import views
 
 
 urlpatterns = [
-    re_path(r'^$',
-            views.IndexView.as_view(), name='index'),
-    re_path(r'^(?P<action_plan_uuid>[^/]+)/detail$',
-            views.DetailView.as_view(), name='detail'),
-    re_path(r'^archive/$',
-            views.ArchiveView.as_view(), name='archive'),
+    re_path(r'^$', views.IndexView.as_view(), name='index'),
+    re_path(
+        r'^(?P<action_plan_uuid>[^/]+)/detail$',
+        views.DetailView.as_view(),
+        name='detail',
+    ),
+    re_path(r'^archive/$', views.ArchiveView.as_view(), name='archive'),
 ]

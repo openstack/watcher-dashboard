@@ -51,20 +51,43 @@ def insert_watcher_policy_file():
 
 
 class Audit(base.APIDictWrapper):
-    _attrs = ('uuid', 'name', 'created_at', 'modified_at', 'deleted_at',
-              'state', 'audit_type', 'audit_template_uuid',
-              'audit_template_name', 'interval', 'parameters', 'auto_trigger',
-              'goal_name', 'strategy_name', 'start_time', 'end_time')
+    _attrs = (
+        'uuid',
+        'name',
+        'created_at',
+        'modified_at',
+        'deleted_at',
+        'state',
+        'audit_type',
+        'audit_template_uuid',
+        'audit_template_name',
+        'interval',
+        'parameters',
+        'auto_trigger',
+        'goal_name',
+        'strategy_name',
+        'start_time',
+        'end_time',
+    )
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
         self._request = request
 
     @classmethod
-    def create(cls, request, audit_template_uuid, audit_type,
-               name=None, auto_trigger=False, interval=None,
-               parameters=None, start_time=None, end_time=None,
-               api_version=None):
+    def create(
+        cls,
+        request,
+        audit_template_uuid,
+        audit_type,
+        name=None,
+        auto_trigger=False,
+        interval=None,
+        parameters=None,
+        start_time=None,
+        end_time=None,
+        api_version=None,
+    ):
         """Create an audit in Watcher.
 
         :param request: request object
@@ -107,8 +130,7 @@ class Audit(base.APIDictWrapper):
         if end_time:
             payload['end_time'] = end_time
 
-        client = watcherclient(
-            request, api_version=api_version)
+        client = watcherclient(request, api_version=api_version)
         return client.audit.create(**payload)
 
     @classmethod
@@ -125,9 +147,9 @@ class Audit(base.APIDictWrapper):
         :return: list of audits, or an empty list if there are none
         :rtype:  list of :py:class:`~.Audit`
         """
-        return watcherclient(
-            request, api_version=api_version
-        ).audit.list(detail=True, **filters)
+        return watcherclient(request, api_version=api_version).audit.list(
+            detail=True, **filters
+        )
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve audit"))
@@ -145,9 +167,9 @@ class Audit(base.APIDictWrapper):
                  the ID
         :rtype:  :py:class:`~.Audit`
         """
-        return watcherclient(
-            request, api_version=api_version
-        ).audit.get(audit=audit_id)
+        return watcherclient(request, api_version=api_version).audit.get(
+            audit=audit_id
+        )
 
     @classmethod
     def delete(cls, request, audit_id):
@@ -171,10 +193,12 @@ class Audit(base.APIDictWrapper):
         :param audit_id: audit id
         :type  audit_id: int
         """
-        cancel_patch = [{'op': 'replace', 'path': '/state',
-                         'value': 'CANCELLED'}]
-        return watcherclient(request).audit.update(audit=audit_id,
-                                                   patch=cancel_patch)
+        cancel_patch = [
+            {'op': 'replace', 'path': '/state', 'value': 'CANCELLED'}
+        ]
+        return watcherclient(request).audit.update(
+            audit=audit_id, patch=cancel_patch
+        )
 
     @property
     def id(self):
@@ -182,17 +206,26 @@ class Audit(base.APIDictWrapper):
 
 
 class AuditTemplate(base.APIDictWrapper):
-    _attrs = ('uuid', 'description', 'scope', 'name', 'goal_uuid', 'goal_name',
-              'strategy_uuid', 'strategy_name', 'created_at', 'updated_at',
-              'deleted_at')
+    _attrs = (
+        'uuid',
+        'description',
+        'scope',
+        'name',
+        'goal_uuid',
+        'goal_name',
+        'strategy_uuid',
+        'strategy_name',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    )
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
         self._request = request
 
     @classmethod
-    def create(cls, request, name, goal, strategy,
-               description, scope):
+    def create(cls, request, name, goal, strategy, description, scope):
         """Create an audit template in Watcher
 
         :param request: request object
@@ -246,12 +279,13 @@ class AuditTemplate(base.APIDictWrapper):
         :return: the updated Audit Template object
         :rtype:  :py:class:`~.AuditTemplate`
         """
-        parameter_list = [{
-            'name': str(name),
-            'value': str(value),
-        } for (name, value) in parameters.items()]
+        parameter_list = [
+            {'name': str(name), 'value': str(value)}
+            for (name, value) in parameters.items()
+        ]
         audit_template = watcherclient(request).audit_template.patch(
-            audit_template_id, parameter_list)
+            audit_template_id, parameter_list
+        )
         return audit_template
 
     @classmethod
@@ -268,7 +302,8 @@ class AuditTemplate(base.APIDictWrapper):
         :rtype:  list of :py:class:`~.AuditTemplate`
         """
         return watcherclient(request).audit_template.list(
-            detail=True, **filters)
+            detail=True, **filters
+        )
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve audit template"))
@@ -286,7 +321,8 @@ class AuditTemplate(base.APIDictWrapper):
         :rtype:  :py:class:`~.AuditTemplate`
         """
         return watcherclient(request).audit_template.get(
-            audit_template_id=audit_template_id)
+            audit_template_id=audit_template_id
+        )
 
     @classmethod
     def delete(cls, request, audit_template_id):
@@ -299,7 +335,8 @@ class AuditTemplate(base.APIDictWrapper):
         :type  audit_template_id: int
         """
         watcherclient(request).audit_template.delete(
-            audit_template_id=audit_template_id)
+            audit_template_id=audit_template_id
+        )
 
     @property
     def id(self):
@@ -307,8 +344,15 @@ class AuditTemplate(base.APIDictWrapper):
 
 
 class ActionPlan(base.APIDictWrapper):
-    _attrs = ('uuid', 'created_at', 'updated_at', 'deleted_at',
-              'audit_uuid', 'state', 'status_message')
+    _attrs = (
+        'uuid',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'audit_uuid',
+        'state',
+        'status_message',
+    )
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
@@ -330,8 +374,7 @@ class ActionPlan(base.APIDictWrapper):
         return watcherclient(request).action_plan.list(detail=True, **filters)
 
     @classmethod
-    @errors_utils.handle_errors(
-        _("Unable to retrieve action plan"))
+    @errors_utils.handle_errors(_("Unable to retrieve action plan"))
     def get(cls, request, action_plan_id, api_version=None):
         """Return the action plan that matches the ID.
 
@@ -345,9 +388,9 @@ class ActionPlan(base.APIDictWrapper):
                  matches the ID
         :rtype:  :py:class:`~.ActionPlan`
         """
-        return watcherclient(
-            request, api_version=api_version
-        ).action_plan.get(action_plan_id=action_plan_id)
+        return watcherclient(request, api_version=api_version).action_plan.get(
+            action_plan_id=action_plan_id
+        )
 
     @classmethod
     def delete(cls, request, action_plan_id):
@@ -360,7 +403,8 @@ class ActionPlan(base.APIDictWrapper):
         :type  action_plan_id: int
         """
         watcherclient(request).action_plan.delete(
-            action_plan_id=action_plan_id)
+            action_plan_id=action_plan_id
+        )
 
     @classmethod
     def start(cls, request, action_plan_id):
@@ -380,10 +424,22 @@ class ActionPlan(base.APIDictWrapper):
 
 
 class Action(base.APIDictWrapper):
-    _attrs = ('uuid', 'created_at', 'updated_at', 'deleted_at', 'next_uuid',
-              'description', 'state', 'action_plan_uuid',
-              'action_type', 'applies_to', 'src', 'dst', 'parameter',
-              'status_message')
+    _attrs = (
+        'uuid',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'next_uuid',
+        'description',
+        'state',
+        'action_plan_uuid',
+        'action_type',
+        'applies_to',
+        'src',
+        'dst',
+        'parameter',
+        'status_message',
+    )
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
@@ -405,8 +461,7 @@ class Action(base.APIDictWrapper):
         return watcherclient(request).action.list(detail=True, **filters)
 
     @classmethod
-    @errors_utils.handle_errors(
-        _("Unable to retrieve action"))
+    @errors_utils.handle_errors(_("Unable to retrieve action"))
     def get(cls, request, action_id, api_version=None):
         """Return the action that matches the ID.
 
@@ -420,13 +475,14 @@ class Action(base.APIDictWrapper):
                  the ID
         :rtype:  :py:class:`~.Action`
         """
-        return watcherclient(
-            request, api_version=api_version
-        ).action.get(action_id=action_id)
+        return watcherclient(request, api_version=api_version).action.get(
+            action_id=action_id
+        )
 
     @classmethod
-    def update(cls, request, action_id, state=None,
-               reason=None, api_version=None):
+    def update(
+        cls, request, action_id, state=None, reason=None, api_version=None
+    ):
         """Update an action's state and/or status message.
 
         :param request: request object
@@ -447,16 +503,15 @@ class Action(base.APIDictWrapper):
         reason = reason or None
         if state is None and reason is None:
             raise watcher_exc.WatcherDashboardException(
-                "Either 'state' or 'reason' must be provided")
+                "Either 'state' or 'reason' must be provided"
+            )
         patch = []
         if state is not None:
-            patch.append(
-                {'op': 'replace', 'path': '/state',
-                 'value': state})
+            patch.append({'op': 'replace', 'path': '/state', 'value': state})
         if reason is not None:
             patch.append(
-                {'op': 'replace', 'path': '/status_message',
-                 'value': reason})
+                {'op': 'replace', 'path': '/status_message', 'value': reason}
+            )
         try:
             return watcherclient(
                 request, api_version=api_version
@@ -479,8 +534,7 @@ class Action(base.APIDictWrapper):
         :param action_id: action_plan id
         :type  action_id: int
         """
-        watcherclient(request).action.delete(
-            action_id=action_id)
+        watcherclient(request).action.delete(action_id=action_id)
 
     @property
     def id(self):
@@ -490,8 +544,15 @@ class Action(base.APIDictWrapper):
 class Goal(base.APIDictWrapper):
     """Goal resource."""
 
-    _attrs = ('uuid', 'name', 'display_name', 'created_at',
-              'updated_at', 'deleted_at', 'efficacy_specifications')
+    _attrs = (
+        'uuid',
+        'name',
+        'display_name',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'efficacy_specifications',
+    )
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
@@ -536,8 +597,17 @@ class Goal(base.APIDictWrapper):
 class Strategy(base.APIDictWrapper):
     """Strategy resource."""
 
-    _attrs = ('uuid', 'name', 'display_name', 'goal_uuid', 'goal_name',
-              'created_at', 'updated_at', 'deleted_at', 'parameters_spec')
+    _attrs = (
+        'uuid',
+        'name',
+        'display_name',
+        'goal_uuid',
+        'goal_name',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'parameters_spec',
+    )
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
@@ -580,12 +650,10 @@ class Strategy(base.APIDictWrapper):
 
 
 class EfficacyIndicatorSpec(base.APIDictWrapper):
-
     attrs = ('name', 'description', 'unit', 'schema')
 
 
 class EfficacyIndicator(base.APIDictWrapper):
-
     def __init__(self, indicator):
         super().__init__(indicator)
         self.value = indicator.get('value', None)

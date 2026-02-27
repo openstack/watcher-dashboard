@@ -58,8 +58,9 @@ def main(argv):
     test_requires = os.path.join(root, 'test-requirements.txt')
     py_version = f"python{sys.version_info[0]}.{sys.version_info[1]}"
     project = 'OpenStack'
-    install = install_venv.InstallVenv(root, venv, pip_requires, test_requires,
-                                       py_version, project)
+    install = install_venv.InstallVenv(
+        root, venv, pip_requires, test_requires, py_version, project
+    )
     options = install.parse_args(argv)
     install.check_python_version()
     install.check_dependencies()

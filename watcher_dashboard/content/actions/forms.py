@@ -33,7 +33,8 @@ class SkipActionForm(forms.SelfHandlingForm):
         required=False,
         max_length=200,
         widget=forms.Textarea(attrs={'rows': 3}),
-        help_text=_("Optional reason for skipping this action."))
+        help_text=_("Optional reason for skipping this action."),
+    )
 
     def clean(self):
         """Validate the action exists and is in a skippable state."""
@@ -44,20 +45,18 @@ class SkipActionForm(forms.SelfHandlingForm):
             # validation. Without this guard, None would be passed
             # to the API as the action ID.
             return cleaned
-        action = watcher.Action.get(
-            self.request, action_id)
+        action = watcher.Action.get(self.request, action_id)
         if action is None:
-            raise forms.ValidationError(
-                _('Unable to retrieve action.'))
+            raise forms.ValidationError(_('Unable to retrieve action.'))
         if action.state not in ('PENDING', 'SKIPPED'):
             raise forms.ValidationError(
-                _('Action must be in PENDING or SKIPPED '
-                  'state.'))
+                _('Action must be in PENDING or SKIPPED state.')
+            )
         reason = cleaned.get('reason', '').strip()
         if action.state == 'SKIPPED' and not reason:
             raise forms.ValidationError(
-                _('A reason is required when updating a '
-                  'skipped action.'))
+                _('A reason is required when updating a skipped action.')
+            )
         cleaned['_action'] = action
         return cleaned
 
@@ -70,8 +69,12 @@ class SkipActionForm(forms.SelfHandlingForm):
         state = None if action.state == 'SKIPPED' else 'SKIPPED'
         try:
             result = watcher.Action.update(
-                request, action_id, state=state, reason=reason,
-                api_version=common_client.MV_SKIP_ACTION)
+                request,
+                action_id,
+                state=state,
+                reason=reason,
+                api_version=common_client.MV_SKIP_ACTION,
+            )
         except watcher_exc.WatcherDashboardException as exc:
             LOG.info("Skip action validation error: %s", exc)
             messages.error(request, str(exc))
@@ -79,8 +82,8 @@ class SkipActionForm(forms.SelfHandlingForm):
 
         if result is None:
             messages.warning(
-                request,
-                _('Skip is not supported by this server.'))
+                request, _('Skip is not supported by this server.')
+            )
             return False
 
         if state is None:

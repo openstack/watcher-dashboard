@@ -18,9 +18,7 @@ from watcherclient.common.apiclient import exceptions as watcherclient
 
 
 NOT_FOUND = exceptions.NOT_FOUND
-RECOVERABLE = exceptions.RECOVERABLE + (
-    watcherclient.ClientException,
-)
+RECOVERABLE = (*exceptions.RECOVERABLE, watcherclient.ClientException)
 UNAUTHORIZED = exceptions.UNAUTHORIZED
 
 

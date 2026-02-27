@@ -21,9 +21,14 @@ from watcher_dashboard.content.audit_templates import views
 urlpatterns = [
     re_path(r'^$', views.IndexView.as_view(), name='index'),
     re_path(r'^create/$', views.CreateView.as_view(), name='create'),
-    re_path(r'^(?P<audit_template_uuid>[^/]+)/detail$',
-            views.DetailView.as_view(),
-            name='detail'),
-    re_path(r'^ajax/strategies/$', views.get_strategies_for_goal,
-            name='get_strategies_for_goal'),
+    re_path(
+        r'^(?P<audit_template_uuid>[^/]+)/detail$',
+        views.DetailView.as_view(),
+        name='detail',
+    ),
+    re_path(
+        r'^ajax/strategies/$',
+        views.get_strategies_for_goal,
+        name='get_strategies_for_goal',
+    ),
 ]

@@ -49,8 +49,8 @@ class IndexView(horizon.tables.DataTableView):
             goals = watcher.Goal.list(self.request, **search_opts)
         except Exception:
             horizon.exceptions.handle(
-                self.request,
-                _("Unable to retrieve goal information."))
+                self.request, _("Unable to retrieve goal information.")
+            )
         return goals
 
     def get_goals_count(self):
@@ -69,8 +69,10 @@ class IndexView(horizon.tables.DataTableView):
 
 
 class DetailView(horizon.tables.MultiTableView):
-    table_classes = (tables.EfficacySpecificationTable,
-                     strategies_tables.RelatedStrategiesTable)
+    table_classes = (
+        tables.EfficacySpecificationTable,
+        strategies_tables.RelatedStrategiesTable,
+    )
 
     tab_group_class = wtabs.GoalDetailTabs
     template_name = 'infra_optim/goals/details.html'
@@ -85,11 +87,10 @@ class DetailView(horizon.tables.MultiTableView):
             goal = watcher.Goal.get(self.request, goal_uuid)
         except Exception as exc:
             LOG.exception(exc)
-            msg = _('Unable to retrieve details for goal "%s".') \
-                % goal_uuid
+            msg = _('Unable to retrieve details for goal "%s".') % goal_uuid
             horizon.exceptions.handle(
-                self.request, msg,
-                redirect=self.redirect_url)
+                self.request, msg, redirect=self.redirect_url
+            )
         return goal
 
     def get_related_strategies_data(self):
@@ -107,8 +108,10 @@ class DetailView(horizon.tables.MultiTableView):
     def get_efficacy_specification_data(self):
         try:
             goal = self._get_data()
-            indicators_spec = [watcher.EfficacyIndicatorSpec(spec)
-                               for spec in goal.efficacy_specification]
+            indicators_spec = [
+                watcher.EfficacyIndicatorSpec(spec)
+                for spec in goal.efficacy_specification
+            ]
         except Exception as exc:
             LOG.exception(exc)
             indicators_spec = []
@@ -126,6 +129,9 @@ class DetailView(horizon.tables.MultiTableView):
     def get_tabs(self, request, *args, **kwargs):
         goal = self._get_data()
         # ports = self._get_ports()
-        return self.tab_group_class(request, goal=goal,
-                                    # ports=ports,
-                                    **kwargs)
+        return self.tab_group_class(
+            request,
+            goal=goal,
+            # ports=ports,
+            **kwargs,
+        )

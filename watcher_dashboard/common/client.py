@@ -67,20 +67,19 @@ def get_max_version(request):
     """
     try:
         client = get_client(request)
-        _resp, body = client.http_client.json_request(
-            'GET', '/')
+        _resp, body = client.http_client.json_request('GET', '/')
         version_info = (
-            body.get('versions') or
-            body.get('version') or
-            body.get('default_version') or
-            {})
+            body.get('versions')
+            or body.get('version')
+            or body.get('default_version')
+            or {}
+        )
         if isinstance(version_info, list) and version_info:
             version_info = version_info[0]
         if isinstance(version_info, dict):
             return version_info.get('max_version')
     except wc_exc.ClientException:
-        LOG.debug('Microversion discovery failed',
-                  exc_info=True)
+        LOG.debug('Microversion discovery failed', exc_info=True)
     return None
 
 
@@ -97,7 +96,8 @@ def is_microversion_supported(max_ver, required):
     if max_ver is None:
         return False
     try:
-        return (api_versioning.APIVersion(max_ver) >=
-                api_versioning.APIVersion(required))
+        return api_versioning.APIVersion(max_ver) >= api_versioning.APIVersion(
+            required
+        )
     except (wc_exc.UnsupportedVersion, TypeError):
         return False

@@ -49,8 +49,8 @@ class IndexView(horizon.tables.DataTableView):
             actions = watcher.Action.list(self.request, **search_opts)
         except Exception:
             horizon.exceptions.handle(
-                self.request,
-                _("Unable to retrieve action information."))
+                self.request, _("Unable to retrieve action information.")
+            )
         return actions
 
     def get_actions_count(self):
@@ -88,26 +88,32 @@ class DetailView(horizon.tables.MultiTableView):
             version = (
                 common_client.MV_SKIP_ACTION
                 if common_client.is_microversion_supported(
-                    server_version, common_client.MV_SKIP_ACTION)
-                else None)
+                    server_version, common_client.MV_SKIP_ACTION
+                )
+                else None
+            )
             action = watcher.Action.get(
-                self.request, action_uuid,
-                api_version=version)
+                self.request, action_uuid, api_version=version
+            )
         except Exception:
-            msg = (_('Unable to retrieve details for action "%s".')
-                   % action_uuid)
+            msg = (
+                _('Unable to retrieve details for action "%s".') % action_uuid
+            )
             horizon.exceptions.handle(
-                self.request, msg,
-                redirect=self.redirect_url)
+                self.request, msg, redirect=self.redirect_url
+            )
         return action
 
     def get_parameters_data(self):
         action = self._get_data()
         parameter_cls = collections.namedtuple(
-            'Parameter', field_names=['name', 'value'])
+            'Parameter', field_names=['name', 'value']
+        )
 
-        return [parameter_cls(name=name, value=value)
-                for name, value in action.input_parameters.items()]
+        return [
+            parameter_cls(name=name, value=value)
+            for name, value in action.input_parameters.items()
+        ]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -118,9 +124,12 @@ class DetailView(horizon.tables.MultiTableView):
     def get_tabs(self, request, *args, **kwargs):
         action = self._get_data()
         # ports = self._get_ports()
-        return self.tab_group_class(request, action=action,
-                                    # ports=ports,
-                                    **kwargs)
+        return self.tab_group_class(
+            request,
+            action=action,
+            # ports=ports,
+            **kwargs,
+        )
 
 
 class SkipActionView(forms.ModalFormView):
@@ -147,15 +156,16 @@ class SkipActionView(forms.ModalFormView):
         if self._action_plan_uuid:
             return reverse(
                 'horizon:admin:action_plans:detail',
-                args=(self._action_plan_uuid,))
+                args=(self._action_plan_uuid,),
+            )
         return reverse('horizon:admin:actions:index')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['action_id'] = self.kwargs['action_id']
         context['submit_url'] = reverse(
-            self.submit_url,
-            args=(self.kwargs['action_id'],))
+            self.submit_url, args=(self.kwargs['action_id'],)
+        )
         return context
 
     def get_initial(self):

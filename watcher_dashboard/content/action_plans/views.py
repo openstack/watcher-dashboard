@@ -48,13 +48,12 @@ class IndexView(horizon.tables.DataTableView):
         action_plans = []
         search_opts = self.get_filters()
         try:
-            action_plans = watcher.ActionPlan.list(
-                self.request, **search_opts)
+            action_plans = watcher.ActionPlan.list(self.request, **search_opts)
         except Exception as exc:
             LOG.exception(exc)
             horizon.exceptions.handle(
-                self.request,
-                _("Unable to retrieve action_plan information."))
+                self.request, _("Unable to retrieve action_plan information.")
+            )
         return action_plans
 
     def get_action_plans_count(self):
@@ -84,7 +83,8 @@ class ArchiveView(forms.ModalFormView):
 class DetailView(horizon.tables.MultiTableView):
     table_classes = (
         action_tables.RelatedActionsTable,
-        tables.RelatedEfficacyIndicatorsTable)
+        tables.RelatedEfficacyIndicatorsTable,
+    )
     template_name = 'infra_optim/action_plans/details.html'
     page_title = _("Action Plan Details: {{ action_plan.uuid }}")
 
@@ -101,25 +101,30 @@ class DetailView(horizon.tables.MultiTableView):
             version = (
                 common_client.MV_SKIP_ACTION
                 if common_client.is_microversion_supported(
-                    server_version, common_client.MV_SKIP_ACTION)
-                else None)
+                    server_version, common_client.MV_SKIP_ACTION
+                )
+                else None
+            )
             action_plan = watcher.ActionPlan.get(
-                self.request, action_plan_uuid,
-                api_version=version)
+                self.request, action_plan_uuid, api_version=version
+            )
         except Exception as exc:
             LOG.exception(exc)
-            msg = (_('Unable to retrieve details for action_plan "%s".')
-                   % action_plan_uuid)
+            msg = (
+                _('Unable to retrieve details for action_plan "%s".')
+                % action_plan_uuid
+            )
             horizon.exceptions.handle(
-                self.request, msg,
-                redirect=self.redirect_url)
+                self.request, msg, redirect=self.redirect_url
+            )
         return action_plan
 
     def get_related_wactions_data(self):
         try:
             action_plan = self._get_data()
-            actions = watcher.Action.list(self.request,
-                                          action_plan=action_plan.uuid)
+            actions = watcher.Action.list(
+                self.request, action_plan=action_plan.uuid
+            )
         except Exception as exc:
             LOG.exception(exc)
             actions = []
@@ -133,7 +138,8 @@ class DetailView(horizon.tables.MultiTableView):
             action_plan = self._get_data()
             efficacy_indicators = [
                 watcher.EfficacyIndicator(indicator)
-                for indicator in action_plan.efficacy_indicators]
+                for indicator in action_plan.efficacy_indicators
+            ]
         except Exception as exc:
             LOG.exception(exc)
             msg = _('Failed to get the efficacy indicators: %s') % str(exc)
@@ -162,12 +168,11 @@ class DetailView(horizon.tables.MultiTableView):
         mv = self.max_version()
         table = table_dict['related_wactions']
         table._supports_skip = common_client.is_microversion_supported(
-            mv, common_client.MV_SKIP_ACTION)
-        table._parent_succeeded = (
-            action_plan.state == 'SUCCEEDED')
+            mv, common_client.MV_SKIP_ACTION
+        )
+        table._parent_succeeded = action_plan.state == 'SUCCEEDED'
         return table_dict
 
     def get_tabs(self, request, *args, **kwargs):
         action_plan = self._get_data()
-        return self.tab_group_class(
-            request, action_plan=action_plan, **kwargs)
+        return self.tab_group_class(request, action_plan=action_plan, **kwargs)

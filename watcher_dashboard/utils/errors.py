@@ -35,17 +35,20 @@ def handle_errors(error_message, error_default=None, request_arg=None):
         :param _error_redirect: specify a redirect url for errors
         :param _error_ignore: ignore known errors
     """
+
     def decorator(func):
         # XXX This is an ugly hack for finding the 'request' argument.
         if request_arg is None:
             for _request_arg, name in enumerate(
-                    inspect.getfullargspec(func).args):
+                inspect.getfullargspec(func).args
+            ):
                 if name == 'request':
                     break
             else:
                 raise RuntimeError(
                     "The handle_errors decorator requires 'request' as "
-                    "an argument of the function or method being decorated")
+                    "an argument of the function or method being decorated"
+                )
         else:
             _request_arg = request_arg
 
@@ -62,10 +65,15 @@ def handle_errors(error_message, error_default=None, request_arg=None):
                 return func(*args, **kwargs)
             except Exception:
                 request = args[_request_arg]
-                horizon.exceptions.handle(request, _error_message,
-                                          ignore=_error_ignore,
-                                          redirect=_error_redirect)
+                horizon.exceptions.handle(
+                    request,
+                    _error_message,
+                    ignore=_error_ignore,
+                    redirect=_error_redirect,
+                )
                 return _error_default
+
         wrapper.wrapped = func
         return wrapper
+
     return decorator

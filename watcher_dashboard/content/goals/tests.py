@@ -26,7 +26,6 @@ DETAILS_VIEW = 'horizon:admin:goals:detail'
 
 
 class GoalsTest(test.BaseAdminViewTests):
-
     @mock.patch.object(api.watcher.Goal, 'list')
     def test_index(self, mock_list):
         mock_list.return_value = self.goals.list()

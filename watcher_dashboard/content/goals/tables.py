@@ -22,17 +22,14 @@ import horizon.tables
 
 class GoalsTable(horizon.tables.DataTable):
     uuid = horizon.tables.Column(
-        'uuid',
-        verbose_name=_("UUID"),
-        link="horizon:admin:goals:detail")
+        'uuid', verbose_name=_("UUID"), link="horizon:admin:goals:detail"
+    )
 
-    name = horizon.tables.Column(
-        'name',
-        verbose_name=_('Name'))
+    name = horizon.tables.Column('name', verbose_name=_('Name'))
 
     display_name = horizon.tables.Column(
-        'display_name',
-        verbose_name=_('Verbose Name'))
+        'display_name', verbose_name=_('Verbose Name')
+    )
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -43,22 +40,15 @@ class GoalsTable(horizon.tables.DataTable):
 
 
 class EfficacySpecificationTable(horizon.tables.DataTable):
-
-    name = horizon.tables.Column(
-        'name',
-        verbose_name=_("Name"))
+    name = horizon.tables.Column('name', verbose_name=_("Name"))
 
     description = horizon.tables.Column(
-        'description',
-        verbose_name=_("Description"))
+        'description', verbose_name=_("Description")
+    )
 
-    unit = horizon.tables.Column(
-        'unit',
-        verbose_name=_("Unit"))
+    unit = horizon.tables.Column('unit', verbose_name=_("Unit"))
 
-    schema = horizon.tables.Column(
-        'schema',
-        verbose_name=_("Schema"))
+    schema = horizon.tables.Column('schema', verbose_name=_("Schema"))
 
     def get_object_id(self, datum):
         return datum.name

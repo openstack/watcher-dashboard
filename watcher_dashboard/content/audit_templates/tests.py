@@ -21,15 +21,12 @@ from watcher_dashboard import api
 from watcher_dashboard.test import helpers as test
 
 
-INDEX_URL = urls.reverse(
-    'horizon:admin:audit_templates:index')
-CREATE_URL = urls.reverse(
-    'horizon:admin:audit_templates:create')
+INDEX_URL = urls.reverse('horizon:admin:audit_templates:index')
+CREATE_URL = urls.reverse('horizon:admin:audit_templates:create')
 DETAILS_VIEW = 'horizon:admin:audit_templates:detail'
 
 
 class AuditTemplatesTest(test.BaseAdminViewTests):
-
     def setUp(self):
         super().setUp()
         self.goal_list = self.goals.list()
@@ -87,8 +84,9 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
 
         DETAILS_URL = urls.reverse(DETAILS_VIEW, args=[at_id])
         res = self.client.get(DETAILS_URL)
-        self.assertTemplateUsed(res,
-                                'infra_optim/audit_templates/details.html')
+        self.assertTemplateUsed(
+            res, 'infra_optim/audit_templates/details.html'
+        )
         audit_templates = res.context['audit_template']
         self.assertCountEqual([audit_templates], [at])
 
@@ -110,8 +108,7 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         at_id = at.uuid
         m_list.return_value = at_list
 
-        form_data = {'action': 'audit_templates__delete',
-                     'object_ids': at_id}
+        form_data = {'action': 'audit_templates__delete', 'object_ids': at_id}
 
         res = self.client.post(INDEX_URL, form_data)
         self.assertRedirectsNoFollow(res, INDEX_URL)

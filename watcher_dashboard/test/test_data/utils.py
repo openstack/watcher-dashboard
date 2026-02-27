@@ -22,9 +22,7 @@ def load_test_data(load_onto=None):
     from watcher_dashboard.test.test_data import watcher_data
 
     # The order of these loaders matters, some depend on others.
-    loaders = (exceptions.data,
-               keystone_data.data,
-               watcher_data.data)
+    loaders = (exceptions.data, keystone_data.data, watcher_data.data)
     if load_onto:
         for data_func in loaders:
             data_func(load_onto)
@@ -35,7 +33,7 @@ def load_test_data(load_onto=None):
 
 class TestDataContainer(utils.TestDataContainer):
     def filter(self, filtered=None, **kwargs):
-        """Returns objects in this container """
+        """Returns objects in this container"""
         """whose attributes match the given keyword arguments.
         """
         if filtered is None:

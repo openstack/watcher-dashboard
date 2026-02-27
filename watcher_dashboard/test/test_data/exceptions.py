@@ -22,4 +22,5 @@ def data(TEST):
 
     watcher_exception = wexceptions.ClientException
     TEST.exceptions.watcher = exceptions.create_stubbed_exception(
-        watcher_exception)
+        watcher_exception
+    )

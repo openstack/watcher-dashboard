@@ -49,8 +49,5 @@ class BrowserTests(test.SeleniumTestCase):
             message = elem.find_element_by_class_name("test-message").text
             source = elem.find_element_by_tag_name("pre").text
             logger.error(
-                "Module: %s, message: %s, source: %s",
-                module,
-                message,
-                source,
+                "Module: %s, message: %s, source: %s", module, message, source
             )

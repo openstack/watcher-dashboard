@@ -46,9 +46,7 @@ ACTION_PLAN_STATE_DISPLAY_CHOICES = (
 class ActionPlansFilterAction(horizon.tables.FilterAction):
     # server = choices query = text
     filter_type = "server"
-    filter_choices = (
-        ('audit', _("Audit ="), True),
-    )
+    filter_choices = (('audit', _("Audit ="), True),)
     policy_rules = (("infra-optim", "action_plan:detail"),)
 
 
@@ -59,17 +57,13 @@ class ArchiveActionPlan(horizon.tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ngettext_lazy(
-            "Archive Action Plan",
-            "Archive Action Plans",
-            count
+            "Archive Action Plan", "Archive Action Plans", count
         )
 
     @staticmethod
     def action_past(count):
         return ngettext_lazy(
-            "Action Plan archived",
-            "Action Plans archived",
-            count
+            "Action Plan archived", "Action Plans archived", count
         )
 
     def action(self, request, obj_id):
@@ -84,18 +78,12 @@ class StartActionPlan(horizon.tables.BatchAction):
 
     @staticmethod
     def action_present(count):
-        return ngettext_lazy(
-            "Start Action Plan",
-            "Start Action Plans",
-            count
-        )
+        return ngettext_lazy("Start Action Plan", "Start Action Plans", count)
 
     @staticmethod
     def action_past(count):
         return ngettext_lazy(
-            "Action Plan started",
-            "Action Plans started",
-            count
+            "Action Plan started", "Action Plans started", count
         )
 
     def action(self, request, action_plan_id):
@@ -107,8 +95,9 @@ class StartActionPlan(horizon.tables.BatchAction):
             horizon.messages.warning(request, msg)
 
     def allowed(self, request, action_plan):
-        return ((action_plan is None) or
-                (action_plan.state in ("RECOMMENDED", "FAILED")))
+        return (action_plan is None) or (
+            action_plan.state in ("RECOMMENDED", "FAILED")
+        )
 
 
 class UpdateRow(horizon.tables.Row):
@@ -133,17 +122,19 @@ def format_global_efficacy(action_plan):
     global_efficacy_dict = {}
     for indicator in action_plan.global_efficacy:
         global_efficacy = watcher.EfficacyIndicator(indicator)
-        if (global_efficacy.value is not None and
-                global_efficacy.unit is not None):
+        if (
+            global_efficacy.value is not None
+            and global_efficacy.unit is not None
+        ):
             global_efficacy_dict[global_efficacy.name] = (
-                f"{global_efficacy.value} {global_efficacy.unit}")
+                f"{global_efficacy.value} {global_efficacy.unit}"
+            )
         elif global_efficacy.value is not None:
             global_efficacy_dict[global_efficacy.name] = str(
-                global_efficacy.value)
+                global_efficacy.value
+            )
 
-    context = {
-        "global_indicators": global_efficacy_dict,
-    }
+    context = {"global_indicators": global_efficacy_dict}
 
     return template.loader.render_to_string(template_name, context)
 
@@ -152,34 +143,35 @@ def get_audit_link(datum):
     try:
         return urls.reverse(
             "horizon:admin:audits:detail",
-            kwargs={"audit_uuid": getattr(datum, "audit_uuid", None)})
+            kwargs={"audit_uuid": getattr(datum, "audit_uuid", None)},
+        )
     except urls.NoReverseMatch:
         return None
 
 
 class ActionPlansTable(horizon.tables.DataTable):
-
     name = horizon.tables.Column(
         'uuid',
         verbose_name=_("UUID"),
-        link="horizon:admin:action_plans:detail")
+        link="horizon:admin:action_plans:detail",
+    )
     audit = horizon.tables.Column(
-        'audit_uuid',
-        verbose_name=_('Audit'),
-        link=get_audit_link)
+        'audit_uuid', verbose_name=_('Audit'), link=get_audit_link
+    )
     updated_at = horizon.tables.Column(
         'updated_at',
-        filters=(filters.parse_isotime,
-                 filters.timesince_sortable),
-        verbose_name=_("Updated At"))
+        filters=(filters.parse_isotime, filters.timesince_sortable),
+        verbose_name=_("Updated At"),
+    )
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
         status=True,
-        status_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES)
+        status_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES,
+    )
     efficacy = horizon.tables.Column(
-        transform=format_global_efficacy,
-        verbose_name=_('Efficacy'))
+        transform=format_global_efficacy, verbose_name=_('Efficacy')
+    )
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -204,28 +196,28 @@ class ActionPlansTable(horizon.tables.DataTable):
 
 
 class RelatedActionPlansTable(horizon.tables.DataTable):
-
     name = horizon.tables.Column(
         'uuid',
         verbose_name=_("UUID"),
-        link="horizon:admin:action_plans:detail")
+        link="horizon:admin:action_plans:detail",
+    )
     audit = horizon.tables.Column(
-        'audit_uuid',
-        verbose_name=_('Audit'),
-        link=get_audit_link)
+        'audit_uuid', verbose_name=_('Audit'), link=get_audit_link
+    )
     updated_at = horizon.tables.Column(
         'updated_at',
-        filters=(filters.parse_isotime,
-                 filters.timesince_sortable),
-        verbose_name=_("Updated At"))
+        filters=(filters.parse_isotime, filters.timesince_sortable),
+        verbose_name=_("Updated At"),
+    )
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
         status=True,
-        status_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES)
+        status_choices=ACTION_PLAN_STATE_DISPLAY_CHOICES,
+    )
     efficacy = horizon.tables.Column(
-        transform=format_global_efficacy,
-        verbose_name=_('Efficacy'))
+        transform=format_global_efficacy, verbose_name=_('Efficacy')
+    )
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -234,30 +226,20 @@ class RelatedActionPlansTable(horizon.tables.DataTable):
         name = "related_action_plans"
         verbose_name = _("Related Action Plans")
         hidden_title = False
-        row_actions = (
-            StartActionPlan,
-            ArchiveActionPlan,
-        )
+        row_actions = (StartActionPlan, ArchiveActionPlan)
         row_class = UpdateRow
 
 
 class RelatedEfficacyIndicatorsTable(horizon.tables.DataTable):
-
-    name = horizon.tables.Column(
-        'name',
-        verbose_name=_("Name"))
+    name = horizon.tables.Column('name', verbose_name=_("Name"))
 
     description = horizon.tables.Column(
-        'description',
-        verbose_name=_("Description"))
+        'description', verbose_name=_("Description")
+    )
 
-    unit = horizon.tables.Column(
-        'unit',
-        verbose_name=_("Unit"))
+    unit = horizon.tables.Column('unit', verbose_name=_("Unit"))
 
-    value = horizon.tables.Column(
-        'value',
-        verbose_name=_("Value"))
+    value = horizon.tables.Column('value', verbose_name=_("Value"))
 
     def get_object_id(self, datum):
         return datum.name

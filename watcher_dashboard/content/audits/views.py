@@ -70,16 +70,17 @@ class IndexView(horizon.tables.DataTableView):
             version = (
                 common_client.MV_START_END
                 if common_client.is_microversion_supported(
-                    server_version, common_client.MV_START_END)
-                else None)
+                    server_version, common_client.MV_START_END
+                )
+                else None
+            )
             audits = watcher.Audit.list(
-                self.request,
-                api_version=version,
-                **search_opts)
+                self.request, api_version=version, **search_opts
+            )
         except Exception:
             horizon.exceptions.handle(
-                self.request,
-                _("Unable to retrieve audit information."))
+                self.request, _("Unable to retrieve audit information.")
+            )
         return audits
 
     def get_audits_count(self):
@@ -128,17 +129,18 @@ class DetailView(horizon.tables.MultiTableView):
             version = (
                 common_client.MV_START_END
                 if common_client.is_microversion_supported(
-                    server_version, common_client.MV_START_END)
-                else None)
+                    server_version, common_client.MV_START_END
+                )
+                else None
+            )
             audit = watcher.Audit.get(
-                self.request, audit_uuid,
-                api_version=version)
+                self.request, audit_uuid, api_version=version
+            )
         except Exception:
-            msg = _('Unable to retrieve details for audit "%s".') \
-                % audit_uuid
+            msg = _('Unable to retrieve details for audit "%s".') % audit_uuid
             horizon.exceptions.handle(
-                self.request, msg,
-                redirect=self.redirect_url)
+                self.request, msg, redirect=self.redirect_url
+            )
         return audit
 
     def _render_pretty_parameters(self, params):
@@ -166,9 +168,7 @@ class DetailView(horizon.tables.MultiTableView):
             # Dicts/lists are presented as indented YAML for readability.
             if isinstance(obj, dict | list):
                 dumped = yaml.safe_dump(
-                    obj,
-                    default_flow_style=False,
-                    sort_keys=False,
+                    obj, default_flow_style=False, sort_keys=False
                 )
                 return mark_safe(  # noqa: S308  # nosec B703,B308
                     f'<pre style="margin:0">{dumped}</pre>'
@@ -184,8 +184,9 @@ class DetailView(horizon.tables.MultiTableView):
     def get_related_action_plans_data(self):
         try:
             action_plan = self._get_data()
-            audits = watcher.ActionPlan.list(self.request,
-                                             audit=action_plan.uuid)
+            audits = watcher.ActionPlan.list(
+                self.request, audit=action_plan.uuid
+            )
         except Exception as exc:
             LOG.exception(exc)
             audits = []
@@ -216,20 +217,25 @@ def get_strategy_parameters(request):
         audit_template_uuid = request.GET.get('audit_template_uuid')
         if not audit_template_uuid:
             return JsonResponse(
-                {'error': 'Audit template UUID is required'},
-                status=400)
+                {'error': 'Audit template UUID is required'}, status=400
+            )
 
         # Get the audit template
         audit_template = watcher.AuditTemplate.get(
-            request, audit_template_uuid)
+            request, audit_template_uuid
+        )
 
         if not audit_template.strategy_uuid:
-            return JsonResponse({
-                'strategy_name': audit_template.strategy_name or 'auto',
-                'parameters_spec': {},
-                'message': ('No specific strategy selected. Parameters will '
-                            'be automatically determined.')
-            })
+            return JsonResponse(
+                {
+                    'strategy_name': audit_template.strategy_name or 'auto',
+                    'parameters_spec': {},
+                    'message': (
+                        'No specific strategy selected. Parameters will '
+                        'be automatically determined.'
+                    ),
+                }
+            )
 
         # Get the strategy details
         strategy = watcher.Strategy.get(request, audit_template.strategy_uuid)
@@ -247,11 +253,13 @@ def get_strategy_parameters(request):
                 except ValueError:
                     parameters_spec = {}
 
-        return JsonResponse({
-            'strategy_name': watcher.get_strategy_display_name(strategy),
-            'strategy_uuid': strategy.uuid,
-            'parameters_spec': parameters_spec
-        })
+        return JsonResponse(
+            {
+                'strategy_name': watcher.get_strategy_display_name(strategy),
+                'strategy_uuid': strategy.uuid,
+                'parameters_spec': parameters_spec,
+            }
+        )
 
     except Exception as e:
         LOG.exception("Error getting strategy parameters")

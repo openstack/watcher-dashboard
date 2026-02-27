@@ -95,10 +95,13 @@ htmlhelp_basename = f'{project}doc'
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index',
-     'doc-watcher-dashboard.tex',
-     f'{project} Documentation',
-     'OpenStack Foundation', 'manual'),
+    (
+        'index',
+        'doc-watcher-dashboard.tex',
+        f'{project} Documentation',
+        'OpenStack Foundation',
+        'manual',
+    )
 ]
 
 # Disable usage of xindy https://bugzilla.redhat.com/show_bug.cgi?id=1643664

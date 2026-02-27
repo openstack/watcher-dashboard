@@ -20,18 +20,25 @@ from watcher_dashboard.test.test_data import utils
 def data(TEST):
 
     TEST.service_catalog.append(
-        {"type": "infra-optim",
-         "name": "watcher",
-         "endpoints_links": [],
-         "endpoints": [
-             {"region": "RegionOne",
-              "adminURL": "http://admin.watcher.example.com:9322",
-              "internalURL": "http://int.watcher.example.com:9322",
-              "publicURL": "http://public.watcher.example.com:9322"},
-             {"region": "RegionTwo",
-              "adminURL": "http://admin.watcher2.example.com:9322",
-              "internalURL": "http://int.watcher2.example.com:9322",
-              "publicURL": "http://public.watcher2.example.com:9322"}]},
+        {
+            "type": "infra-optim",
+            "name": "watcher",
+            "endpoints_links": [],
+            "endpoints": [
+                {
+                    "region": "RegionOne",
+                    "adminURL": "http://admin.watcher.example.com:9322",
+                    "internalURL": "http://int.watcher.example.com:9322",
+                    "publicURL": "http://public.watcher.example.com:9322",
+                },
+                {
+                    "region": "RegionTwo",
+                    "adminURL": "http://admin.watcher2.example.com:9322",
+                    "internalURL": "http://int.watcher2.example.com:9322",
+                    "publicURL": "http://public.watcher2.example.com:9322",
+                },
+            ],
+        }
     )
 
     TEST.goals = utils.TestDataContainer()
@@ -45,13 +52,13 @@ def data(TEST):
         'uuid': 'gggggggg-1111-1111-1111-gggggggggggg',
         'name': 'MINIMIZE_LICENSING_COST',
         'display_name': 'Dummy',
-        'efficacy_specifications': spec1
+        'efficacy_specifications': spec1,
     }
     goal_dict2 = {
         'uuid': 'gggggggg-2222-2222-2222-gggggggggggg',
         'name': 'SERVER_CONSOLIDATION',
         'display_name': 'Server consolidation',
-        'efficacy_specifications': spec2
+        'efficacy_specifications': spec2,
     }
     TEST.api_goals.add(goal_dict1)
     TEST.api_goals.add(goal_dict2)
@@ -144,7 +151,7 @@ def data(TEST):
         'uuid': '33333333-3333-3333-3333-333333333333',
         'state': 'RECOMMENDED',
         'first_action_uuid': '44444444-4444-4444-4444-111111111111',
-        'audit_uuid': '33333333-3333-3333-3333-333333333333'
+        'audit_uuid': '33333333-3333-3333-3333-333333333333',
     }
     TEST.api_action_plans.add(action_plan_dict)
     _action_plan_dict = copy.deepcopy(action_plan_dict)

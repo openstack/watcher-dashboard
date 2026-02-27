@@ -29,10 +29,9 @@ import sys
 
 
 class InstallVenv:
-
-    def __init__(self, root, venv, requirements,
-                 test_requirements, py_version,
-                 project):
+    def __init__(
+        self, root, venv, requirements, test_requirements, py_version, project
+    ):
         self.root = root
         self.venv = venv
         self.requirements = requirements
@@ -47,8 +46,9 @@ class InstallVenv:
     def check_python_version(self):
         pass
 
-    def run_command_with_code(self, cmd, redirect_output=True,
-                              check_exit_code=True):
+    def run_command_with_code(
+        self, cmd, redirect_output=True, check_exit_code=True
+    ):
         """Runs a command in an out-of-process shell.
 
         Returns the output of that command. Working directory is self.root.
@@ -59,26 +59,39 @@ class InstallVenv:
             stdout = None
 
         proc = subprocess.Popen(  # noqa: S603
-            cmd, cwd=self.root, stdout=stdout)  # nosec B603
+            cmd, cwd=self.root, stdout=stdout
+        )  # nosec B603
         output = proc.communicate()[0]
         if check_exit_code and proc.returncode != 0:
             self.die('Command "%s" failed.\n%s', ' '.join(cmd), output)
         return (output, proc.returncode)
 
     def run_command(self, cmd, redirect_output=True, check_exit_code=True):
-        return self.run_command_with_code(cmd, redirect_output,
-                                          check_exit_code)[0]
+        return self.run_command_with_code(
+            cmd, redirect_output, check_exit_code
+        )[0]
 
     def get_distro(self):
-        if (os.path.exists('/etc/fedora-release') or
-                os.path.exists('/etc/redhat-release')):
+        if os.path.exists('/etc/fedora-release') or os.path.exists(
+            '/etc/redhat-release'
+        ):
             return Fedora(
-                self.root, self.venv, self.requirements,
-                self.test_requirements, self.py_version, self.project)
+                self.root,
+                self.venv,
+                self.requirements,
+                self.test_requirements,
+                self.py_version,
+                self.project,
+            )
         else:
             return Distro(
-                self.root, self.venv, self.requirements,
-                self.test_requirements, self.py_version, self.project)
+                self.root,
+                self.venv,
+                self.requirements,
+                self.test_requirements,
+                self.py_version,
+                self.project,
+            )
 
     def check_dependencies(self):
         self.get_distro().install_virtualenv()
@@ -92,8 +105,9 @@ class InstallVenv:
         if not os.path.isdir(self.venv):
             print('Creating venv...', end=' ')
             if no_site_packages:
-                self.run_command(['virtualenv', '-q', '--no-site-packages',
-                                 self.venv])
+                self.run_command(
+                    ['virtualenv', '-q', '--no-site-packages', self.venv]
+                )
             else:
                 self.run_command(['virtualenv', '-q', self.venv])
             print('done.')
@@ -102,9 +116,10 @@ class InstallVenv:
             pass
 
     def pip_install(self, *args):
-        self.run_command(['tools/with_venv.sh',
-                         'pip', 'install', '--upgrade'] + list(args),
-                         redirect_output=False)
+        self.run_command(
+            ['tools/with_venv.sh', 'pip', 'install', '--upgrade'] + list(args),
+            redirect_output=False,
+        )
 
     def install_dependencies(self):
         print('Installing dependencies with pip (this can take a while)...')
@@ -120,18 +135,20 @@ class InstallVenv:
     def parse_args(self, argv):
         """Parses command-line arguments."""
         parser = optparse.OptionParser()
-        parser.add_option('-n', '--no-site-packages',
-                          action='store_true',
-                          help="Do not inherit packages from global Python "
-                               "install")
+        parser.add_option(
+            '-n',
+            '--no-site-packages',
+            action='store_true',
+            help="Do not inherit packages from global Python install",
+        )
         return parser.parse_args(argv[1:])[0]
 
 
 class Distro(InstallVenv):
-
     def check_cmd(self, cmd):
-        return bool(self.run_command(['which', cmd],
-                    check_exit_code=False).strip())
+        return bool(
+            self.run_command(['which', cmd], check_exit_code=False).strip()
+        )
 
     def install_virtualenv(self):
         if self.check_cmd('virtualenv'):
@@ -145,9 +162,11 @@ class Distro(InstallVenv):
             else:
                 print('Failed')
 
-        self.die(f'ERROR: virtualenv not found.\n\n{self.project} development'
-                 ' requires virtualenv, please install it using your'
-                 ' favorite package management tool')
+        self.die(
+            f'ERROR: virtualenv not found.\n\n{self.project} development'
+            ' requires virtualenv, please install it using your'
+            ' favorite package management tool'
+        )
 
 
 class Fedora(Distro):
@@ -157,8 +176,12 @@ class Fedora(Distro):
     """
 
     def check_pkg(self, pkg):
-        return self.run_command_with_code(['rpm', '-q', pkg],
-                                          check_exit_code=False)[1] == 0
+        return (
+            self.run_command_with_code(
+                ['rpm', '-q', pkg], check_exit_code=False
+            )[1]
+            == 0
+        )
 
     def install_virtualenv(self):
         if self.check_cmd('virtualenv'):

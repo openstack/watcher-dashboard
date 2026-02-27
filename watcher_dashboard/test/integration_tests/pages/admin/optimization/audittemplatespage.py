@@ -17,18 +17,23 @@ from selenium.webdriver.common import by
 
 
 class AuditTemplatesTable(tables.TableRegion):
-
     name = 'audit_templates'
 
-    CREATE_AUDIT_TEMPLATE_FORM_FIELDS = ("name", "description",
-                                         "goal_id", "strategy_id")
+    CREATE_AUDIT_TEMPLATE_FORM_FIELDS = (
+        "name",
+        "description",
+        "goal_id",
+        "strategy_id",
+    )
 
     @tables.bind_table_action('create')
     def create_audit_template(self, create_button):
         create_button.click()
         return forms.FormRegion(
-            self.driver, self.conf,
-            field_mappings=self.CREATE_AUDIT_TEMPLATE_FORM_FIELDS)
+            self.driver,
+            self.conf,
+            field_mappings=self.CREATE_AUDIT_TEMPLATE_FORM_FIELDS,
+        )
 
     @tables.bind_table_action('delete')
     def delete_audit_template(self, delete_button):
@@ -42,7 +47,6 @@ class AuditTemplatesTable(tables.TableRegion):
 
 
 class AudittemplatesPage(basepage.BaseNavigationPage):
-
     DEFAULT_DESCRIPTION = "Fake description from integration tests"
     DEFAULT_GOAL = "SERVER_CONSOLIDATION"
 
@@ -51,9 +55,7 @@ class AudittemplatesPage(basepage.BaseNavigationPage):
     AUDIT_TEMPLATE_INFO_SUB_TITLE = "Audit Template Info"
 
     # Set fields name attribute
-    CREATE_AUDIT_TEMPLATE_FORM_FIELDS = (
-        "name", "description", "goal"
-    )
+    CREATE_AUDIT_TEMPLATE_FORM_FIELDS = ("name", "description", "goal")
 
     _audittemplates_info_title_locator = (by.By.CSS_SELECTOR, 'div.detail>h4')
 
@@ -67,8 +69,12 @@ class AudittemplatesPage(basepage.BaseNavigationPage):
 
     @property
     def audit_templates__action_create_form(self):
-        return forms.FormRegion(self.driver, self.conf, None,
-                                self.CREATE_AUDIT_TEMPLATE_FORM_FIELDS)
+        return forms.FormRegion(
+            self.driver,
+            self.conf,
+            None,
+            self.CREATE_AUDIT_TEMPLATE_FORM_FIELDS,
+        )
 
     def _get_row_with_audit_template_name(self, name):
         self._turn_off_implicit_wait()
@@ -80,13 +86,13 @@ class AudittemplatesPage(basepage.BaseNavigationPage):
         row = self._get_row_with_audit_template_name(name)
         row.mark()
         confirm_delete_audit_template_form = (
-            self.audittemplates_table.delete_audit_template())
+            self.audittemplates_table.delete_audit_template()
+        )
         confirm_delete_audit_template_form.submit()
 
-    def create_audit_template(self,
-                              name,
-                              description=DEFAULT_DESCRIPTION,
-                              goal_id=DEFAULT_GOAL):
+    def create_audit_template(
+        self, name, description=DEFAULT_DESCRIPTION, goal_id=DEFAULT_GOAL
+    ):
         self.audittemplates_table.create_audit_template()
         self.audit_templates__action_create_form.name.text = name
         self.audit_templates__action_create_form.description.text = description
@@ -94,18 +100,19 @@ class AudittemplatesPage(basepage.BaseNavigationPage):
         self.audit_templates__action_create_form.submit()
 
     def is_audit_template_present(self, name):
-        return bool(
-            self._get_row_with_audit_template_name(name))
+        return bool(self._get_row_with_audit_template_name(name))
 
     def launch_audit(self, name):
         row = self._get_row_with_audit_template_name(name)
         self.audittemplates_table.launch_audit(row)
         # Check that the name appears in Audits page
-        return (self.driver.title == self.AUDITS_PAGE_TITLE) \
-            and (name in self.driver.page_source)
+        return (self.driver.title == self.AUDITS_PAGE_TITLE) and (
+            name in self.driver.page_source
+        )
 
     def show_audit_template_info(self, name):
         self.driver.find_element_by_link_text(name).click()
         info_line = self._get_element(*self._audittemplates_info_title_locator)
         return self._is_text_visible(
-            info_line, self.AUDIT_TEMPLATE_INFO_SUB_TITLE)
+            info_line, self.AUDIT_TEMPLATE_INFO_SUB_TITLE
+        )

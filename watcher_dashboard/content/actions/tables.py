@@ -82,29 +82,33 @@ def get_action_plan_link(datum):
     try:
         return urls.reverse(
             "horizon:admin:action_plans:detail",
-            kwargs={"action_plan_uuid": getattr(
-                datum, "action_plan_uuid", None)})
+            kwargs={
+                "action_plan_uuid": getattr(datum, "action_plan_uuid", None)
+            },
+        )
     except urls.NoReverseMatch:
         return None
 
 
 class ActionsTable(horizon.tables.DataTable):
     name = horizon.tables.Column(
-        'uuid',
-        verbose_name=_("UUID"),
-        link="horizon:admin:actions:detail")
+        'uuid', verbose_name=_("UUID"), link="horizon:admin:actions:detail"
+    )
     action_type = horizon.tables.Column(
         'action_type',
         verbose_name=_('Type'),
-        filters=(title, filters.replace_underscores))
+        filters=(title, filters.replace_underscores),
+    )
     state = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status_choices=ACTION_STATE_DISPLAY_CHOICES)
+        status_choices=ACTION_STATE_DISPLAY_CHOICES,
+    )
     action_plan = horizon.tables.Column(
         'action_plan_uuid',
         verbose_name=_('Action Plan'),
-        link=get_action_plan_link)
+        link=get_action_plan_link,
+    )
 
     def get_object_id(self, datum):
         return datum.uuid
@@ -112,40 +116,40 @@ class ActionsTable(horizon.tables.DataTable):
     class Meta:
         name = "wactions"
         verbose_name = _("Actions")
-        table_actions = (ActionsFilterAction, )
+        table_actions = (ActionsFilterAction,)
         row_class = UpdateRow
 
 
 class RelatedActionsTable(horizon.tables.DataTable):
     """Identical to the index table but with different Meta"""
+
     name = horizon.tables.Column(
-        'uuid',
-        verbose_name=_("UUID"),
-        link="horizon:admin:actions:detail")
+        'uuid', verbose_name=_("UUID"), link="horizon:admin:actions:detail"
+    )
     action_type = horizon.tables.Column(
         'action_type',
         verbose_name=_('Type'),
-        filters=(title, filters.replace_underscores))
+        filters=(title, filters.replace_underscores),
+    )
     state = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status_choices=ACTION_STATE_DISPLAY_CHOICES)
+        status_choices=ACTION_STATE_DISPLAY_CHOICES,
+    )
     action_plan = horizon.tables.Column(
         'action_plan_uuid',
         verbose_name=_('Action Plan'),
-        link=get_action_plan_link)
+        link=get_action_plan_link,
+    )
 
     def __init__(self, *args, **kwargs):
-        self._supports_skip = kwargs.pop(
-            'supports_skip', False)
-        self._parent_succeeded = kwargs.pop(
-            'parent_succeeded', False)
+        self._supports_skip = kwargs.pop('supports_skip', False)
+        self._parent_succeeded = kwargs.pop('parent_succeeded', False)
         super().__init__(*args, **kwargs)
 
     def get_row_actions(self, datum):
         """Hide row actions when skip is unsupported or plan succeeded."""
-        if (not self._supports_skip or
-                self._parent_succeeded):
+        if not self._supports_skip or self._parent_succeeded:
             return []
         return super().get_row_actions(datum)
 
@@ -167,12 +171,8 @@ class RelatedActionsTable(horizon.tables.DataTable):
 
 
 class ActionParametersTable(horizon.tables.DataTable):
-    name = horizon.tables.Column(
-        'name',
-        verbose_name=_("Parameter name"))
-    value = horizon.tables.Column(
-        'value',
-        verbose_name=_('Parameter value'))
+    name = horizon.tables.Column('name', verbose_name=_("Parameter name"))
+    value = horizon.tables.Column('value', verbose_name=_('Parameter value'))
 
     def get_object_id(self, datum):
         return datum.name

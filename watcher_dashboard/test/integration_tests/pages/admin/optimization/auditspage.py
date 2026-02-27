@@ -19,7 +19,6 @@ from openstack_dashboard.test.integration_tests.regions import tables
 
 
 class AuditsTable(tables.TableRegion):
-
     name = "audits"
 
     @tables.bind_table_action('launch_audit')
@@ -39,7 +38,6 @@ class AuditsTable(tables.TableRegion):
 
 
 class AuditsPage(basepage.BaseNavigationPage):
-
     DEFAULT_ID = "auto"
     AUDIT_TABLE_NAME_COLUMN = 'name'
     AUDIT_TABLE_TEMPLATE_COLUMN_INDEX = 1
@@ -55,8 +53,16 @@ class AuditsPage(basepage.BaseNavigationPage):
     def _get_audit_row(self, name):
         return self.audits_table.get_row(self.AUDIT_TABLE_NAME_COLUMN, name)
 
-    def create_audit(self, name, id_=DEFAULT_ID, vcpus=None, ram=None,
-                     root_disk=None, ephemeral_disk=None, swap_disk=None):
+    def create_audit(
+        self,
+        name,
+        id_=DEFAULT_ID,
+        vcpus=None,
+        ram=None,
+        root_disk=None,
+        ephemeral_disk=None,
+        swap_disk=None,
+    ):
         create_audit_form = self.audits_table.create_audit()
         create_audit_form.name.text = name
         if id_ is not None:

@@ -20,88 +20,79 @@ from watcher_dashboard.test import helpers as test
 
 
 class WatcherAPITests(test.APITestCase):
-
     def test_goal_list(self):
         goals = {'goals': self.api_goals.list()}
         watcherclient = self.stub_watcherclient()
-        watcherclient.goal.list = mock.Mock(
-            return_value=goals)
+        watcherclient.goal.list = mock.Mock(return_value=goals)
 
         ret_val = api.watcher.Goal.list(self.request)
         self.assertIsInstance(ret_val, dict)
         self.assertIn('goals', ret_val)
         for n in ret_val['goals']:
             self.assertIsInstance(n, dict)
-        watcherclient.goal.list.assert_called_with(
-            detail=True)
+        watcherclient.goal.list.assert_called_with(detail=True)
 
     def test_goal_get(self):
         goal = self.api_goals.first()
         goal_id = self.api_goals.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.goal.get = mock.Mock(
-            return_value=goal)
+        watcherclient.goal.get = mock.Mock(return_value=goal)
 
         ret_val = api.watcher.Goal.get(self.request, goal_id)
         self.assertIsInstance(ret_val, dict)
-        watcherclient.goal.get.assert_called_with(
-            goal_id)
+        watcherclient.goal.get.assert_called_with(goal_id)
 
     def test_strategy_list(self):
         strategies = {'strategies': self.api_strategies.list()}
         watcherclient = self.stub_watcherclient()
 
-        watcherclient.strategy.list = mock.Mock(
-            return_value=strategies)
+        watcherclient.strategy.list = mock.Mock(return_value=strategies)
 
         ret_val = api.watcher.Strategy.list(self.request)
         self.assertIn('strategies', ret_val)
         for n in ret_val['strategies']:
             self.assertIsInstance(n, dict)
-        watcherclient.strategy.list.assert_called_with(
-            detail=True)
+        watcherclient.strategy.list.assert_called_with(detail=True)
 
     def test_strategy_get(self):
         strategy = self.api_strategies.first()
         strategy_id = self.api_strategies.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.strategy.get = mock.Mock(
-            return_value=strategy)
+        watcherclient.strategy.get = mock.Mock(return_value=strategy)
 
         ret_val = api.watcher.Strategy.get(self.request, strategy_id)
         self.assertIsInstance(ret_val, dict)
-        watcherclient.strategy.get.assert_called_with(
-            strategy_id)
+        watcherclient.strategy.get.assert_called_with(strategy_id)
 
     def test_audit_template_list(self):
-        audit_templates = {
-            'audit_templates': self.api_audit_templates.list()}
+        audit_templates = {'audit_templates': self.api_audit_templates.list()}
         watcherclient = self.stub_watcherclient()
 
         watcherclient.audit_template.list = mock.Mock(
-            return_value=audit_templates)
+            return_value=audit_templates
+        )
 
         ret_val = api.watcher.AuditTemplate.list(self.request)
 
         self.assertIn('audit_templates', ret_val)
         for n in ret_val['audit_templates']:
             self.assertIsInstance(n, dict)
-        watcherclient.audit_template.list.assert_called_with(
-            detail=True)
+        watcherclient.audit_template.list.assert_called_with(detail=True)
 
     def test_audit_template_list_with_filters(self):
         search_opts = {'name': 'Audit Template 1'}
         audit_templates = {
-            'audit_templates': self.api_audit_templates.filter(**search_opts)}
+            'audit_templates': self.api_audit_templates.filter(**search_opts)
+        }
         watcherclient = self.stub_watcherclient()
 
         watcherclient.audit_template.list = mock.Mock(
-            return_value=audit_templates)
+            return_value=audit_templates
+        )
 
-        ret_val = api.watcher.AuditTemplate.list(
-            self.request, **search_opts)
+        ret_val = api.watcher.AuditTemplate.list(self.request, **search_opts)
 
         self.assertIn('audit_templates', ret_val)
         for n in ret_val['audit_templates']:
@@ -109,7 +100,8 @@ class WatcherAPITests(test.APITestCase):
 
         self.assertEqual(ret_val, audit_templates)
         watcherclient.audit_template.list.assert_called_with(
-            detail=True, **search_opts)
+            detail=True, **search_opts
+        )
 
     def test_audit_template_get(self):
         audit_template = self.api_audit_templates.first()
@@ -117,13 +109,16 @@ class WatcherAPITests(test.APITestCase):
 
         watcherclient = self.stub_watcherclient()
         watcherclient.audit_template.get = mock.Mock(
-            return_value=audit_template)
+            return_value=audit_template
+        )
 
-        ret_val = api.watcher.AuditTemplate.get(self.request,
-                                                audit_template_id)
+        ret_val = api.watcher.AuditTemplate.get(
+            self.request, audit_template_id
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit_template.get.assert_called_with(
-            audit_template_id=audit_template_id)
+            audit_template_id=audit_template_id
+        )
 
     def test_audit_template_create(self):
         audit_template = self.api_audit_templates.first()
@@ -135,18 +130,20 @@ class WatcherAPITests(test.APITestCase):
 
         watcherclient = self.stub_watcherclient()
         watcherclient.audit_template.create = mock.Mock(
-            return_value=audit_template)
+            return_value=audit_template
+        )
 
         ret_val = api.watcher.AuditTemplate.create(
-            self.request, name, goal, strategy,
-            description, scope)
+            self.request, name, goal, strategy, description, scope
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit_template.create.assert_called_with(
             name=name,
             goal=goal,
             strategy=strategy,
             description=description,
-            scope=scope)
+            scope=scope,
+        )
 
     def test_audit_template_patch(self):
         audit_template = self.api_audit_templates.first()
@@ -155,15 +152,16 @@ class WatcherAPITests(test.APITestCase):
 
         watcherclient = self.stub_watcherclient()
         watcherclient.audit_template.patch = mock.Mock(
-            return_value=audit_template)
+            return_value=audit_template
+        )
 
         ret_val = api.watcher.AuditTemplate.patch(
-            self.request, audit_template_id,
-            form_data)
+            self.request, audit_template_id, form_data
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit_template.patch.assert_called_with(
             audit_template_id,
-            [{'name': 'name', 'value': 'new Audit Template 1'}]
+            [{'name': 'name', 'value': 'new Audit Template 1'}],
         )
 
     def test_audit_template_delete(self):
@@ -173,41 +171,37 @@ class WatcherAPITests(test.APITestCase):
 
         watcherclient = self.stub_watcherclient()
         watcherclient.audit_template.delete = mock.Mock()
-        api.watcher.AuditTemplate.delete(self.request,
-                                         audit_template_id)
+        api.watcher.AuditTemplate.delete(self.request, audit_template_id)
         self.assertEqual(audit_template_list, deleted_at_list)
         self.assertEqual(len(audit_template_list), len(deleted_at_list))
         watcherclient.audit_template.delete.assert_called_with(
-            audit_template_id=audit_template_id)
+            audit_template_id=audit_template_id
+        )
 
     def test_audit_list(self):
         audits = {'audits': self.api_audits.list()}
 
         watcherclient = self.stub_watcherclient()
 
-        watcherclient.audit.list = mock.Mock(
-            return_value=audits)
+        watcherclient.audit.list = mock.Mock(return_value=audits)
 
         ret_val = api.watcher.Audit.list(self.request)
 
         self.assertIn('audits', ret_val)
         for n in ret_val['audits']:
             self.assertIsInstance(n, dict)
-        watcherclient.audit.list.assert_called_with(
-            detail=True)
+        watcherclient.audit.list.assert_called_with(detail=True)
 
     def test_audit_get(self):
         audit = self.api_audits.first()
         audit_id = self.api_audits.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.get = mock.Mock(
-            return_value=audit)
+        watcherclient.audit.get = mock.Mock(return_value=audit)
 
         ret_val = api.watcher.Audit.get(self.request, audit_id)
         self.assertIsInstance(ret_val, dict)
-        watcherclient.audit.get.assert_called_with(
-            audit=audit_id)
+        watcherclient.audit.get.assert_called_with(audit=audit_id)
 
     def test_audit_create(self):
         audit = self.api_audits.first()
@@ -218,15 +212,18 @@ class WatcherAPITests(test.APITestCase):
         audit_template_uuid = audit_template_id
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.create = mock.Mock(
-            return_value=audit)
+        watcherclient.audit.create = mock.Mock(return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, audit_name)
+            self.request, audit_template_uuid, audit_type, audit_name
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
-            audit_type=audit_type, auto_trigger=False, name=audit_name)
+            audit_type=audit_type,
+            auto_trigger=False,
+            name=audit_name,
+        )
 
     def test_audit_create_with_interval(self):
         audit = self.api_audits.list()[1]
@@ -238,19 +235,24 @@ class WatcherAPITests(test.APITestCase):
         audit_template_uuid = audit_template_id
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.create = mock.Mock(
-            return_value=audit)
+        watcherclient.audit.create = mock.Mock(return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, audit_name,
-            False, interval)
+            self.request,
+            audit_template_uuid,
+            audit_type,
+            audit_name,
+            False,
+            interval,
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
             audit_type=audit_type,
             auto_trigger=False,
             interval=interval,
-            name=audit_name)
+            name=audit_name,
+        )
 
     def test_audit_create_with_auto_trigger(self):
         audit = self.api_audits.list()[1]
@@ -261,17 +263,18 @@ class WatcherAPITests(test.APITestCase):
         audit_template_uuid = audit_template_id
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.create = mock.Mock(
-            return_value=audit)
+        watcherclient.audit.create = mock.Mock(return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, audit_name, True)
+            self.request, audit_template_uuid, audit_type, audit_name, True
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
             audit_type=audit_type,
             auto_trigger=True,
-            name=audit_name)
+            name=audit_name,
+        )
 
     def test_audit_create_with_parameters(self):
         audit = self.api_audits.first()
@@ -283,19 +286,25 @@ class WatcherAPITests(test.APITestCase):
         parameters = {'memory_threshold': 0.8, 'cpu_threshold': 0.9}
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.create = mock.Mock(
-            return_value=audit)
+        watcherclient.audit.create = mock.Mock(return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, audit_name,
-            False, None, parameters)
+            self.request,
+            audit_template_uuid,
+            audit_type,
+            audit_name,
+            False,
+            None,
+            parameters,
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
             audit_type=audit_type,
             auto_trigger=False,
             name=audit_name,
-            parameters=parameters)
+            parameters=parameters,
+        )
 
     def test_audit_create_with_start_end_time(self):
         audit = self.api_audits.list()[1]
@@ -309,12 +318,18 @@ class WatcherAPITests(test.APITestCase):
         audit_template_uuid = audit_template_id
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.create = mock.Mock(
-            return_value=audit)
+        watcherclient.audit.create = mock.Mock(return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, audit_name,
-            False, interval, start_time=start_time, end_time=end_time)
+            self.request,
+            audit_template_uuid,
+            audit_type,
+            audit_name,
+            False,
+            interval,
+            start_time=start_time,
+            end_time=end_time,
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
@@ -323,7 +338,8 @@ class WatcherAPITests(test.APITestCase):
             interval=interval,
             name=audit_name,
             start_time=start_time,
-            end_time=end_time)
+            end_time=end_time,
+        )
 
     def test_audit_create_with_complex_parameters(self):
         audit = self.api_audits.first()
@@ -337,23 +353,29 @@ class WatcherAPITests(test.APITestCase):
             'memory_threshold': 0.8,
             'enable_migration': True,
             'compute_nodes': [{'src_node': 's01', 'dst_node': 'd01'}],
-            'excluded_instances': ['instance1', 'instance2']
+            'excluded_instances': ['instance1', 'instance2'],
         }
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.create = mock.Mock(
-            return_value=audit)
+        watcherclient.audit.create = mock.Mock(return_value=audit)
 
         ret_val = api.watcher.Audit.create(
-            self.request, audit_template_uuid, audit_type, audit_name,
-            False, None, parameters)
+            self.request,
+            audit_template_uuid,
+            audit_type,
+            audit_name,
+            False,
+            None,
+            parameters,
+        )
         self.assertIsInstance(ret_val, dict)
         watcherclient.audit.create.assert_called_with(
             audit_template_uuid=audit_template_uuid,
             audit_type=audit_type,
             auto_trigger=False,
             name=audit_name,
-            parameters=parameters)
+            parameters=parameters,
+        )
 
     def test_audit_show_with_parameters(self):
         """Test that audit detail view shows parameters when present"""
@@ -363,19 +385,17 @@ class WatcherAPITests(test.APITestCase):
         audit_with_params = dict(audit)
         audit_with_params['parameters'] = {
             'memory_threshold': 0.8,
-            'cpu_threshold': 0.9
+            'cpu_threshold': 0.9,
         }
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.audit.get = mock.Mock(
-            return_value=audit_with_params)
+        watcherclient.audit.get = mock.Mock(return_value=audit_with_params)
 
         ret_val = api.watcher.Audit.get(self.request, audit_id)
         self.assertIsInstance(ret_val, dict)
         expected_params = {'memory_threshold': 0.8, 'cpu_threshold': 0.9}
         self.assertEqual(ret_val['parameters'], expected_params)
-        watcherclient.audit.get.assert_called_with(
-            audit=audit_id)
+        watcherclient.audit.get.assert_called_with(audit=audit_id)
 
     def test_audit_delete(self):
         audit_id = self.api_audits.first()['uuid']
@@ -384,8 +404,7 @@ class WatcherAPITests(test.APITestCase):
         watcherclient.audit.delete = mock.Mock()
 
         api.watcher.Audit.delete(self.request, audit_id)
-        watcherclient.audit.delete.assert_called_with(
-            audit=audit_id)
+        watcherclient.audit.delete.assert_called_with(audit=audit_id)
 
     def test_audit_cancel(self):
         audit_id = self.api_audits.first()['uuid']
@@ -395,37 +414,36 @@ class WatcherAPITests(test.APITestCase):
 
         api.watcher.Audit.cancel(self.request, audit_id)
         watcherclient.audit.update.assert_called_with(
-            audit=audit_id, patch=[{'op': 'replace', 'path': '/state',
-                                    'value': 'CANCELLED'}])
+            audit=audit_id,
+            patch=[{'op': 'replace', 'path': '/state', 'value': 'CANCELLED'}],
+        )
 
     def test_action_plan_list(self):
         action_plans = {'action_plans': self.api_action_plans.list()}
 
         watcherclient = self.stub_watcherclient()
 
-        watcherclient.action_plan.list = mock.Mock(
-            return_value=action_plans)
+        watcherclient.action_plan.list = mock.Mock(return_value=action_plans)
 
         ret_val = api.watcher.ActionPlan.list(self.request)
 
         self.assertIn('action_plans', ret_val)
         for n in ret_val['action_plans']:
             self.assertIsInstance(n, dict)
-        watcherclient.action_plan.list.assert_called_with(
-            detail=True)
+        watcherclient.action_plan.list.assert_called_with(detail=True)
 
     def test_action_plan_get(self):
         action_plan = self.api_action_plans.first()
         action_plan_id = self.api_action_plans.first()['uuid']
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.action_plan.get = mock.Mock(
-            return_value=action_plan)
+        watcherclient.action_plan.get = mock.Mock(return_value=action_plan)
 
         ret_val = api.watcher.ActionPlan.get(self.request, action_plan_id)
         self.assertIsInstance(ret_val, dict)
         watcherclient.action_plan.get.assert_called_with(
-            action_plan_id=action_plan_id)
+            action_plan_id=action_plan_id
+        )
 
     def test_action_plan_start(self):
         action_plan_id = self.api_action_plans.first()['uuid']
@@ -434,8 +452,7 @@ class WatcherAPITests(test.APITestCase):
         watcherclient.action_plan.start = mock.Mock()
 
         api.watcher.ActionPlan.start(self.request, action_plan_id)
-        watcherclient.action_plan.start.assert_called_with(
-            action_plan_id)
+        watcherclient.action_plan.start.assert_called_with(action_plan_id)
 
     def test_action_plan_delete(self):
         action_plan_id = self.api_action_plans.first()['uuid']
@@ -445,135 +462,144 @@ class WatcherAPITests(test.APITestCase):
 
         api.watcher.ActionPlan.delete(self.request, action_plan_id)
         watcherclient.action_plan.delete.assert_called_with(
-            action_plan_id=action_plan_id)
+            action_plan_id=action_plan_id
+        )
 
     def test_action_list(self):
         actions = {'actions': self.api_actions.list()}
         watcherclient = self.stub_watcherclient()
 
-        watcherclient.action.list = mock.Mock(
-            return_value=actions)
+        watcherclient.action.list = mock.Mock(return_value=actions)
 
         ret_val = api.watcher.Action.list(self.request)
 
         self.assertIn('actions', ret_val)
         for n in ret_val['actions']:
             self.assertIsInstance(n, dict)
-        watcherclient.action.list.assert_called_with(
-            detail=True)
+        watcherclient.action.list.assert_called_with(detail=True)
 
     def test_action_get_with_api_version(self):
         action = self.api_actions.first()
         action_id = action['uuid']
 
         watcherclient = self.stub_watcherclient()
-        watcherclient.action.get = mock.Mock(
-            return_value=action)
+        watcherclient.action.get = mock.Mock(return_value=action)
 
         with mock.patch(
-                'watcher_dashboard.api.watcher.watcherclient',
-                autospec=True) as wc:
+            'watcher_dashboard.api.watcher.watcherclient', autospec=True
+        ) as wc:
             wc.return_value = watcherclient
-            api.watcher.Action.get(
-                self.request, action_id, api_version='1.5')
-            wc.assert_called_with(
-                self.request, api_version='1.5')
+            api.watcher.Action.get(self.request, action_id, api_version='1.5')
+            wc.assert_called_with(self.request, api_version='1.5')
 
     def test_action_update_state_only(self):
         action_id = self.api_actions.first()['uuid']
         with mock.patch(
-                'watcher_dashboard.api.watcher.watcherclient',
-                autospec=True) as wc:
+            'watcher_dashboard.api.watcher.watcherclient', autospec=True
+        ) as wc:
             client_mock = mock.Mock()
             wc.return_value = client_mock
-            client_mock.action.update = mock.Mock(
-                return_value={})
+            client_mock.action.update = mock.Mock(return_value={})
             api.watcher.Action.update(
-                self.request, action_id,
-                state='SKIPPED', api_version='1.5')
+                self.request, action_id, state='SKIPPED', api_version='1.5'
+            )
             client_mock.action.update.assert_called_with(
                 action_id=action_id,
-                patch=[{'op': 'replace', 'path': '/state',
-                        'value': 'SKIPPED'}])
+                patch=[
+                    {'op': 'replace', 'path': '/state', 'value': 'SKIPPED'}
+                ],
+            )
 
     def test_action_update_state_and_reason(self):
         action_id = self.api_actions.first()['uuid']
         with mock.patch(
-                'watcher_dashboard.api.watcher.watcherclient',
-                autospec=True) as wc:
+            'watcher_dashboard.api.watcher.watcherclient', autospec=True
+        ) as wc:
             client_mock = mock.Mock()
             wc.return_value = client_mock
-            client_mock.action.update = mock.Mock(
-                return_value={})
+            client_mock.action.update = mock.Mock(return_value={})
             api.watcher.Action.update(
-                self.request, action_id,
-                state='SKIPPED', reason='Not needed',
-                api_version='1.5')
+                self.request,
+                action_id,
+                state='SKIPPED',
+                reason='Not needed',
+                api_version='1.5',
+            )
             client_mock.action.update.assert_called_with(
                 action_id=action_id,
                 patch=[
-                    {'op': 'replace', 'path': '/state',
-                     'value': 'SKIPPED'},
-                    {'op': 'replace', 'path': '/status_message',
-                     'value': 'Not needed'},
-                ])
+                    {'op': 'replace', 'path': '/state', 'value': 'SKIPPED'},
+                    {
+                        'op': 'replace',
+                        'path': '/status_message',
+                        'value': 'Not needed',
+                    },
+                ],
+            )
 
     def test_action_update_no_args_raises(self):
         from watcher_dashboard.common import exceptions as watcher_exc
+
         action_id = self.api_actions.first()['uuid']
         self.assertRaises(
             watcher_exc.WatcherDashboardException,
             api.watcher.Action.update,
-            self.request, action_id)
+            self.request,
+            action_id,
+        )
 
     def test_action_update_method_not_allowed(self):
         from watcherclient.common.apiclient import exceptions as wc_exc
+
         action_id = self.api_actions.first()['uuid']
         with mock.patch(
-                'watcher_dashboard.api.watcher.watcherclient',
-                autospec=True) as wc:
+            'watcher_dashboard.api.watcher.watcherclient', autospec=True
+        ) as wc:
             client_mock = mock.Mock()
             wc.return_value = client_mock
             client_mock.action.update = mock.Mock(
-                side_effect=wc_exc.MethodNotAllowed())
+                side_effect=wc_exc.MethodNotAllowed()
+            )
             result = api.watcher.Action.update(
-                self.request, action_id,
-                state='SKIPPED', api_version='1.5')
+                self.request, action_id, state='SKIPPED', api_version='1.5'
+            )
             self.assertIsNone(result)
 
     def test_get_strategy_display_name(self):
-        strategy = api.watcher.Strategy({
-            'uuid': 'test-uuid',
-            'name': 'zone_migration',
-            'display_name': 'Zone Migration Strategy',
-        })
+        strategy = api.watcher.Strategy(
+            {
+                'uuid': 'test-uuid',
+                'name': 'zone_migration',
+                'display_name': 'Zone Migration Strategy',
+            }
+        )
         self.assertEqual(
             api.watcher.get_strategy_display_name(strategy),
-            'Zone Migration Strategy')
+            'Zone Migration Strategy',
+        )
 
     def test_get_strategy_display_name_fallback(self):
-        strategy = api.watcher.Strategy({
-            'uuid': 'test-uuid',
-            'name': 'zone_migration',
-            'display_name': '',
-        })
+        strategy = api.watcher.Strategy(
+            {'uuid': 'test-uuid', 'name': 'zone_migration', 'display_name': ''}
+        )
         self.assertEqual(
-            api.watcher.get_strategy_display_name(strategy),
-            'zone_migration')
+            api.watcher.get_strategy_display_name(strategy), 'zone_migration'
+        )
 
     def test_get_strategy_display_name_none_fallback(self):
-        strategy = api.watcher.Strategy({
-            'uuid': 'test-uuid',
-            'name': 'zone_migration',
-            'display_name': None,
-        })
+        strategy = api.watcher.Strategy(
+            {
+                'uuid': 'test-uuid',
+                'name': 'zone_migration',
+                'display_name': None,
+            }
+        )
         self.assertEqual(
-            api.watcher.get_strategy_display_name(strategy),
-            'zone_migration')
+            api.watcher.get_strategy_display_name(strategy), 'zone_migration'
+        )
 
     def test_get_strategy_display_name_missing_attrs(self):
         strategy = api.watcher.Strategy({'uuid': 'test-uuid'})
         self.assertRaises(
-            AttributeError,
-            api.watcher.get_strategy_display_name,
-            strategy)
+            AttributeError, api.watcher.get_strategy_display_name, strategy
+        )

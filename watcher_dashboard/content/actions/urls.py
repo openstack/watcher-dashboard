@@ -19,10 +19,15 @@ from watcher_dashboard.content.actions import views
 
 
 urlpatterns = [
-    re_path(r'^$',
-            views.IndexView.as_view(), name='index'),
-    re_path(r'^(?P<action_uuid>[^/]+)/detail$',
-            views.DetailView.as_view(), name='detail'),
-    re_path(r'^(?P<action_id>[^/]+)/skip$',
-            views.SkipActionView.as_view(), name='skip'),
+    re_path(r'^$', views.IndexView.as_view(), name='index'),
+    re_path(
+        r'^(?P<action_uuid>[^/]+)/detail$',
+        views.DetailView.as_view(),
+        name='detail',
+    ),
+    re_path(
+        r'^(?P<action_id>[^/]+)/skip$',
+        views.SkipActionView.as_view(),
+        name='skip',
+    ),
 ]
