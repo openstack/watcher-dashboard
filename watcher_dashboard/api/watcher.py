@@ -15,18 +15,17 @@ import logging
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from openstack_dashboard.api import base
-from watcher_dashboard.common import client as wv
+from watcher_dashboard.common import client as common_client
 
 from watcher_dashboard.utils import errors as errors_utils
 
 LOG = logging.getLogger(__name__)
-WATCHER_SERVICE = 'infra-optim'
 
 
 def watcherclient(request, api_version=None):
     insert_watcher_policy_file()
 
-    endpoint = base.url_for(request, WATCHER_SERVICE)
+    endpoint = base.url_for(request, common_client.WATCHER_SERVICE)
 
     LOG.debug(
         'watcherclient connection created using token "%s" and url "%s"',
@@ -35,16 +34,16 @@ def watcherclient(request, api_version=None):
     )
 
     # Default to minimal microversion (1.0) unless explicitly overridden.
-    microversion = api_version or wv.MIN_DEFAULT
+    microversion = api_version or common_client.MIN_DEFAULT
 
     # Prefer centralized client helper
-    client = wv.get_client(request, required=microversion)
+    client = common_client.get_client(request, required=microversion)
     return client
 
 
 def insert_watcher_policy_file():
     policy_files = getattr(settings, 'POLICY_FILES', {})
-    policy_files['infra-optim'] = 'watcher_policy.yaml'
+    policy_files[common_client.WATCHER_SERVICE] = 'watcher_policy.yaml'
     setattr(settings, 'POLICY_FILES', policy_files)
 
 
@@ -105,7 +104,7 @@ class Audit(base.APIDictWrapper):
             payload['end_time'] = end_time
 
         # Use microversion 1.1 to support start/end_time
-        client = watcherclient(request, api_version=wv.MV_START_END)
+        client = watcherclient(request, api_version=common_client.MV_START_END)
         return client.audit.create(**payload)
 
     @classmethod
@@ -122,7 +121,7 @@ class Audit(base.APIDictWrapper):
         :rtype:  list of :py:class:`~.Audit`
         """
         return watcherclient(
-            request, api_version=wv.MV_START_END
+            request, api_version=common_client.MV_START_END
         ).audit.list(
             detail=True, **filters
         )
@@ -143,7 +142,7 @@ class Audit(base.APIDictWrapper):
         :rtype:  :py:class:`~.Audit`
         """
         return watcherclient(
-            request, api_version=wv.MV_START_END
+            request, api_version=common_client.MV_START_END
         ).audit.get(
             audit=audit_id
         )
