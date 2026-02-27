@@ -16,7 +16,7 @@
 from unittest import mock
 
 from watcher_dashboard import api
-from watcher_dashboard.test import helpers as test
+from watcher_dashboard.tests import helpers as test
 
 
 class WatcherAPITests(test.APITestCase):

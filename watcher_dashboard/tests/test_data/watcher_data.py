@@ -14,7 +14,7 @@
 import copy
 
 from watcher_dashboard.api import watcher
-from watcher_dashboard.test.test_data import utils
+from watcher_dashboard.tests.test_data import utils
 
 
 def data(TEST):

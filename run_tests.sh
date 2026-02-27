@@ -190,7 +190,7 @@ function warn_on_flake8_without_venv {
 function run_pep8 {
   echo "Running flake8 ..."
   warn_on_flake8_without_venv
-  DJANGO_SETTINGS_MODULE=watcher_dashboard.test.settings ${command_wrapper} flake8
+  DJANGO_SETTINGS_MODULE=watcher_dashboard.tests.settings ${command_wrapper} flake8
 }
 
 function run_pep8_changed {
@@ -203,13 +203,13 @@ function run_pep8_changed {
     files=$(git diff --name-only $base_commit | tr '\n' ' ')
     echo "Running flake8 on ${files}"
     warn_on_flake8_without_venv
-    diff -u --from-file /dev/null ${files} | DJANGO_SETTINGS_MODULE=watcher_dashboard.test.settings ${command_wrapper} flake8 --diff
+    diff -u --from-file /dev/null ${files} | DJANGO_SETTINGS_MODULE=watcher_dashboard.tests.settings ${command_wrapper} flake8 --diff
     exit
 }
 
 function run_sphinx {
     echo "Building sphinx..."
-    DJANGO_SETTINGS_MODULE=watcher_dashboard.test.settings ${command_wrapper} python setup.py build_sphinx
+    DJANGO_SETTINGS_MODULE=watcher_dashboard.tests.settings ${command_wrapper} python setup.py build_sphinx
     echo "Build complete."
 }
 
@@ -343,7 +343,7 @@ function run_tests {
   fi
 
   if [ $with_selenium -eq 0 -a $integration -eq 0 ]; then
-      testopts="$testopts --exclude=watcher_dashboard/test/integration_tests/ "
+      testopts="$testopts --exclude=watcher_dashboard/tests/integration_tests/ "
   fi
 
   if [ $selenium_headless -eq 1 ]; then
@@ -385,7 +385,7 @@ function run_tests_all {
   if [ "$NOSE_WITH_HTML_OUTPUT" = '1' ]; then
     export NOSE_HTML_OUT_FILE='dashboard_nose_results.html'
   fi
-  ${command_wrapper} ${coverage_run} $root/manage.py test openstack_dashboard --settings=watcher_dashboard.test.settings $testopts
+  ${command_wrapper} ${coverage_run} $root/manage.py test openstack_dashboard --settings=watcher_dashboard.tests.settings $testopts
   # get results of the openstack_dashboard tests
   DASHBOARD_RESULT=$?
 
@@ -426,7 +426,7 @@ function run_integration_tests {
 
   echo "Running Watcher Horizon integration tests..."
   if [ -z "$testargs" ]; then
-      ${command_wrapper} nosetests watcher_dashboard/test/integration_tests/tests
+      ${command_wrapper} nosetests watcher_dashboard/tests/integration_tests/tests
   else
       ${command_wrapper} nosetests $testargs
   fi

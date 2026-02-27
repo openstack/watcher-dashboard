@@ -13,7 +13,7 @@
 
 import collections
 
-from watcher_dashboard.test import helpers
+from watcher_dashboard.tests import helpers
 from watcher_dashboard.utils import utils
 
 

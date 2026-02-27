@@ -18,7 +18,7 @@ import django.forms
 from horizon import tables
 from horizon.tables import formset as hformset
 
-from watcher_dashboard.test import helpers as test
+from watcher_dashboard.tests import helpers as test
 
 
 class FormsetTableTests(test.TestCase):

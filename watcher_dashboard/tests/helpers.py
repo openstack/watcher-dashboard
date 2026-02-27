@@ -21,7 +21,7 @@ from unittest import mock
 from openstack_dashboard.test import helpers
 
 from watcher_dashboard import api
-from watcher_dashboard.test.test_data import utils
+from watcher_dashboard.tests.test_data import utils
 
 
 class WatcherTestsMixin:

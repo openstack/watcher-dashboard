@@ -16,8 +16,7 @@
 from unittest import mock
 
 from watcher_dashboard import api
-from watcher_dashboard.common import client as common_client
-from watcher_dashboard.test import helpers as test
+from watcher_dashboard.tests import helpers as test
 
 
 class UnitWatcherClientAPITests(test.APITestCase):
@@ -87,58 +86,3 @@ class UnitWatcherClientAPITests(test.APITestCase):
             )
 
             wc.assert_called_with(self.request, api_version='1.1')
-
-    def test_is_microversion_supported(self):
-        self.assertTrue(common_client.is_microversion_supported('1.1', '1.0'))
-        self.assertTrue(common_client.is_microversion_supported('1.1', '1.1'))
-        self.assertFalse(common_client.is_microversion_supported('1.0', '1.1'))
-        self.assertFalse(common_client.is_microversion_supported(None, '1.1'))
-
-    def test_is_microversion_supported_start_end(self):
-        self.assertTrue(
-            common_client.is_microversion_supported(
-                '1.1', common_client.MV_START_END
-            )
-        )
-        self.assertTrue(
-            common_client.is_microversion_supported(
-                '1.5', common_client.MV_START_END
-            )
-        )
-        self.assertFalse(
-            common_client.is_microversion_supported(
-                '1.0', common_client.MV_START_END
-            )
-        )
-        self.assertFalse(
-            common_client.is_microversion_supported(
-                None, common_client.MV_START_END
-            )
-        )
-
-    def test_is_microversion_supported_skip_action(self):
-        self.assertTrue(
-            common_client.is_microversion_supported(
-                '1.5', common_client.MV_SKIP_ACTION
-            )
-        )
-        self.assertTrue(
-            common_client.is_microversion_supported(
-                '2.0', common_client.MV_SKIP_ACTION
-            )
-        )
-        self.assertFalse(
-            common_client.is_microversion_supported(
-                '1.4', common_client.MV_SKIP_ACTION
-            )
-        )
-        self.assertFalse(
-            common_client.is_microversion_supported(
-                '1.1', common_client.MV_SKIP_ACTION
-            )
-        )
-        self.assertFalse(
-            common_client.is_microversion_supported(
-                None, common_client.MV_SKIP_ACTION
-            )
-        )

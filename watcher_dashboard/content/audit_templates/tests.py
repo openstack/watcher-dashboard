@@ -18,7 +18,7 @@ from unittest import mock
 from django import urls
 
 from watcher_dashboard import api
-from watcher_dashboard.test import helpers as test
+from watcher_dashboard.tests import helpers as test
 
 
 INDEX_URL = urls.reverse('horizon:admin:audit_templates:index')

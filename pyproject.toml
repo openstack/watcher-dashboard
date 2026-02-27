@@ -52,9 +52,9 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"watcher_dashboard/test/*" = ["S"]
+"watcher_dashboard/tests/*" = ["S"]
 # test/settings.py uses star imports inherited from openstack_dashboard.test.settings
-"watcher_dashboard/test/settings.py" = ["F403", "F405"]
+"watcher_dashboard/tests/settings.py" = ["F403", "F405"]
 
 [tool.ruff.lint.mccabe]
 # Flag errors (`C901`) whenever the complexity level exceeds 5.

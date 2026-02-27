@@ -80,10 +80,10 @@ server using the following command::
 
 By default, integration tests expect to find a running Horizon server at
 ``http://localhost:8000/`` but this can be customized by editing the
-``watcher_dashboard/test/integration_tests/horizon.conf`` configuration file.
+``watcher_dashboard/tests/integration_tests/horizon.conf`` configuration file.
 Likewise, this Horizon will be looking, by default, for a Keystone backend at
 ``http://localhost:5000/v2.0``. So in order to customize its location, you will
-have to edit ``watcher_dashboard/test/settings.py`` by updating the
+have to edit ``watcher_dashboard/tests/settings.py`` by updating the
 ``OPENSTACK_KEYSTONE_URL`` variable.
 
 To run integration tests::

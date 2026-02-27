@@ -18,8 +18,8 @@ from openstack_dashboard.test.test_data import utils
 
 
 def load_test_data(load_onto=None):
-    from watcher_dashboard.test.test_data import exceptions
-    from watcher_dashboard.test.test_data import watcher_data
+    from watcher_dashboard.tests.test_data import exceptions
+    from watcher_dashboard.tests.test_data import watcher_data
 
     # The order of these loaders matters, some depend on others.
     loaders = (exceptions.data, keystone_data.data, watcher_data.data)
