@@ -77,9 +77,8 @@ class CreateForm(forms.SelfHandlingForm):
         # If this is a POST, populate strategies for the selected goal so that
         # server-side validation accepts the submitted value (mirrors the AJAX
         # behavior in the template for client-side population).
-        selected_goal = (
-            self.data.get('goal') if hasattr(self, 'data') else None
-        )
+        selected_goal = self.data.get('goal')
+
         if selected_goal and 'strategy' in self.fields:
             filtered_strategies = self._get_strategy_list_for_goal(
                 request, selected_goal)
