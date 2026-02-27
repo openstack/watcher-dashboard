@@ -105,30 +105,6 @@ class CreateForm(forms.SelfHandlingForm):
             choices.insert(0, ("", _("Select Goal")))
         return choices
 
-    def _get_strategy_list(self, request, goals):
-        try:
-            strategies = watcher.Strategy.list(self.request)
-        except Exception as exc:
-            msg = _('Failed to get the list of available strategies.')
-            LOG.info(msg)
-            messages.warning(request, msg)
-            messages.warning(request, exc)
-            strategies = []
-
-        _goals = {}
-        for goal in goals:
-            _goals[goal[0]] = goal[1]
-
-        choices = [
-            (strategy.uuid, strategy.display_name +
-             ' (GOAL: ' + _goals[strategy.goal_uuid] + ')')
-            for strategy in strategies
-        ]
-
-        if choices:
-            choices.insert(0, ("", _("Select Strategy")))
-        return choices
-
     def _get_strategy_list_for_goal(self, request, goal_uuid):
         try:
             strategies = watcher.Strategy.list(self.request, goal=goal_uuid)
@@ -142,8 +118,7 @@ class CreateForm(forms.SelfHandlingForm):
         choices = [
             (
                 strategy.uuid,
-                getattr(strategy, 'display_name', None) or
-                getattr(strategy, 'name', '')
+                watcher.get_strategy_display_name(strategy)
             )
             for strategy in strategies
         ]

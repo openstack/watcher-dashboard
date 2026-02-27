@@ -461,3 +461,40 @@ class WatcherAPITests(test.APITestCase):
             self.assertIsInstance(n, dict)
         watcherclient.action.list.assert_called_with(
             detail=True)
+
+    def test_get_strategy_display_name(self):
+        strategy = api.watcher.Strategy({
+            'uuid': 'test-uuid',
+            'name': 'zone_migration',
+            'display_name': 'Zone Migration Strategy',
+        })
+        self.assertEqual(
+            api.watcher.get_strategy_display_name(strategy),
+            'Zone Migration Strategy')
+
+    def test_get_strategy_display_name_fallback(self):
+        strategy = api.watcher.Strategy({
+            'uuid': 'test-uuid',
+            'name': 'zone_migration',
+            'display_name': '',
+        })
+        self.assertEqual(
+            api.watcher.get_strategy_display_name(strategy),
+            'zone_migration')
+
+    def test_get_strategy_display_name_none_fallback(self):
+        strategy = api.watcher.Strategy({
+            'uuid': 'test-uuid',
+            'name': 'zone_migration',
+            'display_name': None,
+        })
+        self.assertEqual(
+            api.watcher.get_strategy_display_name(strategy),
+            'zone_migration')
+
+    def test_get_strategy_display_name_missing_attrs(self):
+        strategy = api.watcher.Strategy({'uuid': 'test-uuid'})
+        self.assertRaises(
+            AttributeError,
+            api.watcher.get_strategy_display_name,
+            strategy)

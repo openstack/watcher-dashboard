@@ -152,10 +152,7 @@ def get_strategies_for_goal(request):
         data = [
             {
                 'uuid': strategy.uuid,
-                'display_name': (
-                    getattr(strategy, 'display_name', None) or
-                    getattr(strategy, 'name', '')
-                ),
+                'display_name': watcher.get_strategy_display_name(strategy)
             }
             for strategy in strategies
         ]

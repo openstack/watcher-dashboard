@@ -539,3 +539,12 @@ class EfficacyIndicator(base.APIDictWrapper):
         self.name = indicator.get('name', None)
         self.description = indicator.get('description', None)
         self.unit = indicator.get('unit', None)
+
+
+def get_strategy_display_name(strategy):
+    """Return display_name for a strategy, falling back to name.
+
+    :param strategy: A watcherclient Strategy resource object.
+    :returns: The display name string.
+    """
+    return strategy.display_name or strategy.name
