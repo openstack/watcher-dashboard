@@ -114,6 +114,7 @@ class DetailView(horizon.tables.MultiTableView):
         return actions
 
     def get_related_efficacy_indicators_data(self):
+        efficacy_indicators = []
         try:
             action_plan = self._get_data()
             efficacy_indicators = [
