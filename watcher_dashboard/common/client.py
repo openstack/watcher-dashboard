@@ -21,9 +21,6 @@ LOG = logging.getLogger(__name__)
 # Service type used by Watcher in the catalog
 WATCHER_SERVICE = 'infra-optim'
 
-# Common header name used by OpenStack microversioning
-HEADER_NAME = 'OpenStack-API-Version'
-
 # Default/minimal microversion
 MIN_DEFAULT = '1.0'
 
@@ -37,8 +34,8 @@ def get_client(request, required=MIN_DEFAULT):
     'required' can be '1.0', '1.1', or 'latest'.
     """
     endpoint = base.url_for(request, WATCHER_SERVICE)
-    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
-    ca_file = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
+    insecure = settings.OPENSTACK_SSL_NO_VERIFY
+    ca_file = settings.OPENSTACK_SSL_CACERT
 
     return wc.get_client(
         '1',
