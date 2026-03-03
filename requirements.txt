@@ -6,4 +6,4 @@ pbr!=2.1.0,>=2.0.0 # Apache-2.0
 horizon>=18.2.0 # Apache-2.0
 
 PyYAML>=3.12 # MIT
-python-watcherclient>=1.1.0 # Apache-2.0
+python-watcherclient>=4.9.0 # Apache-2.0

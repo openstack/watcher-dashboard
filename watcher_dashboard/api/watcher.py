@@ -15,8 +15,10 @@ import logging
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from openstack_dashboard.api import base
-from watcher_dashboard.common import client as common_client
+from watcherclient.common.apiclient import exceptions as wc_exc
 
+from watcher_dashboard.common import client as common_client
+from watcher_dashboard.common import exceptions as watcher_exc
 from watcher_dashboard.utils import errors as errors_utils
 
 LOG = logging.getLogger(__name__)
@@ -305,7 +307,7 @@ class AuditTemplate(base.APIDictWrapper):
 
 class ActionPlan(base.APIDictWrapper):
     _attrs = ('uuid', 'created_at', 'updated_at', 'deleted_at',
-              'audit_uuid', 'state')
+              'audit_uuid', 'state', 'status_message')
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
@@ -329,19 +331,22 @@ class ActionPlan(base.APIDictWrapper):
     @classmethod
     @errors_utils.handle_errors(
         _("Unable to retrieve action plan"))
-    def get(cls, request, action_plan_id):
+    def get(cls, request, action_plan_id, api_version=None):
         """Return the action plan that matches the ID.
 
         :param request: request object
         :type  request: django.http.HttpRequest
         :param action_plan_id: id of action plan to be retrieved
         :type  action_plan_id: int
+        :param api_version: Microversion to use for the request.
+        :type  api_version: str or None
         :return: matching action plan, or None if no action plan
                  matches the ID
         :rtype:  :py:class:`~.ActionPlan`
         """
-        return watcherclient(request).action_plan.get(
-            action_plan_id=action_plan_id)
+        return watcherclient(
+            request, api_version=api_version
+        ).action_plan.get(action_plan_id=action_plan_id)
 
     @classmethod
     def delete(cls, request, action_plan_id):
@@ -376,7 +381,8 @@ class ActionPlan(base.APIDictWrapper):
 class Action(base.APIDictWrapper):
     _attrs = ('uuid', 'created_at', 'updated_at', 'deleted_at', 'next_uuid',
               'description', 'state', 'action_plan_uuid',
-              'action_type', 'applies_to', 'src', 'dst', 'parameter')
+              'action_type', 'applies_to', 'src', 'dst', 'parameter',
+              'status_message')
 
     def __init__(self, apiresource, request=None):
         super().__init__(apiresource)
@@ -400,18 +406,67 @@ class Action(base.APIDictWrapper):
     @classmethod
     @errors_utils.handle_errors(
         _("Unable to retrieve action"))
-    def get(cls, request, action_id):
+    def get(cls, request, action_id, api_version=None):
         """Return the action that matches the ID.
 
         :param request: request object
         :type  request: django.http.HttpRequest
         :param action_id: id of action to be retrieved
         :type  action_id: int
+        :param api_version: Microversion to use for the request.
+        :type  api_version: str or None
         :return: matching action, or None if no action matches
                  the ID
         :rtype:  :py:class:`~.Action`
         """
-        return watcherclient(request).action.get(action_id=action_id)
+        return watcherclient(
+            request, api_version=api_version
+        ).action.get(action_id=action_id)
+
+    @classmethod
+    def update(cls, request, action_id, state=None,
+               reason=None, api_version=None):
+        """Update an action's state and/or status message.
+
+        :param request: request object
+        :type  request: django.http.HttpRequest
+        :param action_id: UUID of the action to update
+        :type  action_id: str
+        :param state: new state value (e.g. 'SKIPPED')
+        :type  state: str or None
+        :param reason: optional reason / status message
+        :type  reason: str or None
+        :param api_version: microversion to use for the request
+        :type  api_version: str or None
+        :returns: updated action, or None if server returned 405
+        :rtype: action resource or None
+        :raises WatcherDashboardException: if neither state nor reason
+            is provided
+        """
+        reason = reason or None
+        if state is None and reason is None:
+            raise watcher_exc.WatcherDashboardException(
+                "Either 'state' or 'reason' must be provided")
+        patch = []
+        if state is not None:
+            patch.append(
+                {'op': 'replace', 'path': '/state',
+                 'value': state})
+        if reason is not None:
+            patch.append(
+                {'op': 'replace', 'path': '/status_message',
+                 'value': reason})
+        try:
+            return watcherclient(
+                request, api_version=api_version
+            ).action.update(action_id=action_id, patch=patch)
+        except wc_exc.MethodNotAllowed:
+            LOG.info(
+                "Watcher action update not supported by API; "
+                "skipping update. action_id=%s",
+                action_id,
+            )
+            return None
 
     @classmethod
     def delete(cls, request, action_id):

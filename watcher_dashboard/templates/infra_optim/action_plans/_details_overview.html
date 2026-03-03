@@ -11,6 +11,10 @@
         <dd><a href="{{ audit_url }}">{{ action_plan.audit_uuid|default:_("-") }}</a></dd>
         <dt>{% trans "State" %}</dt>
         <dd>{{ action_plan.state|default:_("-") }}</dd>
+        {% if action_plan.status_message %}
+        <dt>{% trans "Status Message" %}</dt>
+        <dd>{{ action_plan.status_message }}</dd>
+        {% endif %}
         <dt>{% trans "Created At" %}</dt>
         <dd>{{ action_plan.created_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>

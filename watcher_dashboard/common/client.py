@@ -29,6 +29,9 @@ MIN_DEFAULT = '1.0'
 # Microversion enabling audit start/end time fields
 MV_START_END = '1.1'
 
+# Microversion enabling skip action support
+MV_SKIP_ACTION = '1.5'
+
 
 def get_client(request, required=MIN_DEFAULT):
     """Return a watcher client pinned to the given microversion.

@@ -37,6 +37,7 @@ ACTION_STATE_DISPLAY_CHOICES = (
     ("FAILED", pgettext_lazy("Power state of an Instance", "Failed")),
     ("DELETED", pgettext_lazy("Power state of an Instance", "Deleted")),
     ("PENDING", pgettext_lazy("Power state of an Instance", "Pending")),
+    ("SKIPPED", pgettext_lazy("Power state of an Instance", "Skipped")),
 )
 
 

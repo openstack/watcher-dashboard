@@ -21,3 +21,7 @@ RECOVERABLE = exceptions.RECOVERABLE + (
     watcherclient.ClientException,
 )
 UNAUTHORIZED = exceptions.UNAUTHORIZED
+
+
+class WatcherDashboardException(Exception):
+    """Base exception for watcher-dashboard errors."""
