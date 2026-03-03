@@ -99,3 +99,20 @@ class WatcherClientAPITests(test.APITestCase):
         self.assertFalse(
             common_client.is_microversion_supported(
                 None, common_client.MV_START_END))
+
+    def test_is_microversion_supported_skip_action(self):
+        self.assertTrue(
+            common_client.is_microversion_supported(
+                '1.5', common_client.MV_SKIP_ACTION))
+        self.assertTrue(
+            common_client.is_microversion_supported(
+                '2.0', common_client.MV_SKIP_ACTION))
+        self.assertFalse(
+            common_client.is_microversion_supported(
+                '1.4', common_client.MV_SKIP_ACTION))
+        self.assertFalse(
+            common_client.is_microversion_supported(
+                '1.1', common_client.MV_SKIP_ACTION))
+        self.assertFalse(
+            common_client.is_microversion_supported(
+                None, common_client.MV_SKIP_ACTION))

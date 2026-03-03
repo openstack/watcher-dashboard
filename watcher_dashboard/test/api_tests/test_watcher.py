@@ -462,6 +462,86 @@ class WatcherAPITests(test.APITestCase):
         watcherclient.action.list.assert_called_with(
             detail=True)
 
+    def test_action_get_with_api_version(self):
+        action = self.api_actions.first()
+        action_id = action['uuid']
+
+        watcherclient = self.stub_watcherclient()
+        watcherclient.action.get = mock.Mock(
+            return_value=action)
+
+        with mock.patch(
+                'watcher_dashboard.api.watcher.watcherclient',
+                autospec=True) as wc:
+            wc.return_value = watcherclient
+            api.watcher.Action.get(
+                self.request, action_id, api_version='1.5')
+            wc.assert_called_with(
+                self.request, api_version='1.5')
+
+    def test_action_update_state_only(self):
+        action_id = self.api_actions.first()['uuid']
+        with mock.patch(
+                'watcher_dashboard.api.watcher.watcherclient',
+                autospec=True) as wc:
+            client_mock = mock.Mock()
+            wc.return_value = client_mock
+            client_mock.action.update = mock.Mock(
+                return_value={})
+            api.watcher.Action.update(
+                self.request, action_id,
+                state='SKIPPED', api_version='1.5')
+            client_mock.action.update.assert_called_with(
+                action_id=action_id,
+                patch=[{'op': 'replace', 'path': '/state',
+                        'value': 'SKIPPED'}])
+
+    def test_action_update_state_and_reason(self):
+        action_id = self.api_actions.first()['uuid']
+        with mock.patch(
+                'watcher_dashboard.api.watcher.watcherclient',
+                autospec=True) as wc:
+            client_mock = mock.Mock()
+            wc.return_value = client_mock
+            client_mock.action.update = mock.Mock(
+                return_value={})
+            api.watcher.Action.update(
+                self.request, action_id,
+                state='SKIPPED', reason='Not needed',
+                api_version='1.5')
+            client_mock.action.update.assert_called_with(
+                action_id=action_id,
+                patch=[
+                    {'op': 'replace', 'path': '/state',
+                     'value': 'SKIPPED'},
+                    {'op': 'replace', 'path': '/status_message',
+                     'value': 'Not needed'},
+                ])
+
+    def test_action_update_no_args_raises(self):
+        from watcher_dashboard.common import exceptions as watcher_exc
+        action_id = self.api_actions.first()['uuid']
+        self.assertRaises(
+            watcher_exc.WatcherDashboardException,
+            api.watcher.Action.update,
+            self.request, action_id)
+
+    def test_action_update_method_not_allowed(self):
+        from watcherclient.common.apiclient import (
+            exceptions as wc_exc)
+        action_id = self.api_actions.first()['uuid']
+        with mock.patch(
+                'watcher_dashboard.api.watcher.watcherclient',
+                autospec=True) as wc:
+            client_mock = mock.Mock()
+            wc.return_value = client_mock
+            client_mock.action.update = mock.Mock(
+                side_effect=wc_exc.MethodNotAllowed())
+            result = api.watcher.Action.update(
+                self.request, action_id,
+                state='SKIPPED', api_version='1.5')
+            self.assertIsNone(result)
+
     def test_get_strategy_display_name(self):
         strategy = api.watcher.Strategy({
             'uuid': 'test-uuid',

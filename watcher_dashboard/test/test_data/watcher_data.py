@@ -155,7 +155,8 @@ def data(TEST):
         'uuid': '44444444-4444-4444-4444-111111111111',
         'state': 'PENDING',
         'next_uuid': '44444444-4444-4444-4444-222222222222',
-        'action_plan_uuid': '33333333-3333-3333-3333-333333333333'
+        'action_plan_uuid': '33333333-3333-3333-3333-333333333333',
+        'status_message': None,
     }
     TEST.api_actions.add(action_dict1)
 
@@ -163,7 +164,8 @@ def data(TEST):
         'uuid': '44444444-4444-4444-4444-222222222222',
         'state': 'PENDING',
         'next_uuid': None,
-        'action_plan_uuid': '33333333-3333-3333-3333-333333333333'
+        'action_plan_uuid': '33333333-3333-3333-3333-333333333333',
+        'status_message': None,
     }
     TEST.api_actions.add(action_dict2)
 

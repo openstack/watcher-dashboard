@@ -23,6 +23,7 @@ from horizon.utils import memoized
 import horizon.workflows
 
 from watcher_dashboard.api import watcher
+from watcher_dashboard.common import client as common_client
 from watcher_dashboard.content.actions import tables
 from watcher_dashboard.content.actions import tabs as wtabs
 
@@ -71,15 +72,26 @@ class DetailView(horizon.tables.MultiTableView):
     page_title = _("Action Details: {{ action.uuid }}")
 
     @memoized.memoized_method
+    def max_version(self):
+        return common_client.get_max_version(self.request)
+
+    @memoized.memoized_method
     def _get_data(self):
         action_uuid = None
         try:
             action_uuid = self.kwargs['action_uuid']
+            server_version = self.max_version()
+            version = (
+                common_client.MV_SKIP_ACTION
+                if common_client.is_microversion_supported(
+                    server_version, common_client.MV_SKIP_ACTION)
+                else None)
             action = watcher.Action.get(
-                self.request, action_uuid)
+                self.request, action_uuid,
+                api_version=version)
         except Exception:
-            msg = _('Unable to retrieve details for action "%s".') \
-                % action_uuid
+            msg = (_('Unable to retrieve details for action "%s".')
+                   % action_uuid)
             horizon.exceptions.handle(
                 self.request, msg,
                 redirect=self.redirect_url)

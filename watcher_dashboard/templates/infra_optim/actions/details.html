@@ -22,6 +22,10 @@
         </a></dd>
         <dt>{% trans "State" %}</dt>
         <dd>{{ action.state|default:_("-") }}</dd>
+        {% if action.status_message %}
+        <dt>{% if action.state == "SKIPPED" %}{% trans "Skip Reason" %}{% else %}{% trans "Status Message" %}{% endif %}</dt>
+        <dd>{{ action.status_message }}</dd>
+        {% endif %}
         <dt>{% trans "Created At" %}</dt>
         <dd>{{ action.created_at|parse_isotime|default:_("-") }}</dd>
         <dt>{% trans "Update At" %}</dt>
