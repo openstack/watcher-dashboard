@@ -58,10 +58,11 @@ class Audit(base.APIDictWrapper):
         self._request = request
 
     @classmethod
-    def create(cls, request, audit_template_uuid, audit_type, name=None,
-               auto_trigger=False, interval=None, parameters=None,
-               start_time=None, end_time=None):
-        """Create an audit in Watcher
+    def create(cls, request, audit_template_uuid, audit_type,
+               name=None, auto_trigger=False, interval=None,
+               parameters=None, start_time=None, end_time=None,
+               api_version=None):
+        """Create an audit in Watcher.
 
         :param request: request object
         :type  request: django.http.HttpRequest
@@ -81,11 +82,11 @@ class Audit(base.APIDictWrapper):
         :param parameters: Strategy parameters (default: None)
         :type  parameters: dict
 
+        :param api_version: Microversion to use for the request.
+        :type  api_version: str or None
         :return: the created Audit object
         :rtype:  :py:class:`~.Audit`
         """
-
-        # Build the parameters to pass to watcherclient
         payload = {
             'audit_template_uuid': audit_template_uuid,
             'audit_type': audit_type,
@@ -103,17 +104,18 @@ class Audit(base.APIDictWrapper):
         if end_time:
             payload['end_time'] = end_time
 
-        # Use microversion 1.1 to support start/end_time
-        client = watcherclient(request, api_version=common_client.MV_START_END)
+        client = watcherclient(
+            request, api_version=api_version)
         return client.audit.create(**payload)
 
     @classmethod
-    def list(cls, request, **filters):
-        """Return a list of audits in Watcher
+    def list(cls, request, api_version=None, **filters):
+        """Return a list of audits in Watcher.
 
         :param request: request object
         :type  request: django.http.HttpRequest
-
+        :param api_version: Microversion to use for the request.
+        :type  api_version: str or None
         :param filters: key/value kwargs used as filters
         :type  filters: dict
 
@@ -121,31 +123,28 @@ class Audit(base.APIDictWrapper):
         :rtype:  list of :py:class:`~.Audit`
         """
         return watcherclient(
-            request, api_version=common_client.MV_START_END
-        ).audit.list(
-            detail=True, **filters
-        )
+            request, api_version=api_version
+        ).audit.list(detail=True, **filters)
 
     @classmethod
     @errors_utils.handle_errors(_("Unable to retrieve audit"))
-    def get(cls, request, audit_id):
-        """Return the audit that matches the ID
+    def get(cls, request, audit_id, api_version=None):
+        """Return the audit that matches the ID.
 
         :param request: request object
         :type  request: django.http.HttpRequest
 
         :param audit_id: id of audit to be retrieved
         :type  audit_id: int
-
+        :param api_version: Microversion to use for the request.
+        :type  api_version: str or None
         :return: matching audit, or None if no audit matches
                  the ID
         :rtype:  :py:class:`~.Audit`
         """
         return watcherclient(
-            request, api_version=common_client.MV_START_END
-        ).audit.get(
-            audit=audit_id
-        )
+            request, api_version=api_version
+        ).audit.get(audit=audit_id)
 
     @classmethod
     def delete(cls, request, audit_id):
@@ -328,18 +327,17 @@ class ActionPlan(base.APIDictWrapper):
         return watcherclient(request).action_plan.list(detail=True, **filters)
 
     @classmethod
-    @errors_utils.handle_errors(_("Unable to retrieve action plan"))
+    @errors_utils.handle_errors(
+        _("Unable to retrieve action plan"))
     def get(cls, request, action_plan_id):
-        """Return the action plan that matches the ID
+        """Return the action plan that matches the ID.
 
         :param request: request object
         :type  request: django.http.HttpRequest
-
         :param action_plan_id: id of action plan to be retrieved
         :type  action_plan_id: int
-
-        :return: matching action plan, or None if no action plan matches
-                 the ID
+        :return: matching action plan, or None if no action plan
+                 matches the ID
         :rtype:  :py:class:`~.ActionPlan`
         """
         return watcherclient(request).action_plan.get(
@@ -400,16 +398,15 @@ class Action(base.APIDictWrapper):
         return watcherclient(request).action.list(detail=True, **filters)
 
     @classmethod
-    @errors_utils.handle_errors(_("Unable to retrieve action"))
+    @errors_utils.handle_errors(
+        _("Unable to retrieve action"))
     def get(cls, request, action_id):
-        """Return the action that matches the ID
+        """Return the action that matches the ID.
 
         :param request: request object
         :type  request: django.http.HttpRequest
-
         :param action_id: id of action to be retrieved
         :type  action_id: int
-
         :return: matching action, or None if no action matches
                  the ID
         :rtype:  :py:class:`~.Action`

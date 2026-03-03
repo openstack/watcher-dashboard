@@ -132,9 +132,6 @@ class DetailView(horizon.tables.MultiTableView):
         context = super().get_context_data(**kwargs)
         action_plan = self._get_data()
         context["action_plan"] = action_plan
-        LOG.info('*********************************')
-        LOG.info(action_plan)
-        LOG.info('*********************************')
         return context
 
     def get_tabs(self, request, *args, **kwargs):

@@ -75,7 +75,8 @@ class DetailView(horizon.tables.MultiTableView):
         action_uuid = None
         try:
             action_uuid = self.kwargs['action_uuid']
-            action = watcher.Action.get(self.request, action_uuid)
+            action = watcher.Action.get(
+                self.request, action_uuid)
         except Exception:
             msg = _('Unable to retrieve details for action "%s".') \
                 % action_uuid

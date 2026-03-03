@@ -24,9 +24,11 @@ import horizon.exceptions
 from horizon import forms
 import horizon.tables
 import horizon.tabs
+from horizon.utils import memoized
 import horizon.workflows
 
 from watcher_dashboard.api import watcher
+from watcher_dashboard.common import client as common_client
 from watcher_dashboard.content.audit_templates import forms as wforms
 from watcher_dashboard.content.audit_templates import tables
 from watcher_dashboard.content.audit_templates import tabs as wtabs
@@ -92,10 +94,13 @@ class DetailView(horizon.tabs.TabbedTableView):
     redirect_url = 'horizon:admin:audit_templates:index'
     page_title = _("Audit Template Details: {{ audit_template.name }}")
 
+    @memoized.memoized_method
+    def max_version(self):
+        return common_client.get_max_version(self.request)
+
     def _get_data(self):
         audit_template_uuid = None
         try:
-            LOG.info(self.kwargs)
             audit_template_uuid = self.kwargs['audit_template_uuid']
             audit_template = watcher.AuditTemplate.get(
                 self.request, audit_template_uuid)
@@ -114,8 +119,16 @@ class DetailView(horizon.tabs.TabbedTableView):
     def get_related_audits_data(self):
         try:
             audit_template = self._get_data()
+            server_version = self.max_version()
+            version = (
+                common_client.MV_START_END
+                if common_client.is_microversion_supported(
+                    server_version, common_client.MV_START_END)
+                else None)
             audits = watcher.Audit.list(
-                self.request, audit_template=audit_template.uuid)
+                self.request,
+                api_version=version,
+                audit_template=audit_template.uuid)
         except Exception as exc:
             LOG.exception(exc)
             audits = []

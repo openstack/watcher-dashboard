@@ -30,6 +30,7 @@ import horizon.workflows
 import yaml
 
 from watcher_dashboard.api import watcher
+from watcher_dashboard.common import client as common_client
 from watcher_dashboard.content.action_plans import tables as action_plan_tables
 from watcher_dashboard.content.audits import forms as wforms
 from watcher_dashboard.content.audits import tables
@@ -42,6 +43,10 @@ class IndexView(horizon.tables.DataTableView):
     table_class = tables.AuditsTable
     template_name = 'infra_optim/audits/index.html'
     page_title = _("Audits")
+
+    @memoized.memoized_method
+    def max_version(self):
+        return common_client.get_max_version(self.request)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,7 +64,16 @@ class IndexView(horizon.tables.DataTableView):
         audits = []
         search_opts = self.get_filters()
         try:
-            audits = watcher.Audit.list(self.request, **search_opts)
+            server_version = self.max_version()
+            version = (
+                common_client.MV_START_END
+                if common_client.is_microversion_supported(
+                    server_version, common_client.MV_START_END)
+                else None)
+            audits = watcher.Audit.list(
+                self.request,
+                api_version=version,
+                **search_opts)
         except Exception:
             horizon.exceptions.handle(
                 self.request,
@@ -100,11 +114,23 @@ class DetailView(horizon.tables.MultiTableView):
     page_title = _("Audit Details: {{ audit.uuid }}")
 
     @memoized.memoized_method
+    def max_version(self):
+        return common_client.get_max_version(self.request)
+
+    @memoized.memoized_method
     def _get_data(self):
         audit_uuid = None
         try:
             audit_uuid = self.kwargs['audit_uuid']
-            audit = watcher.Audit.get(self.request, audit_uuid)
+            server_version = self.max_version()
+            version = (
+                common_client.MV_START_END
+                if common_client.is_microversion_supported(
+                    server_version, common_client.MV_START_END)
+                else None)
+            audit = watcher.Audit.get(
+                self.request, audit_uuid,
+                api_version=version)
         except Exception:
             msg = _('Unable to retrieve details for audit "%s".') \
                 % audit_uuid

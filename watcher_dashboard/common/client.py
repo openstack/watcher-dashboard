@@ -15,6 +15,8 @@ import logging
 from django.conf import settings
 from openstack_dashboard.api import base
 from watcherclient import client as wc
+from watcherclient.common import api_versioning
+from watcherclient import exceptions as wc_exc
 
 LOG = logging.getLogger(__name__)
 
@@ -31,7 +33,9 @@ MV_START_END = '1.1'
 def get_client(request, required=MIN_DEFAULT):
     """Return a watcher client pinned to the given microversion.
 
-    'required' can be '1.0', '1.1', or 'latest'.
+    :param request: The current Django HTTP request.
+    :param required: Microversion string (e.g. ``'1.0'``,
+        ``'1.1'``).
     """
     endpoint = base.url_for(request, WATCHER_SERVICE)
     insecure = settings.OPENSTACK_SSL_NO_VERIFY
@@ -46,3 +50,50 @@ def get_client(request, required=MIN_DEFAULT):
         os_auth_token=request.user.token.id,
         os_infra_optim_api_version=required,
     )
+
+
+def get_max_version(request):
+    """Discover the server's maximum supported microversion.
+
+    Queries the Watcher API root endpoint and extracts the
+    ``max_version`` field from the response body.
+
+    :param request: The current Django HTTP request.
+    :returns: The max version string, or ``None`` on failure.
+    """
+    try:
+        client = get_client(request)
+        _resp, body = client.http_client.json_request(
+            'GET', '/')
+        version_info = (
+            body.get('versions') or
+            body.get('version') or
+            body.get('default_version') or
+            {})
+        if isinstance(version_info, list) and version_info:
+            version_info = version_info[0]
+        if isinstance(version_info, dict):
+            return version_info.get('max_version')
+    except wc_exc.ClientException:
+        LOG.debug('Microversion discovery failed',
+                  exc_info=True)
+    return None
+
+
+def is_microversion_supported(max_ver, required):
+    """Check whether the server supports the required microversion.
+
+    :param max_ver: The server's max version string from
+        :func:`get_max_version`, or ``None``.
+    :param required: The microversion string to check
+        (e.g. ``'1.1'``).
+    :returns: ``True`` if the server's max version is at least
+        *required*, ``False`` otherwise.
+    """
+    if max_ver is None:
+        return False
+    try:
+        return (api_versioning.APIVersion(max_ver) >=
+                api_versioning.APIVersion(required))
+    except (wc_exc.UnsupportedVersion, TypeError):
+        return False

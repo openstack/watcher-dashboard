@@ -27,6 +27,7 @@ from horizon import forms
 from horizon import messages
 
 from watcher_dashboard.api import watcher
+from watcher_dashboard.common import client as common_client
 
 LOG = logging.getLogger(__name__)
 ADD_AUDIT_TEMPLATES_URL = "horizon:admin:audit_templates:create"
@@ -125,7 +126,13 @@ class CreateForm(forms.SelfHandlingForm):
         super().__init__(request, *args, **kwargs)
         audit_templates = self._get_audit_template_list(request)
         self.fields['audit_template'].choices = audit_templates
-        # Keep fields visible; API microversion is enforced per-call in backend
+        # Hide start/end time fields when the server does not
+        # support microversion 1.1 (MV_START_END).
+        self._max_ver = common_client.get_max_version(request)
+        if not common_client.is_microversion_supported(
+                self._max_ver, common_client.MV_START_END):
+            del self.fields['start_time']
+            del self.fields['end_time']
 
     def _get_audit_template_list(self, request):
         try:
@@ -212,7 +219,16 @@ class CreateForm(forms.SelfHandlingForm):
             if parsed_parameters:
                 params['parameters'] = parsed_parameters
 
-            audit = watcher.Audit.create(request, **params)
+            # Request the highest version the server supports
+            # when start/end fields are available (>= 1.1);
+            # fall back to the default (1.0) otherwise.
+            api_ver = (
+                common_client.MV_START_END
+                if common_client.is_microversion_supported(
+                    self._max_ver, common_client.MV_START_END)
+                else None)
+            audit = watcher.Audit.create(
+                request, api_version=api_ver, **params)
             message = _('Audit was successfully created.')
             messages.success(request, message)
             return audit
