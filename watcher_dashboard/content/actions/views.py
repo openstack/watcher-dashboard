@@ -15,8 +15,10 @@
 
 import collections
 
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 import horizon.exceptions
+from horizon import forms
 import horizon.tables
 import horizon.tabs
 from horizon.utils import memoized
@@ -24,6 +26,7 @@ import horizon.workflows
 
 from watcher_dashboard.api import watcher
 from watcher_dashboard.common import client as common_client
+from watcher_dashboard.content.actions import forms as action_forms
 from watcher_dashboard.content.actions import tables
 from watcher_dashboard.content.actions import tabs as wtabs
 
@@ -117,3 +120,42 @@ class DetailView(horizon.tables.MultiTableView):
         return self.tab_group_class(request, action=action,
                                     # ports=ports,
                                     **kwargs)
+
+
+class SkipActionView(forms.ModalFormView):
+    """Modal view for skipping an action in an action plan."""
+
+    form_class = action_forms.SkipActionForm
+    form_id = "skip_action_form"
+    modal_header = _("Skip Action")
+    template_name = 'infra_optim/actions/skip.html'
+    submit_label = _("Skip Action")
+    submit_url = "horizon:admin:actions:skip"
+    cancel_url = "horizon:admin:actions:index"
+    page_title = _("Skip Action")
+    _action_plan_uuid = None
+
+    def form_valid(self, form):
+        """Capture action_plan_uuid before redirect to avoid extra API call."""
+        action = form.cleaned_data['_action']
+        self._action_plan_uuid = action.action_plan_uuid
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """Redirect to parent action plan detail after skip."""
+        if self._action_plan_uuid:
+            return reverse(
+                'horizon:admin:action_plans:detail',
+                args=(self._action_plan_uuid,))
+        return reverse('horizon:admin:actions:index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['action_id'] = self.kwargs['action_id']
+        context['submit_url'] = reverse(
+            self.submit_url,
+            args=(self.kwargs['action_id'],))
+        return context
+
+    def get_initial(self):
+        return {'action_id': self.kwargs['action_id']}
