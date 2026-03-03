@@ -220,7 +220,7 @@ def get_strategy_parameters(request):
                     parameters_spec = {}
 
         return JsonResponse({
-            'strategy_name': strategy.display_name or strategy.name,
+            'strategy_name': watcher.get_strategy_display_name(strategy),
             'strategy_uuid': strategy.uuid,
             'parameters_spec': parameters_spec
         })
