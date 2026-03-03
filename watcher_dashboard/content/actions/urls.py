@@ -23,4 +23,6 @@ urlpatterns = [
             views.IndexView.as_view(), name='index'),
     re_path(r'^(?P<action_uuid>[^/]+)/detail$',
             views.DetailView.as_view(), name='detail'),
+    re_path(r'^(?P<action_id>[^/]+)/skip$',
+            views.SkipActionView.as_view(), name='skip'),
 ]

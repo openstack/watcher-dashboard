@@ -62,6 +62,20 @@ class ActionsFilterAction(horizon.tables.FilterAction):
     policy_rules = (("infra-optim", "action:detail"),)
 
 
+class SkipAction(horizon.tables.LinkAction):
+    """Row action that opens the skip modal for an action."""
+
+    name = "skip"
+    verbose_name = _("Skip Action")
+    url = "horizon:admin:actions:skip"
+    classes = ("ajax-modal", "btn-danger")
+    policy_rules = (("infra-optim", "action:update"),)
+
+    def allowed(self, request, action):
+        """Allow skip for actions in PENDING or SKIPPED state."""
+        return action.state in ("PENDING", "SKIPPED")
+
+
 def get_action_plan_link(datum):
     try:
         return urls.reverse(
@@ -119,6 +133,27 @@ class RelatedActionsTable(horizon.tables.DataTable):
         verbose_name=_('Action Plan'),
         link=get_action_plan_link)
 
+    def __init__(self, *args, **kwargs):
+        self._supports_skip = kwargs.pop(
+            'supports_skip', False)
+        self._parent_succeeded = kwargs.pop(
+            'parent_succeeded', False)
+        super().__init__(*args, **kwargs)
+
+    def get_row_actions(self, datum):
+        """Hide row actions when skip is unsupported or plan succeeded."""
+        if (not self._supports_skip or
+                self._parent_succeeded):
+            return []
+        return super().get_row_actions(datum)
+
+    @property
+    def has_actions(self):
+        """Hide Actions column when unsupported or plan succeeded."""
+        if not self._supports_skip or self._parent_succeeded:
+            return False
+        return len(self._meta.row_actions) > 0
+
     def get_object_id(self, datum):
         return datum.uuid
 
@@ -126,6 +161,7 @@ class RelatedActionsTable(horizon.tables.DataTable):
         name = "related_wactions"
         verbose_name = _("Related Actions")
         hidden_title = False
+        row_actions = (SkipAction,)
 
 
 class ActionParametersTable(horizon.tables.DataTable):

@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    Adds option to SKIP Actions from Actionplans view with or without
+    skip reason. The controls are shown only when the Watcher API
+    microversion supports it (>= 1.5). On older clouds, the Actions
+    column and skip controls are hidden.

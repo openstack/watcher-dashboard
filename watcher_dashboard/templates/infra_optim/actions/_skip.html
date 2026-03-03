@@ -1,0 +1,7 @@
+{% extends "infra_optim/_modal_form_xl.html" %}
+{% load i18n %}
+{% block modal-body-right %}
+  <h3>{% trans "Description:" %}</h3>
+  <p>{% trans "Skip this action in the action plan." %}</p>
+  <p>{% trans "Skipped actions will not be executed. You may optionally provide a reason (max 200 characters). You can also update the reason for actions already in SKIPPED state." %}</p>
+{% endblock %}

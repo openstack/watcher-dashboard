@@ -146,6 +146,25 @@ class DetailView(horizon.tables.MultiTableView):
         context["action_plan"] = action_plan
         return context
 
+    def get_tables(self):
+        """Configure the actions table with skip-support flags.
+
+        Horizon calls get_tables() multiple times per request: first
+        from construct_tables() which loads data into each table, then
+        again from get_context_data() to build the template context.
+        We must update the existing table instance rather than replace
+        it, otherwise the data loaded by construct_tables() is lost.
+        """
+        table_dict = super().get_tables()
+        action_plan = self._get_data()
+        mv = self.max_version()
+        table = table_dict['related_wactions']
+        table._supports_skip = common_client.is_microversion_supported(
+            mv, common_client.MV_SKIP_ACTION)
+        table._parent_succeeded = (
+            action_plan.state == 'SUCCEEDED')
+        return table_dict
+
     def get_tabs(self, request, *args, **kwargs):
         action_plan = self._get_data()
         return self.tab_group_class(
