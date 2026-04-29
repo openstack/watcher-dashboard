@@ -47,7 +47,8 @@ class IndexView(horizon.tables.DataTableView):
         search_opts = self.get_filters()
         try:
             goals = watcher.Goal.list(self.request, **search_opts)
-        except Exception:
+        except Exception as exc:
+            LOG.exception(exc)
             horizon.exceptions.handle(
                 self.request, _("Unable to retrieve goal information.")
             )

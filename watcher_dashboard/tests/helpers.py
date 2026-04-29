@@ -21,10 +21,15 @@ from unittest import mock
 from openstack_dashboard.test import helpers
 
 from watcher_dashboard import api
+from watcher_dashboard.tests.local_fixtures import logging_fixture
 from watcher_dashboard.tests.test_data import utils
 
 
 class WatcherTestsMixin:
+    def setUp(self):
+        logging_fixture.setup_standard_logging(self)
+        super().setUp()
+
     def _setup_test_data(self):
         super()._setup_test_data()
         utils.load_test_data(self)

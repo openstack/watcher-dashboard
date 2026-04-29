@@ -551,7 +551,7 @@ class Goal(base.APIDictWrapper):
         'created_at',
         'updated_at',
         'deleted_at',
-        'efficacy_specifications',
+        'efficacy_specification',
     )
 
     def __init__(self, apiresource, request=None):
