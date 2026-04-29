@@ -52,13 +52,13 @@ def data(TEST):
         'uuid': 'gggggggg-1111-1111-1111-gggggggggggg',
         'name': 'MINIMIZE_LICENSING_COST',
         'display_name': 'Dummy',
-        'efficacy_specifications': spec1,
+        'efficacy_specification': [spec1],
     }
     goal_dict2 = {
         'uuid': 'gggggggg-2222-2222-2222-gggggggggggg',
         'name': 'SERVER_CONSOLIDATION',
         'display_name': 'Server consolidation',
-        'efficacy_specifications': spec2,
+        'efficacy_specification': [spec2],
     }
     TEST.api_goals.add(goal_dict1)
     TEST.api_goals.add(goal_dict2)
