@@ -30,12 +30,6 @@ function usage {
   echo "  -k, --karma              Just run karma"
   echo "  -q, --quiet              Run non-interactively. (Relatively) quiet."
   echo "                           Implies -V if -N is not set."
-  echo "  --only-selenium          Run only the Selenium unit tests"
-  echo "  --with-selenium          Run unit tests including Selenium tests"
-  echo "  --selenium-headless      Run Selenium tests headless"
-  echo "  --selenium-phantomjs     Run Selenium tests using phantomjs (headless)"
-  echo "  --integration            Run the integration tests (requires a running "
-  echo "                           OpenStack environment)"
   echo "  --runserver              Run the Django development server for"
   echo "                           openstack_dashboard in the virtual"
   echo "                           environment."
@@ -77,11 +71,6 @@ never_venv=0
 quiet=0
 restore_env=0
 runserver=0
-only_selenium=0
-with_selenium=0
-selenium_headless=0
-selenium_phantomjs=0
-integration=0
 testopts=""
 testargs=""
 with_coverage=0
@@ -120,11 +109,6 @@ function process_option {
     --compilemessages) compilemessages=1;;
     --check-only) check_only=1;;
     --pseudo) pseudo=1;;
-    --only-selenium) only_selenium=1;;
-    --with-selenium) with_selenium=1;;
-    --selenium-headless) selenium_headless=1;;
-    --selenium-phantomjs) selenium_phantomjs=1;;
-    --integration) integration=1;;
     --docs) just_docs=1;;
     --runserver) runserver=1;;
     --backup-environment) backup_env=1;;
@@ -335,25 +319,6 @@ function install_venv {
 function run_tests {
   sanity_check
 
-  if [ $with_selenium -eq 1 ]; then
-    export WITH_SELENIUM=1
-  elif [ $only_selenium -eq 1 ]; then
-    export WITH_SELENIUM=1
-    export SKIP_UNITTESTS=1
-  fi
-
-  if [ $with_selenium -eq 0 -a $integration -eq 0 ]; then
-      testopts="$testopts --exclude=watcher_dashboard/tests/integration_tests/ "
-  fi
-
-  if [ $selenium_headless -eq 1 ]; then
-    export SELENIUM_HEADLESS=1
-  fi
-
-  if [ $selenium_phantomjs -eq 1 ]; then
-    export SELENIUM_PHANTOMJS=1
-  fi
-
   if [ -z "$testargs" ]; then
      run_tests_all
   else
@@ -399,7 +364,7 @@ function run_tests_all {
   rm -f .coverage.*
 
   PEP8_RESULT=0
-  if [ $no_pep8 -eq 0 ] && [ $only_selenium -eq 0 ]; then
+  if [ $no_pep8 -eq 0 ]; then
       run_pep8
       PEP8_RESULT=$?
   fi
@@ -411,26 +376,6 @@ function run_tests_all {
     echo "Tests failed."
   fi
   exit $TEST_RESULT
-}
-
-function run_integration_tests {
-  export INTEGRATION_TESTS=1
-
-  if [ $selenium_headless -eq 1 ]; then
-    export SELENIUM_HEADLESS=1
-  fi
-
-  if [ $selenium_phantomjs -eq 1 ]; then
-    export SELENIUM_PHANTOMJS=1
-  fi
-
-  echo "Running Watcher Horizon integration tests..."
-  if [ -z "$testargs" ]; then
-      ${command_wrapper} nosetests watcher_dashboard/tests/integration_tests/tests
-  else
-      ${command_wrapper} nosetests $testargs
-  fi
-  exit 0
 }
 
 function babel_extract {
@@ -598,12 +543,6 @@ fi
 # Tab checker
 if [ $just_tabs -eq 1 ]; then
     tab_check
-    exit $?
-fi
-
-# Integration tests
-if [ $integration -eq 1 ]; then
-    run_integration_tests
     exit $?
 fi
 
