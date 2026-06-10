@@ -68,39 +68,6 @@ The first time you will issue the command above, you will be asked if you want
 to create a virtual environment. So unless you have installed everything
 manually (in which case you should use the ``-N`` flag), you need to accept
 
-
-Integration testing
--------------------
-
-Before being able to run integration tests, you need to have a Horizon server
-running with Watcher Dashboard plugin configured. To do so, you can run a test
-server using the following command::
-
-    $ ./run_tests.sh --runserver 0.0.0.0:8000
-
-By default, integration tests expect to find a running Horizon server at
-``http://localhost:8000/`` but this can be customized by editing the
-``watcher_dashboard/tests/integration_tests/horizon.conf`` configuration file.
-Likewise, this Horizon will be looking, by default, for a Keystone backend at
-``http://localhost:5000/v2.0``. So in order to customize its location, you will
-have to edit ``watcher_dashboard/tests/settings.py`` by updating the
-``OPENSTACK_KEYSTONE_URL`` variable.
-
-To run integration tests::
-
-    $ ./run_tests.sh --integration
-
-You can use PhantomJS as a headless browser to execute your integration tests.
-On an Ubuntu distribution you can install it via the following command::
-
-    $ sudo apt-get install phantomjs
-
-Then you can run your integration tests like this::
-
-    $ ./run_tests.sh --integration --selenium-headless
-
-Please note that these commands are also available via ``tox``.
-
 .. note::
 
     As of the Mitaka release, the dashboard for watcher is now maintained
