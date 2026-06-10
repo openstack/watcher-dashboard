@@ -12,11 +12,14 @@
 
 import logging
 
-from django.conf import settings
+from typing import Any
+
 from openstack_dashboard.api import base
 from watcherclient import client as wc
 from watcherclient import exceptions as wc_exc
 from watcherclient.common import api_versioning
+
+from watcher_dashboard import config
 
 
 LOG = logging.getLogger(__name__)
@@ -34,7 +37,7 @@ MV_START_END = '1.1'
 MV_SKIP_ACTION = '1.5'
 
 
-def get_client(request, required=MIN_DEFAULT):
+def get_client(request: Any, required: str = MIN_DEFAULT) -> Any:
     """Return a watcher client pinned to the given microversion.
 
     :param request: The current Django HTTP request.
@@ -42,8 +45,8 @@ def get_client(request, required=MIN_DEFAULT):
         ``'1.1'``).
     """
     endpoint = base.url_for(request, WATCHER_SERVICE)
-    insecure = settings.OPENSTACK_SSL_NO_VERIFY
-    ca_file = settings.OPENSTACK_SSL_CACERT
+    insecure = config.get_ssl_no_verify()
+    ca_file = config.get_ssl_cacert()
 
     return wc.get_client(
         '1',
