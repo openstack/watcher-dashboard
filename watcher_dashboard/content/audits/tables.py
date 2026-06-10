@@ -136,8 +136,7 @@ class AuditsTable(horizon.tables.DataTable):
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status=True,
-        status_choices=AUDIT_STATE_DISPLAY_CHOICES,
+        display_choices=AUDIT_STATE_DISPLAY_CHOICES,
     )
 
     def get_object_id(self, datum):
@@ -163,8 +162,7 @@ class RelatedAuditsTable(horizon.tables.DataTable):
     status = horizon.tables.Column(
         'state',
         verbose_name=_('State'),
-        status=True,
-        status_choices=AUDIT_STATE_DISPLAY_CHOICES,
+        display_choices=AUDIT_STATE_DISPLAY_CHOICES,
     )
 
     def get_object_id(self, datum):
