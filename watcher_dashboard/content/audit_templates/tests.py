@@ -44,8 +44,10 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
     @mock.patch.object(api.watcher.AuditTemplate, 'list')
     def test_audit_template_list_unavailable(self, mock_list):
         mock_list.side_effect = self.exceptions.watcher
-
-        resp = self.client.get(INDEX_URL)
+        logger = 'watcher_dashboard.content.audit_templates.views'
+        with self.assertLogs(logger, level='ERROR'):
+            resp = self.client.get(INDEX_URL)
+        self.assertEqual(resp.status_code, 200)
         self.assertMessageCount(resp, error=1, warning=0)
 
     @mock.patch.object(api.watcher.Strategy, 'list')
@@ -95,9 +97,10 @@ class AuditTemplatesTest(test.BaseAdminViewTests):
         at = self.audit_templates.first()
         at_id = at.uuid
         m_get.side_effect = self.exceptions.watcher
-
         DETAILS_URL = urls.reverse(DETAILS_VIEW, args=[at_id])
-        res = self.client.get(DETAILS_URL)
+        logger = 'watcher_dashboard.content.audit_templates.views'
+        with self.assertLogs(logger, level='ERROR'):
+            res = self.client.get(DETAILS_URL)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
     @mock.patch.object(api.watcher.AuditTemplate, 'delete')

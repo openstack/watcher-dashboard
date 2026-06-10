@@ -11,14 +11,25 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import warnings
+
+
+# Deprecation noise during ``update_dashboards()`` import-time setup; avoid
+# forcing the root logger level (see ``StandardLogging`` in test helpers).
+warnings.filterwarnings(
+    "ignore",
+    message=r".*default_dashboard is DEPRECATED.*",
+    category=DeprecationWarning,
+)
+
 from horizon.test.settings import *  # noqa
 from openstack_dashboard.test.settings import *  # noqa
 from horizon.test.settings import settings_utils  # noqa
 from openstack_dashboard.test.settings import HORIZON_CONFIG  # noqa
 
 # Load the pluggable dashboard settings
-import openstack_dashboard.enabled
-import watcher_dashboard.local.enabled
+import openstack_dashboard.enabled  # noqa: E402
+import watcher_dashboard.local.enabled  # noqa: E402
 
 INSTALLED_APPS = (
     'django.contrib.contenttypes',

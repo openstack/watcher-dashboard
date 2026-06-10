@@ -38,8 +38,10 @@ class GoalsTest(test.BaseAdminViewTests):
     @mock.patch.object(api.watcher.Goal, 'list')
     def test_goal_list_unavailable(self, mock_list):
         mock_list.side_effect = self.exceptions.watcher
-
-        resp = self.client.get(INDEX_URL)
+        logger = 'watcher_dashboard.content.goals.views'
+        with self.assertLogs(logger, level='ERROR'):
+            resp = self.client.get(INDEX_URL)
+        self.assertEqual(resp.status_code, 200)
         self.assertMessageCount(resp, error=1, warning=0)
 
     @mock.patch.object(api.watcher.Strategy, 'list')
@@ -60,7 +62,8 @@ class GoalsTest(test.BaseAdminViewTests):
         at = self.goals.first()
         at_id = at.uuid
         mock_get.side_effect = self.exceptions.watcher
-
         DETAILS_URL = urls.reverse(DETAILS_VIEW, args=[at_id])
-        res = self.client.get(DETAILS_URL)
+        logger = 'watcher_dashboard.content.goals.views'
+        with self.assertLogs(logger, level='ERROR'):
+            res = self.client.get(DETAILS_URL)
         self.assertRedirectsNoFollow(res, INDEX_URL)
