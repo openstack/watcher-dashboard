@@ -22,16 +22,4 @@ PANEL_GROUP_DASHBOARD = 'admin'
 
 ADD_INSTALLED_APPS = ['watcher_dashboard']
 
-# ADD_ANGULAR_MODULES = [
-#     'horizon.dashboard.watcher'
-# ]
-
-# ADD_JS_FILES = [
-#     'horizon/lib/angular/angular-route.js'
-# ]
-
-# ADD_SCSS_FILES = [
-#     'dashboard/watcher/watcher.scss'
-# ]
-
 AUTO_DISCOVER_STATIC_FILES = False
