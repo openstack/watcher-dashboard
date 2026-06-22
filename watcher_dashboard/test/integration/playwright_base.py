@@ -15,6 +15,7 @@
 import os
 import re
 import time
+import uuid
 
 import fixtures
 
@@ -268,6 +269,80 @@ class PlaywrightTestCase(base.BaseTestCase):
         test_id = self.id()
         safe_test_id = re.sub(r'[^A-Za-z0-9_.-]+', '_', test_id)
         return os.path.join(self.screenshot_dir, safe_test_id)
+
+    def _generate_unique_name(self, prefix):
+        """Generate a unique resource name for test isolation."""
+        return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+    def _extract_uuid_from_href(self, href):
+        """Extract UUID from URL/path text."""
+        match = re.search(
+            r'([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-'
+            r'[0-9a-f]{4}-[0-9a-f]{12})',
+            href or '',
+            re.IGNORECASE,
+        )
+        if not match:
+            self.fail("Could not extract UUID from href: %s" % href)
+        return match.group(1)
+
+    def wait_for_audit_terminal_state(
+        self, timeout=300, poll_interval=5, terminal_states=None
+    ):
+        """Wait for audit to reach any terminal state on current page."""
+        states = terminal_states or (
+            'SUCCEEDED',
+            'FAILED',
+            'CANCELLED',
+            'DELETED',
+        )
+        start_time = time.time()
+
+        while time.time() - start_time < timeout:
+            self.page.reload()
+            for state in states:
+                if self.page.get_by_text(state, exact=True).count() > 0:
+                    return state
+            time.sleep(poll_interval)
+
+        raise TimeoutError(
+            "Audit did not reach terminal states %s in %ss" % (states, timeout)
+        )
+
+    def wait_for_action_plan_terminal_state(
+        self, timeout=300, poll_interval=5, terminal_states=None
+    ):
+        """Wait for action plan terminal state, excluding in-table matches."""
+        states = terminal_states or (
+            'SUCCEEDED',
+            'FAILED',
+            'CANCELLED',
+            'DELETED',
+        )
+        start_time = time.time()
+
+        while time.time() - start_time < timeout:
+            self.page.reload()
+            try:
+                for state in states:
+                    total = self.page.get_by_text(state, exact=True).count()
+                    if total == 0:
+                        continue
+                    in_tables = (
+                        self.page.get_by_role("table")
+                        .get_by_text(state, exact=True)
+                        .count()
+                    )
+                    if total > in_tables:
+                        return state
+            except (sync_api.Error, AttributeError):
+                pass
+            time.sleep(poll_interval)
+
+        raise TimeoutError(
+            "Action plan did not reach terminal states %s in %ss"
+            % (states, timeout)
+        )
 
     def create_audit_template(
         self, name, goal_name="Dummy goal", strategy_name="Dummy strategy"
