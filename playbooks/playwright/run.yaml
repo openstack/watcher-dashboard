@@ -1,6 +1,4 @@
 ---
 - hosts: all
-  environment:
-    OS_CLOUD: devstack-admin
   roles:
     - tox

@@ -42,9 +42,10 @@ class PlaywrightFixture(fixtures.Fixture):
     context (with video/tracing configuration), and creating the page.
     """
 
-    def __init__(self, use_auth_reuse=False):
+    def __init__(self, use_auth_reuse=False, test_name=None):
         super().__init__()
         self.use_auth_reuse = use_auth_reuse
+        self.test_name = test_name
         self.playwright = None
         self.browser = None
         self.context = None
@@ -94,7 +95,10 @@ class PlaywrightFixture(fixtures.Fixture):
         # 4. Start Tracing if enabled
         if config.get_trace_mode() != 'off':
             self.context.tracing.start(
-                screenshots=True, snapshots=True, sources=True
+                screenshots=True,
+                snapshots=True,
+                sources=True,
+                name=self.test_name,
             )
 
         # 5. Create Page
@@ -109,23 +113,20 @@ class PlaywrightFixture(fixtures.Fixture):
         return video_dir
 
     def _close_context_and_finalize_artifacts(self):
-        """Close context and handle video/trace retention logic."""
-        # Capture paths before closing
-        video_path = None
-        if self.page.video:
-            try:
-                video_path = self.page.video.path()
-            except (OSError, AttributeError) as e:
-                LOG.debug("Failed to get video path: %s", e)
+        """Close context and save artifacts with human-readable names.
 
-        trace_path = None
+        All artifacts (traces, videos) are kept unconditionally because
+        fixtures don't easily know the test's pass/fail status. To delete
+        on success, hook into testtools.TestCase.addOnException.
+        """
         trace_mode = config.get_trace_mode()
         if trace_mode != 'off':
             trace_dir = config.get_trace_dir()
             os.makedirs(trace_dir, exist_ok=True)
-            # We use a generic name here, simpler than passing test names
-            # into fixture
-            trace_path = os.path.join(trace_dir, f"trace_{id(self)}.zip")
+            safe_name = re.sub(
+                r'[^A-Za-z0-9_.-]+', '_', self.test_name or str(id(self))
+            )
+            trace_path = os.path.join(trace_dir, f"trace_{safe_name}.zip")
             try:
                 self.context.tracing.stop(path=trace_path)
             except (OSError, AttributeError) as e:
@@ -133,13 +134,14 @@ class PlaywrightFixture(fixtures.Fixture):
 
         self.context.close()
 
-        # Handle "retain-on-failure" logic
-        # Note: In fixtures, we don't easily know pass/fail status of the
-        # test unless passed in. For simplicity, we default to keeping
-        # artifacts or you can hook into testtools.TestCase.addOnException
-        # to delete them only on success.
-        # A common simple pattern: Keep them, let CI clean up.
-        if video_path:
+        if self.page.video:
+            safe_name = re.sub(
+                r'[^A-Za-z0-9_.-]+', '_', self.test_name or str(id(self))
+            )
+            video_dir = config.get_video_dir()
+            video_path = os.path.join(video_dir, f"video_{safe_name}.webm")
+            self.page.video.save_as(video_path)
+            self.page.video.delete()
             LOG.info("Video saved to: %s", video_path)
 
 
@@ -202,7 +204,10 @@ class PlaywrightTestCase(base.BaseTestCase):
 
         # Initialize Playwright via Fixture
         self.pw_fixture = self.useFixture(
-            PlaywrightFixture(use_auth_reuse=config.is_auth_reuse_enabled())
+            PlaywrightFixture(
+                use_auth_reuse=config.is_auth_reuse_enabled(),
+                test_name=self.id(),
+            )
         )
         self.page = self.pw_fixture.page
 
@@ -481,19 +486,10 @@ class PlaywrightTestCase(base.BaseTestCase):
 
         :param audit_name: Name of the audit
         :type audit_name: str
-        :returns: The audit UUID, or None if not found
-        :rtype: str or None
+        :returns: The audit UUID
+        :rtype: str
         """
-        try:
-            audit = self.watcher_client.audit.get(audit_name)
-            if audit:
-                return audit.uuid
-            LOG.warning("Could not resolve UUID for audit '%s'", audit_name)
-        except watcher_exceptions.ClientException as exc:
-            LOG.error(
-                "Failed to resolve UUID for audit '%s': %s", audit_name, exc
-            )
-        return None
+        return self.watcher_client.audit.get(audit_name).uuid
 
     def wait_for_success_message(self, timeout=None):
         """Wait for success message to appear.
