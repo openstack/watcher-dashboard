@@ -228,11 +228,10 @@ def is_auth_reuse_enabled():
     When enabled, the first login will save browser state and subsequent
     tests will reuse it, avoiding repeated logins.
 
-    :returns: True if auth state reuse is enabled
+    :returns: True if auth state reuse is enabled (default: True)
     """
-    return strutils.bool_from_string(
-        os.environ['PLAYWRIGHT_AUTH_REUSE'], strict=True
-    )
+    value = os.environ.get('PLAYWRIGHT_AUTH_REUSE', 'True')
+    return strutils.bool_from_string(value, default=True)
 
 
 @functools.cache
@@ -242,3 +241,16 @@ def is_insecure():
     :returns: True if SSL verification should be disabled
     """
     return strutils.bool_from_string(os.environ['OS_INSECURE'], strict=True)
+
+
+@functools.cache
+def ignore_https_errors():
+    """Check if HTTPS certificate errors should be ignored.
+
+    When enabled, Playwright will ignore HTTPS certificate validation errors.
+    Useful for testing with self-signed certificates.
+
+    :returns: True if HTTPS errors should be ignored (default: False)
+    """
+    value = os.environ.get('PLAYWRIGHT_IGNORE_HTTPS_ERRORS', 'False')
+    return strutils.bool_from_string(value, default=False)
