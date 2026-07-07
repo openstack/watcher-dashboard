@@ -230,7 +230,10 @@ class PlaywrightTestCase(base.BaseTestCase):
         self.take_screenshot("login_username_filled")
         self.page.get_by_label("Password").fill(config.get_password())
         self.take_screenshot("login_password_filled")
-        self.page.get_by_role("button", name="Sign In").click()
+        # Custom dashboard could have different login button name
+        # Using locator will help to avoid checking for specific button
+        # label.
+        self.page.locator("#loginBtn").click()
         self.take_screenshot("login_submit")
 
         # Wait for login to complete
