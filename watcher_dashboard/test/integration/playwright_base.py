@@ -66,7 +66,10 @@ class PlaywrightFixture(fixtures.Fixture):
 
         # 3. Configure Context (Video, Viewport, Auth)
         video_dir = self._get_video_dir()
-        context_kwargs = {'viewport': {'width': 1920, 'height': 1080}}
+        context_kwargs = {
+            'viewport': {'width': 1920, 'height': 1080},
+            'ignore_https_errors': config.ignore_https_errors(),
+        }
         if video_dir:
             context_kwargs.update(
                 {

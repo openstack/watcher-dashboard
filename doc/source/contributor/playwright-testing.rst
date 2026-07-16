@@ -131,6 +131,8 @@ Environment Variables
      - Base directory for all artifacts (default: ``playwright/``)
    * - ``PLAYWRIGHT_AUTH_REUSE``
      - Reuse login state: ``True`` (default) or ``False``
+   * - ``PLAYWRIGHT_IGNORE_HTTPS_ERRORS``
+     - Ignore HTTPS certificate errors: ``True`` or ``False`` (default)
    * - ``WATCHER_DASHBOARD_URL``
      - Dashboard URL (default: ``http://localhost/dashboard``)
    * - ``OS_USERNAME``
