@@ -276,7 +276,11 @@ class PlaywrightTestCase(base.BaseTestCase):
         return os.path.join(self.screenshot_dir, safe_test_id)
 
     def create_audit_template(
-        self, name, goal_name="Dummy goal", strategy_name="Dummy strategy"
+        self,
+        name,
+        goal_name="Dummy goal",
+        strategy_name="Dummy strategy",
+        scope=None,
     ):
         """Create an audit template and register cleanup.
 
@@ -286,6 +290,8 @@ class PlaywrightTestCase(base.BaseTestCase):
         :type goal_name: str
         :param strategy_name: Strategy name to select in the dropdown
         :type strategy_name: str
+        :param scope: Optional scope value (YAML or JSON string)
+        :type scope: str or None
         """
         self.page.goto(f"{self.dashboard_url}/admin/audit_templates/")
         self.take_screenshot("audit_templates_page_loaded")
@@ -303,6 +309,10 @@ class PlaywrightTestCase(base.BaseTestCase):
         self.take_screenshot("audit_template_goal_selected")
         self.page.get_by_label("Strategy").select_option(label=strategy_name)
         self.take_screenshot("audit_template_strategy_selected")
+
+        if scope is not None:
+            self.page.locator("#id_scope").fill(scope)
+            self.take_screenshot("audit_template_scope_filled")
 
         self.page.get_by_role("button", name="Create Audit Template").click()
         self.take_screenshot("audit_template_submit")
