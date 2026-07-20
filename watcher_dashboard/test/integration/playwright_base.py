@@ -16,6 +16,9 @@ import os
 import re
 import time
 
+from urllib.parse import urljoin
+from urllib.parse import urlparse
+
 import fixtures
 
 from keystoneauth1 import identity
@@ -223,6 +226,7 @@ class PlaywrightTestCase(base.BaseTestCase):
         if '/auth/login' not in self.page.url:
             LOG.info("Already authenticated, skipping login form.")
             self.take_screenshot("dashboard_authenticated")
+            self._switch_to_admin_project()
             return
 
         self.take_screenshot("login_page")
@@ -247,6 +251,52 @@ class PlaywrightTestCase(base.BaseTestCase):
             auth_path = config.get_auth_state_path()
             os.makedirs(os.path.dirname(auth_path), exist_ok=True)
             self.pw_fixture.context.storage_state(path=auth_path)
+
+        # Switch to admin project - Watcher requires admin privileges
+        self._switch_to_admin_project()
+
+    def _switch_to_admin_project(self):
+        """Switch to the admin project if not already there."""
+        try:
+            admin_panel_url = f"{self.dashboard_url}/admin/"
+            admin_switch_link = self.page.locator(
+                f"a[href*='/auth/switch/']"
+                f":has-text('{config.get_project_name()}')"
+            )
+
+            if admin_switch_link.count() == 0:
+                LOG.info("Already in admin project")
+                self.page.goto(admin_panel_url)
+                self.page.wait_for_load_state(
+                    "networkidle", timeout=config.get_timeout()
+                )
+                self.take_screenshot("admin_panel_loaded")
+                return
+
+            switch_url = admin_switch_link.first.get_attribute("href")
+            if not switch_url:
+                self.take_screenshot("no_switch_url")
+                raise RuntimeError("Could not get href from admin switch link")
+
+            self.take_screenshot("before_project_switch")
+
+            switch_url = urljoin(self.dashboard_url + "/", switch_url)
+            admin_path = (
+                urlparse(self.dashboard_url).path.rstrip("/") + "/admin/"
+            )
+            switch_url = switch_url.split("?")[0] + f"?next={admin_path}"
+
+            LOG.info("Switching to admin project via: %s", switch_url)
+            self.page.goto(switch_url)
+            self.page.wait_for_load_state(
+                "networkidle", timeout=config.get_timeout()
+            )
+            self.take_screenshot("admin_panel_loaded")
+
+        except sync_api.Error as e:
+            LOG.error("Could not switch to admin project: %s", e)
+            self.take_screenshot("project_switch_failed")
+            raise
 
     def take_screenshot(self, name):
         """Helper to take numbered screenshots."""
