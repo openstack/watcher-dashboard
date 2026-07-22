@@ -1,0 +1,2 @@
+# gettext is needed for translation compilation in documentation and tests.
+gettext [doc test]

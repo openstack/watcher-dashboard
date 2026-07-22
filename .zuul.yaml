@@ -35,6 +35,12 @@
         PLAYWRIGHT_TRACE: retain-on-failure
         PLAYWRIGHT_HEADLESS: true
 
+- job:
+    name: watcher-dashboard-tox-translations
+    parent: openstack-tox
+    vars:
+      tox_envlist: translations
+
 - project:
     templates:
       - check-requirements
@@ -49,3 +55,9 @@
     gate:
       jobs:
         - watcher-dashboard-integration-tests-playwright
+    experimental:
+      jobs:
+        - watcher-dashboard-tox-translations
+    periodic-weekly:
+      jobs:
+        - watcher-dashboard-tox-translations
