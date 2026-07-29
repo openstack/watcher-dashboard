@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    Fixed the audit list page filter which offered "Audit Template" as a
+    server-side filter option. The Watcher API does not accept
+    ``audit_template`` as a query parameter for listing audits, causing an
+    HTTP 400 error. The filter now offers "Goal" and "Strategy", which are
+    the filter parameters the audit list API supports.

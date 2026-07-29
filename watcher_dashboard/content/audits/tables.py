@@ -42,7 +42,10 @@ AUDIT_STATE_DISPLAY_CHOICES = (
 class AuditsFilterAction(horizon.tables.FilterAction):
     # server = choices query = text
     filter_type = "server"
-    filter_choices = (('audit_template', _("Audit Template ="), True),)
+    filter_choices = (
+        ('goal', _("Goal ="), True),
+        ('strategy', _("Strategy ="), True),
+    )
     policy_rules = (("infra-optim", "audit:detail"),)
 
 
