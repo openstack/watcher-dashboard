@@ -37,7 +37,8 @@ if is_service_enabled watcher-dashboard; then
         init_watcher_dashboard
 
     elif [[ "$1" == "stack" && "$2" == "extra"  ]]; then
-        # no-op
+        echo_summary "Adding admin to demo project for multi-project testing"
+        get_or_add_user_project_role admin admin demo
         :
     fi
 
