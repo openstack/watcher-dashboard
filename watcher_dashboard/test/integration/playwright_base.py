@@ -360,15 +360,14 @@ class PlaywrightTestCase(base.BaseTestCase):
         self.take_screenshot("audit_template_strategy_selected")
 
         self.page.get_by_role("button", name="Create Audit Template").click()
+        self.addCleanup(self._delete_audit_template_via_api, name)
+
         self.take_screenshot("audit_template_submit")
+
         self.wait_for_success_message()
         self.take_screenshot("audit_template_created")
 
-        template_uuid = self.watcher_client.audit_template.get(name).uuid
-
-        self.addCleanup(self._delete_audit_template_via_api, template_uuid)
-
-        return template_uuid
+        return self.watcher_client.audit_template.get(name).uuid
 
     def create_audit(self, template_name, audit_name, audit_type="ONESHOT"):
         """Create an audit and register cleanup.
@@ -412,34 +411,47 @@ class PlaywrightTestCase(base.BaseTestCase):
         self.page.get_by_role("button", name="Create Audit").click()
         self.take_screenshot("audit_submit")
 
+        self.addCleanup(self._cleanup_audit_by_name, audit_name)
+
         self.wait_for_success_message()
         self.take_screenshot("audit_created")
 
-        audit_uuid = self._get_audit_uuid_via_api(audit_name)
+        return self._get_audit_uuid_via_api(audit_name)
 
-        self.addCleanup(self._delete_audit_via_api, audit_uuid)
-        self.addCleanup(
-            self._delete_action_plans_for_audit_via_api, audit_uuid
-        )
+    def _cleanup_audit_by_name(self, audit_name):
+        """Clean up an audit and its associated resources by name.
 
-        return audit_uuid
+        Resolves the audit UUID from its name, then deletes
+        action plans and the audit itself in the correct order.
 
-    def _delete_audit_template_via_api(self, template_uuid):
+        :param audit_name: Name of the audit to clean up
+        :type audit_name: str
+        """
+        try:
+            audit_uuid = self._get_audit_uuid_via_api(audit_name)
+            self._delete_action_plans_for_audit_via_api(audit_uuid)
+            self._delete_audit_via_api(audit_uuid)
+        except watcher_exceptions.ClientException as exc:
+            LOG.warning(
+                "API cleanup: audit '%s' not found, skipping: %s",
+                audit_name,
+                exc,
+            )
+
+    def _delete_audit_template_via_api(self, template_id):
         """Delete an audit template using the Watcher API.
 
-        :param template_uuid: UUID of the audit template to delete
-        :type template_uuid: str
+        :param template_id: Name or UUID of the audit template to delete
+        :type template_id: str
         """
-        LOG.info("API cleanup: deleting audit template uuid=%s", template_uuid)
+        LOG.info("API cleanup: deleting audit template id=%s", template_id)
         try:
-            self.watcher_client.audit_template.delete(template_uuid)
-            LOG.info(
-                "API cleanup: deleted audit template uuid=%s", template_uuid
-            )
+            self.watcher_client.audit_template.delete(template_id)
+            LOG.info("API cleanup: deleted audit template id=%s", template_id)
         except watcher_exceptions.ClientException as exc:
             LOG.error(
-                "API cleanup FAILED for audit template uuid=%s: %s",
-                template_uuid,
+                "API cleanup FAILED for audit template id=%s: %s",
+                template_id,
                 exc,
             )
 
