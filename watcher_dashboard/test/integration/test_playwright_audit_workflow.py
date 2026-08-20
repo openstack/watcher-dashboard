@@ -12,8 +12,6 @@
 
 """Integration tests for audit workflow using Playwright."""
 
-import uuid
-
 from django import test
 
 from watcher_dashboard.test.integration import playwright_base
@@ -22,10 +20,6 @@ from watcher_dashboard.test.integration import playwright_base
 @test.tag('integration')
 class AuditWorkflowTests(playwright_base.PlaywrightTestCase):
     """Integration tests for audit workflow using Playwright."""
-
-    def _generate_unique_name(self, prefix):
-        """Generate a unique resource name for test isolation."""
-        return f"{prefix}_{uuid.uuid4().hex[:8]}"
 
     def test_create_audit_template(self):
         """Test creating an audit template via UI.
